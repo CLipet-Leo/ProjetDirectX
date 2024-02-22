@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 #include <wrl.h>
+#include <stdlib.h>
+#include <iostream>
 
 #include <dxgi.h>
 #include <DirectXMath.h>

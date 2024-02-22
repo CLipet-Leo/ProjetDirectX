@@ -128,12 +128,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectX\d3dx12.h" />
-    <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
     <ClInclude Include="IncludeLib.h" />
     <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

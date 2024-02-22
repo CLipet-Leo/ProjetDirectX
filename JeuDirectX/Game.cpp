@@ -1,6 +1,6 @@
-#include "Renderer.h"
+#include "Game.h"
 
-Renderer::Renderer()
+Game::Game()
 {
 
 }

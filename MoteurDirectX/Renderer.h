@@ -5,8 +5,6 @@ using Microsoft::WRL::ComPtr;
 class Renderer
 {
 public:
-	
-
 	Renderer();
 
 };
