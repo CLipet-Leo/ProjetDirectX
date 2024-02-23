@@ -8,4 +8,6 @@
 #include <dxgi.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
+#include <DirectXColors.h>
 #include "../DirectX/d3dx12.h"
+#include "../DirectX/d3dApp.h"
