@@ -1,9 +1,4 @@
 #pragma once
-<<<<<<< Updated upstream
-#include "IncludeLib.h"
-using Microsoft::WRL::ComPtr; 
-=======
-
 #include "D3DApp.h"
 
 // Environnement de débug de la Window
@@ -22,17 +17,19 @@ using Microsoft::WRL::ComPtr;
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
->>>>>>> Stashed changes
 
 class Renderer : D3DApp
 {
+protected:
+	Renderer(HINSTANCE hInstance);
+	Renderer(const Renderer& rhs) = delete;
+	Renderer& operator=(const Renderer& rhs) = delete;
+	virtual ~Renderer();
+
 public:
-	Renderer();
 
-};
+	static Renderer* GetApp();
 
-<<<<<<< Updated upstream
-=======
 	HINSTANCE AppInst()const;
 	HWND      MainWnd()const;
 	float     AspectRatio()const;
@@ -74,4 +71,3 @@ public: // Variables protégées
 	int mClientWidth = 800;
 	int mClientHeight = 600;
 };
->>>>>>> Stashed changes

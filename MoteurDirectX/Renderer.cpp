@@ -1,17 +1,16 @@
 #include "Renderer.h"
+#include <WindowsX.h>
+#include <string>
+#include <vector>
 
-Renderer::Renderer()
+LRESULT CALLBACK
+MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-
+	// Forward hwnd on because we can get messages (e.g., WM_CREATE)
+	// before CreateWindow returns, and thus before mhMainWnd is valid.
+	return Renderer::GetApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
-<<<<<<< Updated upstream
-//int main()
-//{
-//	std::cout << "JE FUIS !!!" << std::endl;
-//	return 0;
-//}
-=======
 Renderer* Renderer::mApp = nullptr;
 Renderer* Renderer::GetApp()
 {
@@ -117,4 +116,3 @@ bool Renderer::InitMainWindow()
 {
 	return false;
 }
->>>>>>> Stashed changes
