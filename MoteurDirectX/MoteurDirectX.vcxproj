@@ -127,23 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\DirectX\d3dApp.h" />
-    <ClInclude Include="..\DirectX\d3dUtil.h" />
+    <ClInclude Include="..\DirectX\d3dx12.h" />
     <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
-    <ClInclude Include="..\DirectX\GameTimer.h" />
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
-    <ClInclude Include="IncludeLib.h" />
-    <ClInclude Include="InitDirect3DApp.h" />
+    <ClInclude Include="CustomVertex.h" />
+    <ClInclude Include="D3DApp.h" />
+    <ClInclude Include="D3DUtils.h" />
     <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\DirectX\d3dApp.cpp" />
-    <ClCompile Include="..\DirectX\d3dUtil.cpp" />
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
-    <ClCompile Include="..\DirectX\GameTimer.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
-    <ClCompile Include="InitDirect3DApp.cpp" />
+    <ClCompile Include="D3DApp.cpp" />
+    <ClCompile Include="D3DUtils.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
