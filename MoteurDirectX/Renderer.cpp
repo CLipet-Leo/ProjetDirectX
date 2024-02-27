@@ -67,7 +67,7 @@ int Renderer::Run()
 {
 	MSG msg = { 0 };
 
-	mTimer.Reset();
+	//mTimer.Reset();
 
 	while (msg.message != WM_QUIT)
 	{
@@ -80,13 +80,13 @@ int Renderer::Run()
 		// Otherwise, do animation/game stuff.
 		else
 		{
-			mTimer.Tick();
+			//mTimer.Tick();
 
 			if (!mAppPaused)
 			{
-				CalculateFrameStats();
-				Update(mTimer);
-				Draw(mTimer);
+				//CalculateFrameStats();
+				//Update(mTimer);
+				//Draw(mTimer);
 			}
 			else
 			{

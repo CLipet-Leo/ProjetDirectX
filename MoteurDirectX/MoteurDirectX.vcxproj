@@ -127,9 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\DirectX\d3dx12.h" />
     <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
     <ClInclude Include="..\DirectX\MathHelper.h" />
-    <ClInclude Include="customVertex.h" />
+    <ClInclude Include="..\DirectX\UploadBuffer.h" />
+    <ClInclude Include="CustomVertex.h" />
     <ClInclude Include="D3DApp.h" />
     <ClInclude Include="D3DUtils.h" />
     <ClInclude Include="Renderer.h" />

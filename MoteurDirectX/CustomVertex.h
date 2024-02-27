@@ -1,6 +1,4 @@
 #pragma once
-
-#include "IncludeLib.h"
 #include <DirectXPackedVector.h>
 #include <vector>
 
