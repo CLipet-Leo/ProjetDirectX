@@ -1,7 +1,7 @@
 #pragma once
 #include "D3DApp.h"
 
-// Environnement de débug de la Window
+// Environnement de dÃ©bug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -10,7 +10,7 @@
 #include <DirectXMath.h>
 #include "D3DUtils.h"
 
-// Liens nécessaires de la librairie d3d12
+// Liens nÃ©cessaires de la librairie d3d12
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -43,11 +43,11 @@ public:
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
-protected: // Fonctions protégées
+protected: // Fonctions protÃ©gÃ©es
 
 	bool InitMainWindow();
 
-public: // Variables protégées
+public: // Variables protÃ©gÃ©es
 
 	static Renderer* mApp;
 
@@ -59,7 +59,7 @@ public: // Variables protégées
 	bool      mResizing = false;   // are the resize bars being dragged?
 	bool      mFullscreenState = false;// fullscreen enabled
 
-	// Set true to use 4X MSAA (§4.1.8).  The default is false.
+	// Set true to use 4X MSAA (Â§4.1.8).  The default is false.
 	bool      m4xMsaaState = false;    // 4X MSAA enabled
 	UINT      m4xMsaaQuality = 0;      // quality level of 4X MSAA
 

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <DirectXPackedVector.h>
 #include <vector>
 

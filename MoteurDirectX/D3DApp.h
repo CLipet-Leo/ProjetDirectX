@@ -23,7 +23,7 @@ protected:
 	// Fonction console
 	void FlushCommandQueue();
 
-	// Gestion de la méthode SwapBuffer
+	// Gestion de la mÃ©thode SwapBuffer
 	ID3D12Resource* CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
@@ -40,11 +40,11 @@ protected:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
 	Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 
-	// Sécurité
+	// SÃ©curitÃ©
 	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
 	UINT64 mCurrentFence = 0;
 
-	// Création console
+	// CrÃ©ation console
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
@@ -55,7 +55,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource> mSwapChainBuffer[SwapChainBufferCount];
 	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
 
-	// Création couche de texture
+	// CrÃ©ation couche de texture
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
 

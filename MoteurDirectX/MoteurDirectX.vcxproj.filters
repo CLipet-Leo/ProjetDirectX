@@ -30,7 +30,7 @@
     <ClInclude Include="..\DirectX\d3dx12.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="..\DirectX\DDSTextureLoader.h">
+    <ClInclude Include="customVertex.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="..\DirectX\MathHelper.h">
@@ -50,7 +50,7 @@
     <ClCompile Include="D3DUtils.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\DirectX\DDSTextureLoader.cpp">
+    <ClCompile Include="D3DUtils.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="..\DirectX\MathHelper.cpp">
