@@ -1,12 +1,41 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(HINSTANCE hInstance)
 {
 
 }
 
-int main()
+#if defined(DEBUG) || defined(_DEBUG)
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#endif
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
-	std::cout << "JE FUIS !!!" << std::endl;
-	return 0;
+    // Enable run-time memory check for debug builds.
+#if defined(DEBUG) | defined(_DEBUG)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+    try
+    {
+        Game theApp(hInstance);
+        if (!theApp.Initialize())
+            return 0;
+
+        return theApp.Run();
+    }
+    catch (DxException& e)
+    {
+        MessageBox(nullptr, e.ToString().c_str(), L"HR Failed", MB_OK);
+        return 0;
+    }
+}
+
+bool Game::Initialize()
+{
+    if (!D3DApp::InitDirect3D())
+        return false;
+
+    return true;
 }

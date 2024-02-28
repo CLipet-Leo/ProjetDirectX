@@ -1,10 +1,13 @@
 #pragma once
-#include <iostream>
+
+#include "../MoteurDirectX/D3DUtils.h"
+#include "../MoteurDirectX/D3DApp.h"
 
 class Game
 {
 public:
-	Game();
+	Game(HINSTANCE hInstance);
 
+	bool Initialize()
 };
 
