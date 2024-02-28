@@ -18,8 +18,9 @@
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 
-class Renderer : D3DApp
+class Renderer 
 {
+	D3DApp d3d_app;
 protected:
 	Renderer(HINSTANCE hInstance);
 	Renderer(const Renderer& rhs) = delete;

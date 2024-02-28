@@ -27,8 +27,8 @@ Renderer::Renderer(HINSTANCE hInstance)
 
 Renderer::~Renderer()
 {
-	if (md3dDevice != nullptr)
-		FlushCommandQueue();
+	if (d3d_app.md3dDevice != nullptr)
+		d3d_app.FlushCommandQueue();
 }
 
 HINSTANCE Renderer::AppInst()const
@@ -58,8 +58,8 @@ void Renderer::Set4xMsaaState(bool value)
 		m4xMsaaState = value;
 
 		// Recreate the swapchain and buffers with new multisample settings.
-		CreateSwapChain();
-		OnResize();
+		d3d_app.CreateSwapChain();
+		d3d_app.OnResize();
 	}
 }
 
@@ -103,11 +103,11 @@ bool Renderer::Initialize()
 	if (!InitMainWindow())
 		return false;
 
-	if (!InitDirect3D())
+	if (!d3d_app.InitDirect3D())
 		return false;
 
 	// Do the initial resize code.
-	OnResize();
+	d3d_app.OnResize();
 
 	return true;
 }

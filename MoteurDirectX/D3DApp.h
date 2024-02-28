@@ -7,14 +7,15 @@
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-class D3DApp : Renderer
+class D3DApp
 {
-protected:
+	Renderer render;
+public:
 
 	virtual void CreateRtvAndDsvDescriptorHeaps();
 	virtual void OnResize();
 
-protected:
+public:
 	// Initialisation de l'application DirectX
 	bool InitDirect3D();
 	void CreateCommandObjects();
@@ -34,7 +35,7 @@ protected:
 	void LogAdapterOutputs(IDXGIAdapter* adapter);
 	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
-protected:
+public:
 	// Pointeurs intelligents
 	Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
