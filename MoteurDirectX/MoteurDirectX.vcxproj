@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -128,23 +128,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Desktop\ProjetDirectX\DirectX\d3dx12.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\ProjetDirectX\MoteurDirectX\Transform.h" />
     <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="CustomVertex.h" />
     <ClInclude Include="D3DApp.h" />
     <ClInclude Include="D3DUtils.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Desktop\ProjetDirectX\MoteurDirectX\Transform.cpp" />
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="D3DApp.cpp" />
     <ClCompile Include="D3DUtils.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Transform.cpp" />
