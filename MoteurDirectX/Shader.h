@@ -1,10 +1,16 @@
 #pragma once
 #include "customVertex.h"
 #include "D3DUtils.h"
+using Microsoft::WRL::ComPtr;
+
+using namespace DirectX;
 
 class Shader
 {
 public: // Fonctions
+
+    Shader(HINSTANCE hInstance);
+
     /*
     Utiliser le struct prédifinis;
     Créer les Heaps;
@@ -16,25 +22,25 @@ public: // Fonctions
     */
 
 public: // Variables
-    /*
-    Pointeur intelligent de RootSignatue
-    Pointeur intelligent de Heaps
 
-    !!!!
-    Unique pointeur d'objet dans le Buffer
-    Unique pointeur de MeshGeometry 
-    !!!!
+    ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
+    ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
-    Blob mvs et mps
-    Vector ( D3D12_INPUT_ELEMENT_DESC ) de Layout
-    Pointeur intelligent de PipelineState
+    // !!!!
+    // Unique pointeur d'objet dans le Buffer
+    // Unique pointeur de MeshGeometry 
+    // !!!!
 
-    !!!!
-    Matrices world, view et proj
+    // Blob mvs et mps
+    // Vector ( D3D12_INPUT_ELEMENT_DESC ) de Layout
+    // Pointeur intelligent de PipelineState
 
-    Variables mathématique
+    // !!!!
+    // Matrices world, view et proj
+    XMFLOAT4X4 WorldViewProj;
 
-    Position de la souris
-    !!!!
-    */
+    // Variables mathématique
+
+    // Position de la souris
+    // !!!!
 };
