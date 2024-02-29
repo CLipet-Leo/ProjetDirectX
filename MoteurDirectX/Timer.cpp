@@ -6,12 +6,12 @@ Timer::Timer()
 
 }
 
-float Timer::getDeltaTime()
+float Timer::getDeltaTime()const
 {
 	return (float)iDeltaTime;
 }
 
-float Timer::getTotalTime()
+float Timer::getTotalTime()const
 {
 	return fTotalTime;
 }
