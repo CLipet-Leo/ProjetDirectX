@@ -1,29 +1,15 @@
 #include "Game.h"
 
-Game::Game(HINSTANCE hInstance)
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-
-}
-
-#if defined(DEBUG) || defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#endif
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
-{
-    // Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
     try
     {
-        Game theApp(hInstance);
-        if (!theApp.Initialize())
-            return 0;
-
-        return theApp.Run();
+        Renderer application(800, 600);
+        
     }
     catch (DxException& e)
     {
@@ -32,10 +18,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
     }
 }
 
-bool Game::Initialize()
+Game::Game()
 {
-    if (!D3DApp::InitDirect3D())
-        return false;
-
-    return true;
+    
 }
+

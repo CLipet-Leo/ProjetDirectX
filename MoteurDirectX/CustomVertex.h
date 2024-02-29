@@ -1,6 +1,5 @@
 #pragma once
-#include <DirectXPackedVector.h>
-#include <vector>
+#include "Pch.h"
 
 using namespace DirectX;
 

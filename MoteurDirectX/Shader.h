@@ -1,6 +1,6 @@
 #pragma once
-#include "customVertex.h"
-#include "D3DUtils.h"
+#include "Pch.h"
+
 using Microsoft::WRL::ComPtr;
 
 using namespace DirectX;
