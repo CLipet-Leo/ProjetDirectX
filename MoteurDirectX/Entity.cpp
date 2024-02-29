@@ -38,12 +38,21 @@ void Entity::AddComponent(Component* ARGpComp)
 void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 {
 	// Look for a Component of this type
-	for (auto it = begin(_pCompList);  it != end(_pCompList);  it++)
+	int iterator = 0;
+	for (auto pComp : _pCompList)
 	{
 		// If it's found, removes it and calls the destructor on Component (this destroys the parent and the child)
 		if (pComp->GetCompSubType() == ARGCompTypeTarget)
 		{
-			_pCompList.
+			_pCompList.at(iterator)->~Component();
+			_pCompList.erase(_pCompList.begin() + iterator);
+			return;
 		}
+		iterator++;
 	}
+}
+
+std::vector<Component*>* Entity::GetPCompListPtr()
+{
+	return &_pCompList;
 }
