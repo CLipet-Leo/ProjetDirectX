@@ -1,4 +1,8 @@
+// Include needed classes
 #include "./Component.h"
+
+// Include C++ standard libs
+#include <iostream>
 
 // Constru & Destru
 Component::Component(Entity* pEArgOwner)
@@ -8,7 +12,7 @@ Component::Component(Entity* pEArgOwner)
 }
 Component::~Component()
 {
-	// Empty lol
+	std::cout << "COMPONENT : Destructor called !\n";
 }
 
 // Getter & Setter

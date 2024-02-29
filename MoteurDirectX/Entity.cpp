@@ -13,7 +13,7 @@ Entity::Entity()
 }
 Entity::~Entity()
 {
-	// Emtpy lmao
+	std::cout << "ENTITY : Destructor called !\n";
 }
 
 // Add a Component to the Entity. This doesn't work if it already has it
@@ -42,7 +42,7 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 	for (auto pComp : _pCompList)
 	{
 		// If it's found, removes it and calls the destructor on Component (this destroys the parent and the child)
-		if (pComp->GetCompSubType() == ARGCompTypeTarget)
+		if(pComp->GetCompSubType() == ARGCompTypeTarget)
 		{
 			_pCompList.at(iterator)->~Component();
 			_pCompList.erase(_pCompList.begin() + iterator);

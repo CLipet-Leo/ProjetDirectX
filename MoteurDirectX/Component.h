@@ -24,7 +24,7 @@ protected:
 public:
 	// Constru & Destru
 	Component::Component(Entity* pEArgOwner);
-	Component::~Component();
+	virtual Component::~Component();
 
 	// Getter & Setter
 	compSubType Component::GetCompSubType();
