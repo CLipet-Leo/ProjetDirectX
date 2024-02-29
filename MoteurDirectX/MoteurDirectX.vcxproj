@@ -132,6 +132,7 @@
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Components\Rotate.h" />
     <ClInclude Include="CustomVertex.h" />
     <ClInclude Include="D3DApp.h" />
     <ClInclude Include="D3DUtils.h" />
@@ -144,6 +145,7 @@
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Components\Rotate.cpp" />
     <ClCompile Include="D3DApp.cpp" />
     <ClCompile Include="D3DUtils.cpp" />
     <ClCompile Include="Entity.cpp" />
