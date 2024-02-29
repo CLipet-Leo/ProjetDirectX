@@ -23,4 +23,6 @@ public:
 	// Methods to manage components
 	void Entity::AddComponent(Component* ARGpComp);
 	void Entity::RmvComponent(compSubType ARGCompTypeTarget);
+
+	std::vector<Component*>* GetPCompListPtr();
 };

@@ -50,6 +50,9 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 		}
 		iterator++;
 	}
+}
 
-	// If the component wasn't there, exits
+std::vector<Component*>* Entity::GetPCompListPtr()
+{
+	return &_pCompList;
 }
