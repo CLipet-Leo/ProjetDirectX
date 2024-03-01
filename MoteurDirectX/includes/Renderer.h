@@ -21,6 +21,9 @@ public:
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 protected:
+
+	virtual void CreateDescriptorHeaps();
+	virtual void OnResize();
 	virtual void Update(const Timer& gt)=0;
 	virtual void Draw(const Timer& gt)=0;
 
@@ -33,7 +36,6 @@ protected:
 	void Check4xMsaaQuality();
 	void CreateCommandObjects();
 	void CreateSwapChain();
-	void CreateDescriptorHeaps();
 	void CreateRenderTarget();
 	void DepthStencilAndBufferView();
 	void CreateViewport();
@@ -91,11 +93,12 @@ protected:
 	bool m4xMsaaState = false;    // 4X MSAA enabled
 	UINT m4xMsaaQuality = 0;      // quality level of 4X MSAA
 
-	std::wstring mMainWndCaption = L"d3d App";
+	std::wstring mMainWndCaption = L"DirectX Engine";
+	D3D_DRIVER_TYPE md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
 	DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	int mClientWidth = 800;
-	int mClientHeight = 800;
+	int mClientHeight = 600;
 
 };
