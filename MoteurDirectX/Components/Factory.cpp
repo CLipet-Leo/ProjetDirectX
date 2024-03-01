@@ -3,14 +3,23 @@
 #include <typeinfo>
 
 Factory::Factory(Entity* pEOwner, int* iCallback=0)
-	: Component(pEOwner)
+	: Component(pEOwner, FACTORY)
 {
+	// Copy the Components' pointers
 	std::vector<Component*>* pCompListPtr = pEOwner->GetPCompListPtr();
 	for (auto pCompList : *pCompListPtr)
 	{
-		if (typeid(pCompList) == typeid(Factory))
+		if (pCompList->GetCompSubType() == FACTORY)
 		{
-			*iCallback = 1;
+			continue;
 		}
+		// add cur comp to the copy list
+		_pCompCopyList.push_back(pCompList);
 	}
+}
+
+void Factory::CreateEntity()
+{
+	// instanciate Entity.
+	// use Entity::AddComponent() to add every copied components.
 }

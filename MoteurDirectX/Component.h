@@ -8,9 +8,13 @@ class Entity;
 enum compSubType
 {
 	UNKNOWN = 0,
-	Camera,
-	Collider,
-	Shooter,
+	CAMERA,
+	COLLIDER,
+	FACTORY,
+	ROTATE,
+	MOVE,
+	PARTICLE_GEN,
+	GAMEOBJECT,
 };
 
 // Component class.
@@ -23,7 +27,7 @@ protected:
 
 public:
 	// Constru & Destru
-	Component::Component(Entity* pEArgOwner);
+	Component::Component(Entity* pEArgOwner, compSubType subType);
 	virtual Component::~Component();
 
 	// Getter & Setter

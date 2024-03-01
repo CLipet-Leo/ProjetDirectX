@@ -5,10 +5,10 @@
 #include <iostream>
 
 // Constru & Destru
-Component::Component(Entity* pEArgOwner)
+Component::Component(Entity* pEArgOwner, compSubType subType=UNKNOWN)
+	:_pEOwner(pEArgOwner), _compSubType(subType)
 {
-	this->_pEOwner = pEArgOwner;
-	this->_compSubType = UNKNOWN;
+
 }
 Component::~Component()
 {
