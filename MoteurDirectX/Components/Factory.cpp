@@ -20,6 +20,7 @@ Factory::Factory(Entity* pEOwner, int* iCallback=0)
 
 void Factory::CreateEntity()
 {
+	// TODO
 	// instanciate Entity.
 	// use Entity::AddComponent() to add every copied components.
 }
