@@ -1,29 +1,28 @@
 #pragma once
 
-#include <windows.h>
-#include <wrl.h>
-#include <dxgi1_4.h>
-#include <d3d12.h>
-#include <D3Dcompiler.h>
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <DirectXColors.h>
-#include <DirectXCollision.h>
-#include <string>
-#include <memory>
-#include <algorithm>
-#include <vector>
-#include <array>
-#include <unordered_map>
-#include <cstdint>
-#include <fstream>
-#include <sstream>
-#include <cassert>
-#include "..\DirectX\d3dx12.h"
-#include "..\DirectX\DDSTextureLoader.h"
-#include "..\DirectX\MathHelper.h"
-
 extern const int gNumFrameResources;
+
+inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
+{
+    if (obj)
+    {
+        obj->SetPrivateData(WKPDID_D3DDebugObjectName, lstrlenA(name), name);
+    }
+}
+inline void d3dSetDebugName(ID3D12Device* obj, const char* name)
+{
+    if (obj)
+    {
+        obj->SetPrivateData(WKPDID_D3DDebugObjectName, lstrlenA(name), name);
+    }
+}
+inline void d3dSetDebugName(ID3D12DeviceChild* obj, const char* name)
+{
+    if (obj)
+    {
+        obj->SetPrivateData(WKPDID_D3DDebugObjectName, lstrlenA(name), name);
+    }
+}
 
 inline std::wstring AnsiToWString(const std::string& str)
 {

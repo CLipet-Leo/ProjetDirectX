@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MoteurDirectX", "MoteurDirectX\MoteurDirectX.vcxproj", "{2FCD68FC-0E38-40AE-922E-50295DC76915}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JeuDirectX", "JeuDirectX\JeuDirectX.vcxproj", "{BE273DAB-0D5B-4B98-8240-0944B48FF124}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2FCD68FC-0E38-40AE-922E-50295DC76915} = {2FCD68FC-0E38-40AE-922E-50295DC76915}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

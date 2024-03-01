@@ -18,10 +18,7 @@
 // http://go.microsoft.com/fwlink/?LinkId=248929
 //--------------------------------------------------------------------------------------
 
-#include <assert.h>
-#include <algorithm>
-#include <memory>
-#include <wrl.h>
+#include "../MoteurDirectX/includes/Pch.h"
 
 #include "DDSTextureLoader.h" 
 
