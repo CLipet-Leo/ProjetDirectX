@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)DirectX;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)DirectX;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -131,17 +137,17 @@
     <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
-    <ClInclude Include="CustomVertex.h" />
-    <ClInclude Include="D3DUtils.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="Timer.h" />
+    <ClInclude Include="includes\CustomVertex.h" />
+    <ClInclude Include="includes\D3DUtils.h" />
+    <ClInclude Include="includes\Pch.h" />
+    <ClInclude Include="includes\Renderer.h" />
+    <ClInclude Include="includes\Shader.h" />
+    <ClInclude Include="includes\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
     <ClCompile Include="D3DUtils.cpp" />
-    <ClCompile Include="Pch.h" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Timer.cpp" />

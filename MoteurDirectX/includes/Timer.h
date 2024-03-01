@@ -1,5 +1,4 @@
 #pragma once
-#include "Pch.h"
 
 #ifndef GAMETIMER_H
 #define GAMETIMER_H
@@ -7,7 +6,6 @@
 class Timer
 {
 public:
-
 	Timer();
 
 	float getDeltaTime()const;
@@ -16,11 +14,10 @@ public:
 	void Pause();
 	void Unpause();
 	void Reset();
-
 	void Update();
 
 private:
-	__int64 iDeltaTime;
+	double iDeltaTime;
 	float fTotalTime;
 
 	__int64 iCurTime;
@@ -29,4 +26,4 @@ private:
 	bool bStopped;
 };
 
-#endif // GAMETIMER_H
+#endif GAMETIMER_H

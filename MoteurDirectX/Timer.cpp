@@ -1,9 +1,10 @@
-#include "Timer.h"
+#include "includes/Pch.h"
+#include "includes/Timer.h"
 
 Timer::Timer()
 	:bStopped(false), iDeltaTime(0), iCurTime(0), iPrevTime(0), fTotalTime(0.0)
 {
-
+	
 }
 
 float Timer::getDeltaTime()const
@@ -13,20 +14,20 @@ float Timer::getDeltaTime()const
 
 float Timer::getTotalTime()const
 {
-	return fTotalTime;
+	return (float)fTotalTime;
 }
 
 void Timer::Update()
 {
 	if (bStopped)
 	{
-		iDeltaTime = 0;
+		iDeltaTime = 0.0;
 		return;
 	}
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&iCurTime);
 
-	iDeltaTime = iPrevTime - iCurTime;
+	iDeltaTime = (double)(iPrevTime - iCurTime);
 
 	iPrevTime = iCurTime;
 
@@ -35,7 +36,7 @@ void Timer::Update()
 	// non-negative security
 	if (iDeltaTime < 0)
 	{
-		iDeltaTime = 0;
+		iDeltaTime = 0.0;
 	}
 }
 

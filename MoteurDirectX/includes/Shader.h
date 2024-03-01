@@ -1,5 +1,4 @@
 #pragma once
-#include "Pch.h"
 
 using Microsoft::WRL::ComPtr;
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "Pch.h"
 
 extern const int gNumFrameResources;
 

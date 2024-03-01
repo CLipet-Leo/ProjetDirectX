@@ -1,9 +1,9 @@
-#pragma once
+//#pragma once
 
 // Environnement de débug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+	#define _CRTDBG_MAP_ALLOC
+	#include <crtdbg.h>
 #endif
 
 #include <windows.h>
@@ -28,9 +28,9 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
-#include "..\DirectX\d3dx12.h"
-#include "..\DirectX\DDSTextureLoader.h"
-#include "..\DirectX\MathHelper.h"
+#include "..\..\DirectX\d3dx12.h"
+#include "..\..\DirectX\DDSTextureLoader.h"
+#include "..\..\DirectX\MathHelper.h"
 #include "CustomVertex.h"
 #include "Renderer.h"
 #include "D3DUtils.h"

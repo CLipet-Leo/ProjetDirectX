@@ -1,5 +1,6 @@
 #pragma once
-#include "Pch.h"
+#include "Timer.h"
+
 
 using namespace DirectX;
 
@@ -20,8 +21,8 @@ public:
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 protected:
-	virtual void Update(const Timer& gt) = 0;
-	virtual void Draw(const Timer& gt) = 0;
+	virtual void Update(const Timer& gt)=0;
+	virtual void Draw(const Timer& gt)=0;
 
 protected:
 
