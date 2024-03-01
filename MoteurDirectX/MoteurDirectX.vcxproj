@@ -133,26 +133,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Desktop\ProjetDirectX\DirectX\d3dx12.h" />
-    <ClInclude Include="..\..\..\..\..\Desktop\ProjetDirectX\MoteurDirectX\Transform.h" />
+    <ClInclude Include="..\DirectX\d3dx12.h" />
     <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
     <ClInclude Include="includes\CustomVertex.h" />
-    <ClInclude Include="includes\D3DUtils.h" />
     <ClInclude Include="includes\Pch.h" />
     <ClInclude Include="includes\Renderer.h" />
     <ClInclude Include="includes\Shader.h" />
     <ClInclude Include="includes\Timer.h" />
+    <ClInclude Include="includes\Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Desktop\ProjetDirectX\MoteurDirectX\Transform.cpp" />
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
-    <ClCompile Include="D3DUtils.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

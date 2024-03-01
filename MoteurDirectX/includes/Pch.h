@@ -33,7 +33,7 @@
 #include "..\..\DirectX\MathHelper.h"
 #include "CustomVertex.h"
 #include "Renderer.h"
-#include "D3DUtils.h"
+#include "Utils.h"
 #include "Shader.h"
 #include "Timer.h"
 

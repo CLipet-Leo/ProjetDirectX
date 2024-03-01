@@ -31,7 +31,7 @@ inline std::wstring AnsiToWString(const std::string& str)
     return std::wstring(buffer);
 }
 
-class D3DUtils
+class Utils
 {
 public:
 
