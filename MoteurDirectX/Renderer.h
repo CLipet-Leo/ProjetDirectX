@@ -36,6 +36,7 @@ protected:
 	void CreateRenderTarget();
 	void DepthStencilAndBufferView();
 	void CreateViewport();
+	void FlushCommandQueue();
 
 	ID3D12Resource* CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
@@ -65,6 +66,7 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
+	UINT64 mCurrentFence = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
