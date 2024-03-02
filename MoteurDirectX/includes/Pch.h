@@ -1,4 +1,4 @@
-//#pragma once
+#pragma once
 
 // Environnement de débug de la Window
 #if defined(DEBUG) || defined(_DEBUG)

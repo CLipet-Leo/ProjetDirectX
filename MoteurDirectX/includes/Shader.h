@@ -1,14 +1,27 @@
 #pragma once
 
-using Microsoft::WRL::ComPtr;
-
 using namespace DirectX;
 
-class Shader
+class Shader : public Renderer
 {
 public: // Fonctions
 
     Shader(HINSTANCE hInstance);
+
+    // Créer les descriptorHeaps et les RootSignatures
+    void InitShader();
+
+    virtual void OnResize()override;
+    virtual void Update(const Timer& gt);
+    virtual void Draw(const Timer& gt);
+
+public:
+    void BuildDescriptorHeaps();
+    void BuildConstantBuffers();
+    void BuildRootSignature();
+
+    void BuildShadersAndInputLayout();
+    void BuildPSO();
 
     /*
     Utiliser le struct prédifinis;
@@ -22,8 +35,8 @@ public: // Fonctions
 
 public: // Variables
 
-    ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
-    ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
     // !!!!
     // Unique pointeur d'objet dans le Buffer

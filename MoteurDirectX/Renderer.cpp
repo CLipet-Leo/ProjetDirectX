@@ -88,8 +88,12 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
+	// InitShaders
+	// va créer et instancier OnResize
+	
 	// Do the initial resize code.
 	OnResize();
+	
 	
 
 	return true;
