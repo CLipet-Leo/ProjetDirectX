@@ -24,8 +24,8 @@ protected:
 
 	virtual void CreateDescriptorHeaps();
 	virtual void OnResize();
-	virtual void Update(const Timer& gt)=0;
-	virtual void Draw(const Timer& gt)=0;
+	virtual void Update(const Timer& gt);
+	virtual void Draw(const Timer& gt);
 
 protected:
 
@@ -82,6 +82,7 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
 	D3D12_VIEWPORT mScreenViewport;
 	D3D12_RECT mScissorRect;
