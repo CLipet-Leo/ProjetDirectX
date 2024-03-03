@@ -31,6 +31,7 @@
 #include "..\..\DirectX\d3dx12.h"
 #include "..\..\DirectX\DDSTextureLoader.h"
 #include "..\..\DirectX\MathHelper.h"
+#include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
 #include "Renderer.h"
 #include "Utils.h"
