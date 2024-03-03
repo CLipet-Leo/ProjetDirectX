@@ -3,12 +3,12 @@
 
 using Microsoft::WRL::ComPtr;
 
-Microsoft::WRL::ComPtr<ID3D12Resource> Utils::CreateDefaultBuffer(
+ComPtr<ID3D12Resource> Utils::CreateDefaultBuffer(
     ID3D12Device* device,
     ID3D12GraphicsCommandList* cmdList,
     const void* initData,
     UINT64 byteSize,
-    Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer)
+    ComPtr<ID3D12Resource>& uploadBuffer)
 {
     ComPtr<ID3D12Resource> defaultBuffer;
 

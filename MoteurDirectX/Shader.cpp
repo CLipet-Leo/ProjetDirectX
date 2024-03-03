@@ -3,7 +3,9 @@
 
 Shader::Shader(HINSTANCE hInstance) : Renderer(hInstance)
 {
-
+    BuildDescriptorHeaps();
+    BuildConstantBuffers();
+    BuildRootSignature();
 }
 
 
