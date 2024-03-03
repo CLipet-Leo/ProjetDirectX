@@ -86,6 +86,11 @@ float Utils::AspectRatio(int mClientWidth, int mClientHeight)const
     return static_cast<float>(mClientWidth) / mClientHeight;
 }
 
+UINT Utils::CalcConstantBufferByteSize(UINT byteSize)
+{
+    return (byteSize + 255) & ~255;
+}
+
 //////////////////////////////////////////////////////////////////////
 
 

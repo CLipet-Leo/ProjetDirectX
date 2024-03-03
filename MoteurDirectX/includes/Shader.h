@@ -39,6 +39,7 @@ public: // Variables
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
+    std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
 
     Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
     Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;

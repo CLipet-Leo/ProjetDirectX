@@ -24,6 +24,11 @@ inline void d3dSetDebugName(ID3D12DeviceChild* obj, const char* name)
     }
 }
 
+struct ObjectConstants
+{
+	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
+};
+
 struct SubmeshGeometry
 {
 	UINT IndexCount = 0;
@@ -102,6 +107,7 @@ public:
         Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
 	Microsoft::WRL::ComPtr<ID3DBlob> CompileShader(const std::wstring& filename, const D3D_SHADER_MACRO* defines, const std::string& entrypoint, const std::string& target);
 	float Utils::AspectRatio(int mClientWidth, int mClientHeight)const;
+	static UINT CalcConstantBufferByteSize(UINT byteSize);
 
 
 
