@@ -14,6 +14,7 @@ class Entity
 private:
 	Transform* _pTransform;
 	std::vector<Component*> _LpComponents;
+	static std::vector<Entity*> _LpEntity;
 
 public:
 	// Constru & Destru

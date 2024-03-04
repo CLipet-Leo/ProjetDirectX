@@ -10,13 +10,15 @@
 // Constru & Destru
 Entity::Entity()
 {
-	// Creates and RZA a Transform object, and gives it to the Entity
+	// Creates and reset a Transform object, and gives it to the Entity
 	Transform* TEntityTransform = new Transform();
 	TEntityTransform->Identity();
 	_pTransform = TEntityTransform;
 
 	// Initalize Component List with an empty vecotr. Not doing this make compiler go no no :3
 	_LpComponents = std::vector<Component*>();
+
+	_LpEntity.push_back(this);
 }
 Entity::~Entity()
 {
@@ -24,7 +26,23 @@ Entity::~Entity()
 	delete _pTransform;
 
 	// Destroys every single Component linked to the Entity
+	for (auto curPComp : _LpComponents)
+	{
+		RmvComponent(curPComp->GetCompSubType());
+	}
 
+	for (auto curPEntity : _LpEntity)
+	{
+		int iterator = 0;
+		// If it's found, destroys & removes it
+		if (curPEntity == this)
+		{
+			_LpEntity.erase(_LpEntity.begin() + iterator);
+		}
+		iterator++;
+	}
+
+	delete this;
 	std::cout << "ENTITY : Destructor called !\n";
 }
 
