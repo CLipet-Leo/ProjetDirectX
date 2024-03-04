@@ -1,12 +1,20 @@
 #include "includes/Pch.h"
 #include "includes/Shader.h"
 
-Shader::Shader(HINSTANCE hInstance) : Renderer(hInstance)
-{
+
+Shader::Shader() {}
+
+void Shader::InitShader() {
     BuildDescriptorHeaps();
     BuildConstantBuffers();
     BuildRootSignature();
 }
+
+Shader* Shader::oShader = nullptr;
+Shader* Shader::GetShader() {
+    return oShader;
+}
+
 
 
 void Shader::OnResize()
@@ -19,15 +27,6 @@ void Shader::OnResize()
 }
 
 
-void Shader::Update(const Timer& gt)
-{
-    // gestion de camera ?
-}
-
-void Shader::Draw(const Timer& gt)
-{
- //faire un VB et IB
-}
 
 void Shader::BuildDescriptorHeaps()
 {
