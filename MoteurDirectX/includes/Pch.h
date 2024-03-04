@@ -45,6 +45,9 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Timer.h"
+// TODO move headers in include folder
+#include "../Component.h"
+#include "../Entity.h"
 
 
 // Liens nécessaires de la librairie d3d12

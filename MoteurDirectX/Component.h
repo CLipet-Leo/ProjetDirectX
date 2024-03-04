@@ -1,7 +1,7 @@
 #pragma once
 
 // Forward declarations
-class Entity;
+//class Entity;
 
 // Enum for Component to keep track of its sub-class
 // TODO : Move that in a general purpose header ? Maybe not since Entity, and Component sub-classes import this Component.h

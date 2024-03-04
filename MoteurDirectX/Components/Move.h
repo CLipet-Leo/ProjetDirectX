@@ -1,9 +1,8 @@
 #pragma once
 
 // Forward declarations
-class Component;
 
-class Move : public Component;
+class Move : public Component
 {
 private:
 	XMFLOAT3 _v3VectorDirector;
@@ -11,9 +10,10 @@ private:
 
 public:
 	// Constru & Destru
-	Move::Move();
-	Move::~Move();
+	Move(Entity* pEOwner, float ARGfVelocity, XMFLOAT3 ARGv3VectorDirector);
+	~Move();
 
 	// Methods
-	void Move::UpdateTransform();
+	void UpdateTransform();
+	XMFLOAT3 GetVectorDirector();
 };
