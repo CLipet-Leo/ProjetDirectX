@@ -1,32 +1,18 @@
 #include "includes/Pch.h"
 #include "includes/Shader.h"
 
-Shader::Shader(HINSTANCE hInstance) : Renderer(hInstance)
+Shader::Shader()
+{ }
+
+bool Shader::InitShader()
 {
     BuildDescriptorHeaps();
+
     BuildConstantBuffers();
+
     BuildRootSignature();
-}
 
-
-void Shader::OnResize()
-{
-    Renderer::OnResize();
-    Utils ratio;
-    //// The window resized, so update the aspect ratio and recompute the projection matrix.
-    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, ratio.AspectRatio(mClientWidth, mClientHeight), 1.0f, 1000.0f);
-    XMStoreFloat4x4(&mProj, P);
-}
-
-
-void Shader::Update(const Timer& gt)
-{
-    // gestion de camera ?
-}
-
-void Shader::Draw(const Timer& gt)
-{
- //faire un VB et IB
+    return true;
 }
 
 void Shader::BuildDescriptorHeaps()
@@ -36,12 +22,12 @@ void Shader::BuildDescriptorHeaps()
     cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     cbvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
+    ThrowIfFailed(engine->CurrentDevice()->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
 }
 
-void Shader::BuildConstantBuffers() 
+void Shader::BuildConstantBuffers()
 {
-    mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice.Get(), 1, true);
+    mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(engine->CurrentDevice(), 1, true);
 
     UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -54,7 +40,7 @@ void Shader::BuildConstantBuffers()
     cbvDesc.BufferLocation = cbAddress;
     cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-    md3dDevice->CreateConstantBufferView(
+    engine->CurrentDevice()->CreateConstantBufferView(
         &cbvDesc,
         mCbvHeap->GetCPUDescriptorHandleForHeapStart());
 }
@@ -90,7 +76,7 @@ void Shader::BuildRootSignature()
     }
     ThrowIfFailed(hr);
 
-    ThrowIfFailed(md3dDevice->CreateRootSignature(
+    ThrowIfFailed(engine->CurrentDevice()->CreateRootSignature(
         0,
         serializedRootSig->GetBufferPointer(),
         serializedRootSig->GetBufferSize(),
@@ -111,6 +97,8 @@ void Shader::CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inpu
 {
     mInputLayout = inputElements;
 }
+
+
 // Petit exemple d'usage messire : 
 //std::vector<D3D12_INPUT_ELEMENT_DESC> inputElements = {
 //    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -121,9 +109,7 @@ void Shader::CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inpu
 //shaderInstance.CreateInputLayout(inputElements); 
 
 
-
-
-void Shader::BuildPSO() 
+void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality)
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
     ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -145,9 +131,9 @@ void Shader::BuildPSO()
     psoDesc.SampleMask = UINT_MAX;
     psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
     psoDesc.NumRenderTargets = 1;
-    psoDesc.RTVFormats[0] = mBackBufferFormat;
-    psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
-    psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
-    psoDesc.DSVFormat = mDepthStencilFormat;
-    ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
+    psoDesc.RTVFormats[0] = dBackBufferFormat;
+    psoDesc.SampleDesc.Count = b4xMsaaState ? 4 : 1;
+    psoDesc.SampleDesc.Quality = b4xMsaaState ? (u4xMsaaQuality - 1) : 0;
+    psoDesc.DSVFormat = dDepthStencilFormat;
+    ThrowIfFailed(engine->CurrentDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
 }

@@ -3,11 +3,13 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-class Mesh : public Renderer
+class Mesh
 {
 public:
 
-	Mesh(HINSTANCE hInstance);
+	Renderer* engine;
+
+	Mesh();
 	Mesh(const Mesh& rhs) = delete;
 	Mesh& operator=(const Mesh& rhs) = delete;
 	~Mesh();

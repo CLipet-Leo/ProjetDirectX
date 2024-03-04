@@ -51,6 +51,10 @@ protected:
 	virtual void OnMouseUp(WPARAM btnState, int x, int y) { }
 	virtual void OnMouseMove(WPARAM btnState, int x, int y) { }
 
+public:
+	ID3D12Device* CurrentDevice()const;
+	ID3D12GraphicsCommandList* CurrentCommandList()const;
+
 protected:
 	Timer mTimer;
 
@@ -99,7 +103,7 @@ protected:
 	DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	int mClientWidth = 800;
-	int mClientHeight = 600;
+	int iClientWidth = 800;
+	int iClientHeight = 600;
 
 };

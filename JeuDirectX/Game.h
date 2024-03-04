@@ -7,7 +7,7 @@ class Game : public Renderer
 {
 public:
 	Game(HINSTANCE hInstance);
-	~Game();
+	virtual ~Game();
 
 	virtual bool Initialize()override;
 

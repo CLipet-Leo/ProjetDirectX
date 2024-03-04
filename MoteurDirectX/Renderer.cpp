@@ -89,7 +89,7 @@ bool Renderer::Initialize()
 		return false;
 
 	// InitShaders
-	// va créer et instancier OnResize
+
 	
 	// Do the initial resize code.
 	OnResize();
@@ -122,8 +122,8 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		// WM_SIZE is sent when the user resizes the window.  
 	case WM_SIZE:
 		// Save the new client area dimensions.
-		mClientWidth = LOWORD(lParam);
-		mClientHeight = HIWORD(lParam);
+		iClientWidth = LOWORD(lParam);
+		iClientHeight = HIWORD(lParam);
 		if (md3dDevice)
 		{
 			if (wParam == SIZE_MINIMIZED)
@@ -272,7 +272,7 @@ void Renderer::OnResize()
 	// Resize the swap chain.
 	ThrowIfFailed(mSwapChain->ResizeBuffers(
 		SwapChainBufferCount,
-		mClientWidth, mClientHeight,
+		iClientWidth, iClientHeight,
 		mBackBufferFormat,
 		DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH));
 
@@ -365,7 +365,7 @@ bool Renderer::InitMainWindow()
 	}
 
 	// Compute window rectangle dimensions based on requested client area dimensions.
-	RECT R = { 0, 0, mClientWidth, mClientHeight };
+	RECT R = { 0, 0, iClientWidth, iClientHeight };
 	AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
 	int width = R.right - R.left;
 	int height = R.bottom - R.top;
@@ -477,8 +477,8 @@ void Renderer::CreateSwapChain()
 	// Release the previous swapchain we will be recreating.
 	mSwapChain.Reset();
 	DXGI_SWAP_CHAIN_DESC sd;
-	sd.BufferDesc.Width = mClientWidth;
-	sd.BufferDesc.Height = mClientHeight;
+	sd.BufferDesc.Width = iClientWidth;
+	sd.BufferDesc.Height = iClientHeight;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
 	sd.BufferDesc.Format = mBackBufferFormat;
@@ -519,8 +519,8 @@ void Renderer::DepthStencilAndBufferView()
 	D3D12_RESOURCE_DESC depthStencilDesc;
 	depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	depthStencilDesc.Alignment = 0;
-	depthStencilDesc.Width = mClientWidth;
-	depthStencilDesc.Height = mClientHeight;
+	depthStencilDesc.Width = iClientWidth;
+	depthStencilDesc.Height = iClientHeight;
 	depthStencilDesc.DepthOrArraySize = 1;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
@@ -558,13 +558,13 @@ void Renderer::CreateViewport()
 {
 	mScreenViewport.TopLeftX = 0.0f;
 	mScreenViewport.TopLeftY = 0.0f;
-	mScreenViewport.Width = static_cast<float>(mClientWidth);
-	mScreenViewport.Height = static_cast<float>(mClientHeight);
+	mScreenViewport.Width = static_cast<float>(iClientWidth);
+	mScreenViewport.Height = static_cast<float>(iClientHeight);
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f;
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 
-	mScissorRect = { 0, 0, mClientWidth / 2, mClientHeight / 2 };
+	mScissorRect = { 0, 0, iClientWidth / 2, iClientHeight / 2 };
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
 }
 
@@ -592,7 +592,6 @@ void Renderer::FlushCommandQueue()
 	}
 }
 
-
 ID3D12Resource* Renderer::CurrentBackBuffer()const
 {
 	return mSwapChainBuffer[mCurrBackBuffer].Get();
@@ -611,3 +610,12 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::DepthStencilView()const
 	return mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
+ID3D12Device* Renderer::CurrentDevice()const
+{
+	return md3dDevice.Get();
+}
+
+ID3D12GraphicsCommandList* Renderer::CurrentCommandList()const
+{
+	return mCommandList.Get();
+}

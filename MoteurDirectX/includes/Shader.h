@@ -2,27 +2,25 @@
 
 using namespace DirectX;
 
-class Shader : public Renderer
+class Shader
 {
 public: // Fonctions
-
-    Shader(HINSTANCE hInstance);
+    Shader();
+    virtual ~Shader();
 
     // Créer les descriptorHeaps et les RootSignatures
-    void InitShader();
-
-    virtual void OnResize()override;
-    virtual void Update(const Timer& gt);
-    virtual void Draw(const Timer& gt);
+    bool InitShader();
 
 public:
+    Renderer* engine;
+
     void BuildDescriptorHeaps();
     void BuildConstantBuffers();
     void BuildRootSignature();
 
     void CompileShaders();
     void CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements);
-    void BuildPSO();
+    void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
 
     /*
     Utiliser le struct prédifinis; done
