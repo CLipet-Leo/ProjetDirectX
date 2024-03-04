@@ -1,3 +1,10 @@
+/*
+     ///                  !! WARNING !!                   \\\
+    | This file has the  Game class AND the WinMain function |
+    |              It is NOT only a class file               |
+     \\\                  !! WARNING !!                   ///
+*/
+
 #include <Pch.h>
 #include "Game.h"
 
@@ -40,7 +47,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 Game::Game(HINSTANCE hInstance)
     : Renderer(hInstance)
 {
-    
+    /**/ /* <[)  BAPT CODE :3  (]> */ /**/
+    // Yes I know I could've done ": variable(value)", but it UGLEH
+    _pM4World = &(MathHelper::Identity4x4());
+    _pM4View = &(MathHelper::Identity4x4());
+    _pM4Proj = &(MathHelper::Identity4x4());
+    /**/ /* <[)  BAPT CODE :3  (]> */ /**/
 }
 
 Game::~Game()
@@ -77,7 +89,7 @@ void Game::Draw(const Timer& gt)
     // A command list can be reset after it has been added to the
     // command queue via ExecuteCommandList. Reusing the command list reuses memory.
     ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
-    // Indicate a state transition on the resource usage.
+    // Indicate a state transition on the resource usage. [BAPT : Swap the two Buffers in the SwapChain]
     mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
     // Set the viewport and scissor rect. This needs to be reset
     // whenever the command list is reset.

@@ -6,10 +6,13 @@
 	#include <crtdbg.h>
 #endif
 
+// Windows libs
 #include <windows.h>
 #include <WindowsX.h>
 #include <WinBase.h>
 #include <wrl.h>
+
+// DirectX libs
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <D3Dcompiler.h>
@@ -17,6 +20,8 @@
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
+
+// C++ Standard libs
 #include <string>
 #include <memory>
 #include <algorithm>
@@ -28,9 +33,13 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
+
+// More DirectX libs
 #include "..\..\DirectX\d3dx12.h"
 #include "..\..\DirectX\DDSTextureLoader.h"
 #include "..\..\DirectX\MathHelper.h"
+
+// Custom code libs
 #include "CustomVertex.h"
 #include "Renderer.h"
 #include "Utils.h"

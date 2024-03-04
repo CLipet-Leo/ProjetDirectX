@@ -14,7 +14,7 @@ enum compSubType
 	ROTATE,
 	MOVE,
 	PARTICLE_GEN,
-	GAMEOBJECT,
+	GAME_OBJECT,
 };
 
 // Component class.

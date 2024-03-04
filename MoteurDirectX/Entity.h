@@ -13,7 +13,7 @@ class Entity
 {
 private:
 	Transform* _pTransform;
-	std::vector<Component*> _pCompList;
+	std::vector<Component*> _LpComponents;
 
 public:
 	// Constru & Destru
