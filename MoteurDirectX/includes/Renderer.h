@@ -1,5 +1,6 @@
 #pragma once
 #include "Timer.h"
+#include "Shader.h"
 
 
 using namespace DirectX;
@@ -56,52 +57,52 @@ public:
 	ID3D12GraphicsCommandList* CurrentCommandList()const;
 
 protected:
-	Timer mTimer;
+	Timer _Timer;
 
-	static Renderer* mApp;
+	static Renderer* _App;
 
-	HINSTANCE mhAppInst = nullptr; // application instance handle
-	HWND mhMainWnd = nullptr; // main window handle
+	HINSTANCE hAppInst = nullptr; // application instance handle
+	HWND hMainWnd = nullptr; // main window handle
 
-	bool mAppPaused = false;  // is the application paused?
-	bool mMinimized = false;  // is the application minimized?
-	bool mMaximized = false;  // is the application maximized?
-	bool mResizing = false;   // are the resize bars being dragged?
+	bool bAppPaused = false;  // is the application paused?
+	bool bMinimized = false;  // is the application minimized?
+	bool bMaximized = false;  // is the application maximized?
+	bool bResizing = false;   // are the resize bars being dragged?
 
-	Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
-	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
-	Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
+	Microsoft::WRL::ComPtr<IDXGIFactory4> _dxgiFactory;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> _SwapChain;
+	Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice;
 
-	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
-	UINT64 mCurrentFence = 0;
+	Microsoft::WRL::ComPtr<ID3D12Fence> _Fence;
+	UINT64 uCurrentFence = 0;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> _CommandQueue;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> _DirectCmdListAlloc;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList;
 
 	static const int SwapChainBufferCount = 2;
-	int mCurrBackBuffer = 0;
-	Microsoft::WRL::ComPtr<ID3D12Resource> mSwapChainBuffer[SwapChainBufferCount];
-	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
+	int iCurrBackBuffer = 0;
+	Microsoft::WRL::ComPtr<ID3D12Resource> _SwapChainBuffer[SwapChainBufferCount];
+	Microsoft::WRL::ComPtr<ID3D12Resource> _DepthStencilBuffer;
 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _RtvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
-	D3D12_VIEWPORT mScreenViewport;
-	D3D12_RECT mScissorRect;
+	D3D12_VIEWPORT _ScreenViewport;
+	D3D12_RECT _ScissorRect;
 
-	UINT mRtvDescriptorSize = 0;
-	UINT mDsvDescriptorSize = 0;
-	UINT mCbvSrvDescriptorSize = 0;
+	UINT uRtvDescriptorSize = 0;
+	UINT uDsvDescriptorSize = 0;
+	UINT uCbvSrvDescriptorSize = 0;
 
-	bool m4xMsaaState = false;    // 4X MSAA enabled
-	UINT m4xMsaaQuality = 0;      // quality level of 4X MSAA
+	bool b4xMsaaState = false;    // 4X MSAA enabled
+	UINT u4xMsaaQuality = 0;      // quality level of 4X MSAA
 
-	std::wstring mMainWndCaption = L"DirectX Engine";
-	D3D_DRIVER_TYPE md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
-	DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-	DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	std::wstring sMainWndCaption = L"DirectX Engine";
+	D3D_DRIVER_TYPE _d3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
+	DXGI_FORMAT dBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	DXGI_FORMAT dDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	int iClientWidth = 800;
 	int iClientHeight = 600;

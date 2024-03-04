@@ -5,20 +5,21 @@ using namespace DirectX;
 class Shader
 {
 public: // Fonctions
-    Shader();
+    Shader(Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice, 
+        Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList);
     virtual ~Shader();
 
-    // Créer les descriptorHeaps et les RootSignatures
+    // Créer les descriptorHeaps, le ConstantBuffers et les RootSignatures
     bool InitShader();
 
 public:
-    Renderer* engine;
 
     void BuildDescriptorHeaps();
     void BuildConstantBuffers();
     void BuildRootSignature();
 
     void CompileShaders();
+    // Créer les Inputs
     void CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements);
     void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
 
@@ -33,21 +34,23 @@ public:
     */
 
 public: // Variables
+    Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList = nullptr;
 
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> _RootSignature = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
-    std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
+    std::unique_ptr<UploadBuffer<ObjectConstants>> _ObjectCB = nullptr;
 
-    Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> _serializedRootSig = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> _errorBlob = nullptr;
 
-    Microsoft::WRL::ComPtr<ID3DBlob> mvsByteCode = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> mpsByteCode = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> _vsByteCode = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> _psByteCode = nullptr;
 
-    std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
+    std::vector<D3D12_INPUT_ELEMENT_DESC> _InputLayout;
 
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> _PSO = nullptr;
 
     // !!!!
     // Unique pointeur d'objet dans le Buffer
@@ -60,9 +63,9 @@ public: // Variables
 
     // !!!!
     // Matrices world, view et proj
-    XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
-    XMFLOAT4X4 mView = MathHelper::Identity4x4();
-    XMFLOAT4X4 mProj = MathHelper::Identity4x4();
+    XMFLOAT4X4 _World = MathHelper::Identity4x4();
+    XMFLOAT4X4 _View = MathHelper::Identity4x4();
+    XMFLOAT4X4 _Proj = MathHelper::Identity4x4();
 
     // Variables mathématique
 

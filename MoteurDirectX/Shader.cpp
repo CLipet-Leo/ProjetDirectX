@@ -1,7 +1,13 @@
 #include "includes/Pch.h"
 #include "includes/Shader.h"
 
-Shader::Shader()
+using Microsoft::WRL::ComPtr;
+
+Shader::Shader(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
+    : _d3dDevice(d3dDevice), _CommandList(CommandList)
+{ }
+
+Shader::~Shader() 
 { }
 
 bool Shader::InitShader()
@@ -22,16 +28,16 @@ void Shader::BuildDescriptorHeaps()
     cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     cbvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(engine->CurrentDevice()->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
+    ThrowIfFailed(_d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
 }
 
 void Shader::BuildConstantBuffers()
 {
-    mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(engine->CurrentDevice(), 1, true);
+    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(_d3dDevice.Get(), 1, true);
 
     UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-    D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
+    D3D12_GPU_VIRTUAL_ADDRESS cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
     // Offset to the ith object constant buffer in the buffer.
     int boxCBufIndex = 0;
     cbAddress += boxCBufIndex * objCBByteSize;
@@ -40,9 +46,9 @@ void Shader::BuildConstantBuffers()
     cbvDesc.BufferLocation = cbAddress;
     cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-    engine->CurrentDevice()->CreateConstantBufferView(
+    _d3dDevice->CreateConstantBufferView(
         &cbvDesc,
-        mCbvHeap->GetCPUDescriptorHandleForHeapStart());
+        _CbvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 void Shader::BuildRootSignature()
@@ -68,19 +74,19 @@ void Shader::BuildRootSignature()
     // create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
 
     HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
-        serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
+        _serializedRootSig.GetAddressOf(), _errorBlob.GetAddressOf());
 
-    if (errorBlob != nullptr)
+    if (_errorBlob != nullptr)
     {
-        ::OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+        ::OutputDebugStringA((char*)_errorBlob->GetBufferPointer());
     }
     ThrowIfFailed(hr);
 
-    ThrowIfFailed(engine->CurrentDevice()->CreateRootSignature(
+    ThrowIfFailed(_d3dDevice->CreateRootSignature(
         0,
-        serializedRootSig->GetBufferPointer(),
-        serializedRootSig->GetBufferSize(),
-        IID_PPV_ARGS(&mRootSignature)));
+        _serializedRootSig->GetBufferPointer(),
+        _serializedRootSig->GetBufferSize(),
+        IID_PPV_ARGS(&_RootSignature)));
 }
 
 
@@ -88,14 +94,13 @@ void Shader::CompileShaders()
 {
     HRESULT hr = S_OK;
 
-    Utils utilsInstance;
-    mvsByteCode = utilsInstance.CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
-    mpsByteCode = utilsInstance.CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
+    _vsByteCode = Utils::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
+    _psByteCode = Utils::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
 }
 
 void Shader::CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements)
 {
-    mInputLayout = inputElements;
+    _InputLayout = inputElements;
 }
 
 
@@ -113,17 +118,17 @@ void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFo
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
     ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-    psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
-    psoDesc.pRootSignature = mRootSignature.Get();
+    psoDesc.InputLayout = { _InputLayout.data(), (UINT)_InputLayout.size() };
+    psoDesc.pRootSignature = _RootSignature.Get();
     psoDesc.VS =
     {
-        reinterpret_cast<BYTE*>(mvsByteCode->GetBufferPointer()),
-        mvsByteCode->GetBufferSize()
+        reinterpret_cast<BYTE*>(_vsByteCode->GetBufferPointer()),
+        _vsByteCode->GetBufferSize()
     };
     psoDesc.PS =
     {
-        reinterpret_cast<BYTE*>(mpsByteCode->GetBufferPointer()),
-        mpsByteCode->GetBufferSize()
+        reinterpret_cast<BYTE*>(_psByteCode->GetBufferPointer()),
+        _psByteCode->GetBufferSize()
     };
     psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
     psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
@@ -135,5 +140,5 @@ void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFo
     psoDesc.SampleDesc.Count = b4xMsaaState ? 4 : 1;
     psoDesc.SampleDesc.Quality = b4xMsaaState ? (u4xMsaaQuality - 1) : 0;
     psoDesc.DSVFormat = dDepthStencilFormat;
-    ThrowIfFailed(engine->CurrentDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
+    ThrowIfFailed(_d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
 }
