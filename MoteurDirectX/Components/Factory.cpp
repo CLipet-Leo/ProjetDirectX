@@ -1,10 +1,8 @@
+#include "../includes/Pch.h"
 #include "Factory.h"
-#include "GameObject.h"
-#include "Move.h"
-//#include "Collider.h"
-//#include "Rotate.h"
-#include "../Entity.h"
 #include <typeinfo>
+
+using namespace DirectX;
 
 Factory::Factory(Entity* pEOwner, int* iCallback=0)
 	: Component(pEOwner, FACTORY)
@@ -27,13 +25,13 @@ void Factory::CreateEntity()
 	// TODO
 	// instanciate Entity.
 	Entity* newEntity = new Entity();
+	Component* curNewComp;
 	for (auto curPComponent : _pCompCopyList)
 	{
-		Component* curNewComp;
 		switch (curPComponent->GetCompSubType())
 		{
 		case MOVE:
-			curNewComp = new Move(_pEOwner, curPComponent->GetVectorDirector());
+			curNewComp = new Move(_pEOwner, curPComponent->GetVectorDirector(), 5.f);
 			break;
 		case COLLIDER:
 			//curNewComp = new Factory(_pEOwner);
@@ -42,12 +40,16 @@ void Factory::CreateEntity()
 			//curNewComp = new Factory(_pEOwner);
 			break;
 		case GAME_OBJECT:
-			curNewComp = new Factory(_pEOwner);
+			curNewComp = new GameObject(_pEOwner);
 			break;
 		}
-		newEntity->AddComponent(curPComponent);
+		newEntity->AddComponent(curNewComp);
 
-		delete curNewComp;
+		//delete curNewComp;
 	}
+
+	delete newEntity;
+	delete curNewComp;
+
 	// use Entity::AddComponent() to add every copied components.
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace DirectX;
+
 // Forward declarations
 
 class Move : public Component
@@ -10,7 +12,7 @@ private:
 
 public:
 	// Constru & Destru
-	Move(Entity* pEOwner, float ARGfVelocity, XMFLOAT3 ARGv3VectorDirector);
+	Move(Entity* pEOwner, XMFLOAT3 ARGv3VectorDirector, float ARGfVelocity = 5.f);
 	~Move();
 
 	// Methods

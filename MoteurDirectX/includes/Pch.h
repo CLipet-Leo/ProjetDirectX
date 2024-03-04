@@ -48,6 +48,11 @@
 // TODO move headers in include folder
 #include "../Component.h"
 #include "../Entity.h"
+#include "../Components/GameObject.h"
+#include "../Components/Move.h"
+// TODO
+//#include "Collider.h"
+//#include "Rotate.h"
 
 
 // Liens nécessaires de la librairie d3d12

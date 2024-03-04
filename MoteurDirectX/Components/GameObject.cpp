@@ -1,7 +1,7 @@
-#include "GameObject.h"
+#include "../includes/Pch.h"
 
-GameObject::GameObject(int iDamage=0, int iHealth=1)
-	:_iDamage(iDamage), _iHealth(iHealth)
+GameObject::GameObject(Entity* _pEOwner, int iDamage = 0, int iHealth = 1)
+	: Component(_pEOwner, GAME_OBJECT), _iDamage(iDamage), _iHealth(iHealth)
 {
 
 }

@@ -1,9 +1,10 @@
 #pragma once
-class GameObject
+
+class GameObject : public Component
 {
 public:
 
-	GameObject(int iDamage, int iHealth);
+	GameObject(Entity* _pEOwner, int iDamage = 0, int iHealth = 1);
 
 	void takeDamage(int iDamage);
 	int getDamage();

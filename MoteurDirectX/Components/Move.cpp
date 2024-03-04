@@ -2,7 +2,7 @@
 #include "./Move.h"
 
 // Constru & Destru
-Move::Move(Entity* pEOwner, float ARGfVelocity = 5, XMFLOAT3 ARGv3VectorDirector)
+Move::Move(Entity* pEOwner, XMFLOAT3 ARGv3VectorDirector, float ARGfVelocity = 5.f)
 	: Component(pEOwner, MOVE), _v3VectorDirector(ARGv3VectorDirector)
 {
 

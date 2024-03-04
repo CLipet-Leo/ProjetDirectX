@@ -1,5 +1,5 @@
 // Include needed classes
-#include "./Component.h"
+#include "./includes/Pch.h"
 
 // Include C++ standard libs
 #include <iostream>
@@ -19,4 +19,9 @@ Component::~Component()
 compSubType Component::GetCompSubType()
 {
 	return this->_compSubType;
+}
+
+XMFLOAT3 Component::GetVectorDirector()
+{
+	return ;
 }

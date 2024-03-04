@@ -32,6 +32,7 @@ public:
 
 	// Getter & Setter
 	compSubType Component::GetCompSubType();
+	virtual XMFLOAT3 Component::GetVectorDirector();
 
 	// Unsure if this is needed, we'll see by implementing actual Components sub-classes
 	// Would be called every frame, and do stuff

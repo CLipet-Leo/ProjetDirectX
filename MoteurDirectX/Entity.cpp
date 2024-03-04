@@ -2,6 +2,7 @@
 #include <iostream>
 
 // Include needed classes
+#include "./includes/Pch.h"
 #include "./Entity.h"
 #include "./Component.h"
 #include "./includes/Transform.h"
