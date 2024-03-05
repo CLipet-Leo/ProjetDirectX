@@ -1,9 +1,5 @@
 ﻿#pragma once
 
-// Include DirectX libs
-#include "d3dx12.h"
-#include <DirectXMath.h>
-
 using namespace DirectX;
 
 class Transform

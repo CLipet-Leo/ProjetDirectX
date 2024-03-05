@@ -1,21 +1,10 @@
 #pragma once
-
+#include "Entity.h"
 // Forward declarations
 //class Entity;
 
 // Enum for Component to keep track of its sub-class
 // TODO : Move that in a general purpose header ? Maybe not since Entity, and Component sub-classes import this Component.h
-enum compSubType
-{
-	UNKNOWN = 0,
-	CAMERA,
-	COLLIDER,
-	FACTORY,
-	ROTATE,
-	MOVE,
-	PARTICLE_GEN,
-	GAME_OBJECT,
-};
 
 // Component class.
 // Bridge between component sub-classes (if they need to interact), and interface for Entity to "attach" them

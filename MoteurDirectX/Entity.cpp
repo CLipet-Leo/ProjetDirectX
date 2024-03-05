@@ -1,11 +1,6 @@
-// Include C++ standard tools
-#include <iostream>
-
 // Include needed classes
-#include "./includes/Pch.h"
-#include "./Entity.h"
-#include "./Component.h"
-#include "./includes/Transform.h"
+#include "includes/Pch.h"
+#include "includes/Entity.h"
 
 
 // Constru & Destru

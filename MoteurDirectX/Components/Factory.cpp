@@ -1,6 +1,5 @@
 #include "../includes/Pch.h"
 #include "Factory.h"
-#include <typeinfo>
 
 using namespace DirectX;
 
@@ -25,7 +24,7 @@ void Factory::CreateEntity()
 	// TODO
 	// instanciate Entity.
 	Entity* newEntity = new Entity();
-	Component* curNewComp;
+	Component* curNewComp = nullptr;
 	for (auto curPComponent : _pCompCopyList)
 	{
 		switch (curPComponent->GetCompSubType())

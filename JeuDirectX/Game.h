@@ -28,10 +28,5 @@ private:
 	XMFLOAT4X4* _pM4Proj;
 	/**/ /* <[)  BAPT CODE :3  (]> */ /**/
 
-	// Methods to run theApp
-	virtual void OnResize()override;
-	virtual void Update(const Timer& gt);
-	virtual void Draw(const Timer& gt);
-
 };
 

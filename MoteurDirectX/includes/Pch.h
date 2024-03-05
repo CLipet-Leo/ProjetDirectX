@@ -22,6 +22,7 @@
 #include <DirectXCollision.h>
 
 // C++ Standard libs
+#include <iostream>
 #include <string>
 #include <memory>
 #include <algorithm>
@@ -33,6 +34,19 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
+
+// Enum
+enum compSubType
+{
+	UNKNOWN = 0,
+	CAMERA,
+	COLLIDER,
+	FACTORY,
+	ROTATE,
+	MOVE,
+	PARTICLE_GEN,
+	GAME_OBJECT,
+};
 
 // More DirectX libs
 #include "..\..\DirectX\d3dx12.h"
@@ -48,9 +62,10 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Timer.h"
+#include "Transform.h"
 // TODO move headers in include folder
-#include "../Component.h"
-#include "../Entity.h"
+#include "Component.h"
+#include "Entity.h"
 #include "../Components/GameObject.h"
 #include "../Components/Move.h"
 // TODO
