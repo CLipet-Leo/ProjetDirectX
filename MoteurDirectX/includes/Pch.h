@@ -1,6 +1,6 @@
-//#pragma once
+#pragma once
 
-// Environnement de débug de la Window
+// Environnement de dÃ©bug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
 	#include <crtdbg.h>
@@ -40,7 +40,10 @@
 #include "..\..\DirectX\MathHelper.h"
 
 // Custom code libs
+#include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
+#include "MeshRenderer.h"
+#include "Mesh.h"
 #include "Renderer.h"
 #include "Utils.h"
 #include "Shader.h"
@@ -55,7 +58,7 @@
 //#include "Rotate.h"
 
 
-// Liens nécessaires de la librairie d3d12
+// Liens nÃ©cessaires de la librairie d3d12
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")

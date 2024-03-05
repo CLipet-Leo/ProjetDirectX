@@ -57,7 +57,7 @@ Game::Game(HINSTANCE hInstance)
 
 Game::~Game()
 {
-    if (md3dDevice != nullptr)
+    if (_d3dDevice != nullptr)
         FlushCommandQueue();
 }
 

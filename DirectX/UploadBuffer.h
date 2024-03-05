@@ -1,6 +1,5 @@
 #pragma once
-
-#include "../MoteurDirectX/includes/D3DUtils.h"
+#include "../MoteurDirectX/includes/Utils.h"
 
 template<typename T>
 class UploadBuffer
@@ -19,7 +18,7 @@ public:
         // UINT   SizeInBytes;   // multiple of 256
         // } D3D12_CONSTANT_BUFFER_VIEW_DESC;
         if(isConstantBuffer)
-            mElementByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(T));
+            mElementByteSize = Utils::CalcConstantBufferByteSize(sizeof(T));
 
         ThrowIfFailed(device->CreateCommittedResource(
             &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),

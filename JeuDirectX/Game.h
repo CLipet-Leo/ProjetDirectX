@@ -1,4 +1,5 @@
 #pragma once
+#include "Shader.h"
 
 /**/ /* <[)  BAPT CODE :3  (]> */ /**/
 // Forward decalration of namespace and its classes
@@ -13,7 +14,7 @@ class Game : public Renderer
 {
 public:
 	Game(HINSTANCE hInstance);
-	~Game();
+	virtual ~Game();
 
 	virtual bool Initialize()override;
 

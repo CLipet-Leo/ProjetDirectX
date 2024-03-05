@@ -145,6 +145,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="includes\CustomVertex.h" />
     <ClInclude Include="includes\Mesh.h" />
+    <ClInclude Include="includes\MeshRenderer.h" />
     <ClInclude Include="includes\Pch.h" />
     <ClInclude Include="includes\Renderer.h" />
     <ClInclude Include="includes\Shader.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Components\Move.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Timer.cpp" />
