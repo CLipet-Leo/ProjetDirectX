@@ -137,6 +137,12 @@
     <ClInclude Include="..\DirectX\DDSTextureLoader.h" />
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="Components\Factory.h" />
+    <ClInclude Include="Components\GameObject.h" />
+    <ClInclude Include="Components\LookAround.h" />
+    <ClInclude Include="Components\Move.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="includes\CustomVertex.h" />
     <ClInclude Include="includes\Mesh.h" />
     <ClInclude Include="includes\MeshRenderer.h" />
@@ -150,6 +156,12 @@
   <ItemGroup>
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Components\Factory.cpp" />
+    <ClCompile Include="Components\GameObject.cpp" />
+    <ClCompile Include="Components\LookAround.cpp" />
+    <ClCompile Include="Components\Move.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
