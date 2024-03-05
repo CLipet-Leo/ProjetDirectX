@@ -1,5 +1,5 @@
 #include "includes/Pch.h"
-#include "MeshRenderer.h"
+#include "includes/MeshRenderer.h"
 
 MeshRenderer::MeshRenderer()
 {
@@ -15,13 +15,13 @@ void MeshRenderer::GetMeshesAndShaders(const std::string& name)
 	Mesh* mesh;
 	Shader* shader;
 
-	mesh->GetMesh(name);
-	shader->GetShader();
+	//mesh->GetMesh(name);
+	//shader->GetShader();
 	// Getsubmesh 
 }
 
-void MeshRenderer::DrawMeshesAndShaders(Mesh& mesh, Shader& shader) {
+//void MeshRenderer::DrawMeshesAndShaders(Mesh& mesh, Shader& shader) {
 
-}
+//}
 
 

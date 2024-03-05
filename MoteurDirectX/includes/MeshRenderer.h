@@ -1,4 +1,5 @@
 #pragma once
+#include"Mesh.h"
 class MeshRenderer
 {
 public:
@@ -7,6 +8,6 @@ public:
 	~MeshRenderer();
 
 	static void GetMeshesAndShaders(const std::string& name);
-	void DrawMeshesAndShaders(Mesh& mesh, Shader& shader);
+	//void DrawMeshesAndShaders(Mesh& mesh, Shader& shader);
 
 };

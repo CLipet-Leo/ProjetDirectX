@@ -1,15 +1,12 @@
 #pragma once
 
 using namespace DirectX;
-using namespace Microsoft::WRL;
 
 class Mesh
 {
 public:
 
-	Renderer* engine;
-
-	Mesh();
+	Mesh(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList);
 	Mesh(const Mesh& rhs) = delete;
 	Mesh& operator=(const Mesh& rhs) = delete;
 	virtual ~Mesh();
@@ -23,5 +20,7 @@ private:
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
 protected : 
 	SubmeshGeometry* oMesh;
+	Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList;
 
 };

@@ -5,23 +5,16 @@ using Microsoft::WRL::ComPtr;
 
 
 Shader::Shader(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
+    : _d3dDevice(d3dDevice), _CommandList(CommandList)
  {}
 
-void Shader::InitShader() {
-    BuildDescriptorHeaps();
-    BuildConstantBuffers();
-    BuildRootSignature();
-}
+Shader::~Shader() 
+{ }
 
 Shader* Shader::oShader = nullptr;
 Shader* Shader::GetShader() {
     return oShader;
 }
-
-
-
-Shader::~Shader() 
-{ }
 
 bool Shader::InitShader()
 {

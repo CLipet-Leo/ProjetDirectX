@@ -51,7 +51,7 @@
     <ClInclude Include="includes\Transform.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="MeshRenderer.h">
+    <ClInclude Include="includes\MeshRenderer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
