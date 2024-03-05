@@ -1,21 +1,26 @@
 #pragma once
 
 using namespace DirectX;
-using namespace Microsoft::WRL;
 
-class Mesh : public Renderer
+class Mesh
 {
 public:
 
-	Mesh(HINSTANCE hInstance);
+	Mesh(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList);
 	Mesh(const Mesh& rhs) = delete;
 	Mesh& operator=(const Mesh& rhs) = delete;
-	~Mesh();
+	virtual ~Mesh();
+
+	SubmeshGeometry GetMesh(const std::string& name)const;
 
 	virtual void BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices, const std::string& name);
 
 private:
 
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
+protected : 
+	SubmeshGeometry* oMesh;
+	Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList;
 
 };

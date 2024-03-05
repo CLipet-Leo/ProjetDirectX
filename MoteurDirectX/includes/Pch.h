@@ -1,4 +1,4 @@
-//#pragma once
+#pragma once
 
 // Environnement de débug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
@@ -31,7 +31,10 @@
 #include "..\..\DirectX\d3dx12.h"
 #include "..\..\DirectX\DDSTextureLoader.h"
 #include "..\..\DirectX\MathHelper.h"
+#include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
+#include "MeshRenderer.h"
+#include "Mesh.h"
 #include "Renderer.h"
 #include "Utils.h"
 #include "Shader.h"
