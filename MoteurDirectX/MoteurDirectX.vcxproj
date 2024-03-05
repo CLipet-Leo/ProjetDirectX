@@ -139,6 +139,7 @@
     <ClInclude Include="..\DirectX\UploadBuffer.h" />
     <ClInclude Include="includes\CustomVertex.h" />
     <ClInclude Include="includes\Mesh.h" />
+    <ClInclude Include="includes\MeshRenderer.h" />
     <ClInclude Include="includes\Pch.h" />
     <ClInclude Include="includes\Renderer.h" />
     <ClInclude Include="includes\Shader.h" />
@@ -150,6 +151,7 @@
     <ClCompile Include="..\DirectX\DDSTextureLoader.cpp" />
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Timer.cpp" />
