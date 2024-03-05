@@ -23,3 +23,5 @@ void MeshRenderer::GetMeshesAndShaders(const std::string& name)
 void MeshRenderer::DrawMeshesAndShaders(Mesh& mesh, Shader& shader) {
 
 }
+
+

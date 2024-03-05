@@ -6,15 +6,14 @@ class Shader : public Renderer
 {
 public: // Fonctions
 
-    Shader(HINSTANCE hInstance);
+    Shader();
+
+    static Shader* GetShader();
 
     // Créer les descriptorHeaps et les RootSignatures
     void InitShader();
 
     virtual void OnResize()override;
-    virtual void Update(const Timer& gt);
-    virtual void Draw(const Timer& gt);
-
 public:
     void BuildDescriptorHeaps();
     void BuildConstantBuffers();
@@ -34,9 +33,9 @@ public:
     Créer le PSO ( D3D12_GRAPHICS_PIPELINE_STATE_DESC ) done
     */
 
-public: // Variables
+protected:
+    static Shader* oShader;
 
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
     std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
@@ -50,7 +49,6 @@ public: // Variables
     std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
     Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
-
     // !!!!
     // Unique pointeur d'objet dans le Buffer
     // Unique pointeur de MeshGeometry 

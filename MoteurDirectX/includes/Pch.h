@@ -33,6 +33,8 @@
 #include "..\..\DirectX\MathHelper.h"
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
+#include "MeshRenderer.h"
+#include "Mesh.h"
 #include "Renderer.h"
 #include "Utils.h"
 #include "Shader.h"
