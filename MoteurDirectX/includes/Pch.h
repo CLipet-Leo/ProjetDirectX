@@ -1,15 +1,18 @@
 #pragma once
 
-// Environnement de débug de la Window
+// Environnement de dÃ©bug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
 	#include <crtdbg.h>
 #endif
 
+// Windows libs
 #include <windows.h>
 #include <WindowsX.h>
 #include <WinBase.h>
 #include <wrl.h>
+
+// DirectX libs
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <D3Dcompiler.h>
@@ -17,6 +20,9 @@
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
+
+// C++ Standard libs
+#include <iostream>
 #include <string>
 #include <memory>
 #include <algorithm>
@@ -28,9 +34,26 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
+
+// Enum
+enum compSubType
+{
+	UNKNOWN = 0,
+	CAMERA,
+	COLLIDER,
+	FACTORY,
+	ROTATE,
+	MOVE,
+	PARTICLE_GEN,
+	GAME_OBJECT,
+};
+
+// More DirectX libs
 #include "..\..\DirectX\d3dx12.h"
 #include "..\..\DirectX\DDSTextureLoader.h"
 #include "..\..\DirectX\MathHelper.h"
+
+// Custom code libs
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
 #include "MeshRenderer.h"
@@ -39,9 +62,18 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Timer.h"
+#include "Transform.h"
+// TODO move headers in include folder
+#include "Component.h"
+#include "Entity.h"
+#include "../Components/GameObject.h"
+#include "../Components/Move.h"
+// TODO
+//#include "Collider.h"
+//#include "Rotate.h"
 
 
-// Liens nécessaires de la librairie d3d12
+// Liens nÃ©cessaires de la librairie d3d12
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
