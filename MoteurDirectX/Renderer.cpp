@@ -92,9 +92,6 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return false;
 	// Do the initial resize code.
 	OnResize();
 
