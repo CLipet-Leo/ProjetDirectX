@@ -4,6 +4,11 @@
 Mesh::Mesh() {}
 Mesh::~Mesh() {}
 
+SubmeshGeometry Mesh::GetMesh(const std::string& name)const
+{
+    return mBoxGeo->DrawArgs[name];
+}
+
 
 void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices, const std::string& name)
 {

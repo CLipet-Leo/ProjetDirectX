@@ -12,12 +12,16 @@ public:
 	Mesh();
 	Mesh(const Mesh& rhs) = delete;
 	Mesh& operator=(const Mesh& rhs) = delete;
-	~Mesh();
+	virtual ~Mesh();
+
+	SubmeshGeometry GetMesh(const std::string& name)const;
 
 	virtual void BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices, const std::string& name);
 
 private:
 
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
+protected : 
+	SubmeshGeometry* oMesh;
 
 };

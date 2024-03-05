@@ -8,9 +8,11 @@ public: // Fonctions
     Shader(Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice, 
         Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList);
     virtual ~Shader();
+  static Shader* GetShader();
 
-    // Créer les descriptorHeaps, le ConstantBuffers et les RootSignatures
+    // CrÃ©er les descriptorHeaps, le ConstantBuffers et les RootSignatures
     bool InitShader();
+
 
 public:
 
@@ -19,21 +21,23 @@ public:
     void BuildRootSignature();
 
     void CompileShaders();
-    // Créer les Inputs
+    // CrÃ©er les Inputs
     void CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements);
     void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
 
     /*
-    Utiliser le struct prédifinis; done
-    Créer les Heaps; done 
-    Créer la RootSignature; done
-    Créer les inputs layout associé à leurs Vertex done
+    Utiliser le struct prÃ©difinis; done
+    CrÃ©er les Heaps; done 
+    CrÃ©er la RootSignature; done
+    CrÃ©er les inputs layout associÃ© Ã  leurs Vertex done
     !!!!
-    Créer la géometrie ( vertices , indices , struct MeshGeometry ) done
-    Créer le PSO ( D3D12_GRAPHICS_PIPELINE_STATE_DESC ) done
+    CrÃ©er la gÃ©ometrie ( vertices , indices , struct MeshGeometry ) done
+    CrÃ©er le PSO ( D3D12_GRAPHICS_PIPELINE_STATE_DESC ) done
     */
 
 public: // Variables
+  static Shader* oShader;
+  
     Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice = nullptr;
     Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList = nullptr;
 
@@ -67,7 +71,7 @@ public: // Variables
     XMFLOAT4X4 _View = MathHelper::Identity4x4();
     XMFLOAT4X4 _Proj = MathHelper::Identity4x4();
 
-    // Variables mathématique
+    // Variables mathÃ©matique
 
     // Position de la souris
     // !!!!
