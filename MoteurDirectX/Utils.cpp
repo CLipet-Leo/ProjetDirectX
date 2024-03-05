@@ -90,7 +90,6 @@ UINT Utils::CalcConstantBufferByteSize(UINT byteSize)
 {
     return (byteSize + 255) & ~255;
 }
-
 //////////////////////////////////////////////////////////////////////
 
 

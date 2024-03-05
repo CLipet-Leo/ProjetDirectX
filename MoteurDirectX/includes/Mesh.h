@@ -11,15 +11,15 @@ public:
 	Mesh& operator=(const Mesh& rhs) = delete;
 	virtual ~Mesh();
 
-	SubmeshGeometry GetMesh(const std::string& name)const;
+	SubmeshGeometry GetMesh()const;
 
-	virtual void BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices, const std::string& name);
+	virtual void BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices);
+	void BuildCubeGeometry();
 
 private:
 
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
 protected : 
-	SubmeshGeometry* oMesh;
 	Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList;
 

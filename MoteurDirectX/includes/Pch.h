@@ -34,6 +34,9 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
+#include <locale>
+#include <codecvt>
+
 
 // Enum
 enum compSubType
@@ -56,7 +59,7 @@ enum compSubType
 // Custom code libs
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
-#include "MeshRenderer.h"
+//#include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Renderer.h"
 #include "Utils.h"

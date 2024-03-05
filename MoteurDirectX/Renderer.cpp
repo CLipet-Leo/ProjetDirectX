@@ -31,6 +31,7 @@ Renderer::~Renderer()
 {
 	if (_d3dDevice != nullptr)
 		FlushCommandQueue();
+	delete mesh;
 }
 
 void Renderer::Set4xMsaaState(bool value)
@@ -95,6 +96,10 @@ bool Renderer::Initialize()
 	Shader shaders(_d3dDevice, _CommandList);
 	if (!shaders.InitShader())
 		return false;
+
+	mesh = new Mesh(_d3dDevice, _CommandList);
+	mesh->BuildCubeGeometry();
+
 	// Do the initial resize code.
 	OnResize();
 
@@ -306,6 +311,8 @@ void Renderer::Draw(const Timer& gt)
 	// We can only reset when the associated command lists have finished execution on the GPU.
 	ThrowIfFailed(_DirectCmdListAlloc->Reset());
 
+		SubmeshGeometry cubeMesh = mesh->GetMesh();
+
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
 	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
@@ -329,6 +336,7 @@ void Renderer::Draw(const Timer& gt)
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
+
 	// Done recording commands.
 	ThrowIfFailed(_CommandList->Close());
 
@@ -339,6 +347,7 @@ void Renderer::Draw(const Timer& gt)
 	// swap the back and front buffers
 	ThrowIfFailed(_SwapChain->Present(0, 0));
 	iCurrBackBuffer = (iCurrBackBuffer + 1) % SwapChainBufferCount;
+
 
 	// Wait until frame commands are complete.  This waiting is inefficient and is
 	// done for simplicity.  Later we will show how to organize our rendering code

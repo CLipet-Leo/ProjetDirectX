@@ -104,7 +104,9 @@ protected:
 	DXGI_FORMAT dBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT dDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
+
 	int iClientWidth = 800;
 	int iClientHeight = 600;
 
+	Mesh* mesh;
 };

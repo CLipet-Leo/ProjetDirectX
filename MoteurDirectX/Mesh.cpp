@@ -3,21 +3,20 @@
 
 Mesh::Mesh(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList)
     : _d3dDevice(d3dDevice), _CommandList(CommandList) {}
+
 Mesh::~Mesh() {}
 
-SubmeshGeometry Mesh::GetMesh(const std::string& name)const
+SubmeshGeometry Mesh::GetMesh() const
 {
-    return mBoxGeo->DrawArgs[name];
+    return mBoxGeo->DrawArgs.begin()->second;
 }
 
-
-void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices, const std::string& name)
+void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices)
 {
     const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(VertexColor);
     const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(std::uint16_t);
 
-    auto mBoxGeo = std::make_unique<MeshGeometry>();
-    mBoxGeo->Name = name;
+    mBoxGeo = std::make_unique<MeshGeometry>();
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &mBoxGeo->VertexBufferCPU));
     CopyMemory(mBoxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -41,16 +40,50 @@ void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::ve
     submesh.StartIndexLocation = 0;
     submesh.BaseVertexLocation = 0;
 
-    mBoxGeo->DrawArgs[name] = submesh;
+    mBoxGeo->DrawArgs["Default"] = submesh;
 }
 
-// pour cr�er un mesh tu fais comme �a ;) !
+void Mesh::BuildCubeGeometry()
+{
+    std::vector<VertexColor> vertices =
+    {
+        VertexColor({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
+        VertexColor({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black) }),
+        VertexColor({ XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red) }),
+        VertexColor({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green) }),
+        VertexColor({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue) }),
+        VertexColor({ XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow) }),
+        VertexColor({ XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan) }),
+        VertexColor({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) })
+    };
 
-//std::array<Vertex, 8> boxVertices = { Vertex1,Vertex2, VertexN }; // voir exemple chap 6
-//std::array<std::uint16_t, 6> boxIndices = {     
-//    // Front face
-//    0, 1, 2,
-//    0, 2, 3, 
-//    ECT
-//};
-//BuildCustomGeometry(boxVertices, boxIndices, L"boxGeo"); // et la boum tu as un carr�, un rectangle, un chteumeule !
+    std::vector<std::uint16_t>  indices =
+    {
+        // front face
+        0, 1, 2,
+        0, 2, 3,
+
+        // back face
+        4, 6, 5,
+        4, 7, 6,
+
+        // left face
+        4, 5, 1,
+        4, 1, 0,
+
+        // right face
+        3, 2, 6,
+        3, 6, 7,
+
+        // top face
+        1, 5, 6,
+        1, 6, 2,
+
+        // bottom face
+        4, 0, 3,
+        4, 3, 7
+    };
+
+    // Build the cube geometry using the generic BuildGeometry function
+    BuildGeometry(vertices, indices);
+}
