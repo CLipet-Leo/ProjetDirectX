@@ -2,6 +2,12 @@
 #include "Timer.h"
 #include "Shader.h"
 
+// Virtual Key define from Mathieu
+#define VKm_Z		0x5A
+#define VKm_Q		0x51
+#define VKm_S		0x53
+#define VKm_D		0x44
+#define VKm_E		0x45
 
 using namespace DirectX;
 

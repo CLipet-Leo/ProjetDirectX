@@ -209,11 +209,15 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_LBUTTONDOWN:
+		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
+		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
@@ -227,7 +231,33 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 		}
 		else if ((int)wParam == VK_F2)
+		{
 			Set4xMsaaState(!b4xMsaaState);
+		}
+		else if ((int)wParam == VKm_Z)
+		{
+			Set4xMsaaState(!b4xMsaaState);
+		}
+		else if ((int)wParam == VKm_Q)
+		{
+			Set4xMsaaState(!b4xMsaaState);
+		}
+		else if ((int)wParam == VKm_S)
+		{
+			Set4xMsaaState(!b4xMsaaState);
+		}
+		else if ((int)wParam == VKm_D)
+		{
+			Set4xMsaaState(!b4xMsaaState);
+		}
+		else if ((int)wParam == VKm_E)
+		{
+			Set4xMsaaState(!b4xMsaaState);
+		}
+		else if ((int)wParam == VK_SPACE)
+		{
+			Set4xMsaaState(!b4xMsaaState);
+		}
 
 		return 0;
 	}
