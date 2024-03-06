@@ -59,10 +59,10 @@ enum compSubType
 // Custom code libs
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
-//#include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Renderer.h"
 #include "Utils.h"
+#include "MeshRenderer.h"
 #include "Shader.h"
 #include "Timer.h"
 #include "Transform.h"

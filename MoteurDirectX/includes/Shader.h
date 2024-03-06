@@ -10,6 +10,7 @@ public: // Fonctions
     virtual ~Shader();
   static Shader* GetShader();
 
+
     // Créer les descriptorHeaps, le ConstantBuffers et les RootSignatures
     bool InitShader();
 
@@ -17,8 +18,10 @@ public: // Fonctions
 public:
 
     void BuildDescriptorHeaps();
+    std::unique_ptr<UploadBuffer<ObjectConstants>>& GetObjects();
     void BuildConstantBuffers();
     void BuildRootSignature();
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
 
     void CompileShaders();
     // Créer les Inputs
@@ -45,9 +48,6 @@ public: // Variables
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
     std::unique_ptr<UploadBuffer<ObjectConstants>> _ObjectCB = nullptr;
-
-    Microsoft::WRL::ComPtr<ID3DBlob> _serializedRootSig = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> _errorBlob = nullptr;
 
     Microsoft::WRL::ComPtr<ID3DBlob> _vsByteCode = nullptr;
     Microsoft::WRL::ComPtr<ID3DBlob> _psByteCode = nullptr;

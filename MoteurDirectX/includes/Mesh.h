@@ -12,6 +12,7 @@ public:
 	virtual ~Mesh();
 
 	SubmeshGeometry GetMesh()const;
+	std::unique_ptr<MeshGeometry>& GetMeshGeometry();
 
 	virtual void BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices);
 	void BuildCubeGeometry();

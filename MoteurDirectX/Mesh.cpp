@@ -11,6 +11,10 @@ SubmeshGeometry Mesh::GetMesh() const
     return mBoxGeo->DrawArgs.begin()->second;
 }
 
+std::unique_ptr<MeshGeometry>& Mesh::GetMeshGeometry() {
+    return mBoxGeo;
+}
+
 void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices)
 {
     const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(VertexColor);

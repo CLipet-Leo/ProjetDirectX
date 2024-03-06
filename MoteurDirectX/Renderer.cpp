@@ -93,15 +93,26 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return false;
-
-	mesh = new Mesh(_d3dDevice, _CommandList);
-	mesh->BuildCubeGeometry();
 
 	// Do the initial resize code.
 	OnResize();
+
+	//Shader shaders(_d3dDevice, _CommandList);
+	//if (!shaders.InitShader())
+	//	return false;
+
+	//mesh = new Mesh(_d3dDevice, _CommandList);
+	//mesh->BuildCubeGeometry();
+	MeshRenderer meshRenderer(_d3dDevice, _CommandList, _DirectCmdListAlloc);
+	meshRenderer.Initialize(dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality);
+
+	// Execute the initialization commands.
+	ThrowIfFailed(_CommandList->Close());
+	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
+	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	// Wait until initialization is complete.
+	FlushCommandQueue();
 
 	return true;
 }
@@ -302,7 +313,27 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
+	// Convert Spherical to Cartesian coordinates.
+	float x = mRadius * sinf(mPhi) * cosf(mTheta);
+	float z = mRadius * sinf(mPhi) * sinf(mTheta);
+	float y = mRadius * cosf(mPhi);
 
+	// Build the view matrix.
+	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMStoreFloat4x4(&mView, view);
+
+	XMMATRIX world = XMLoadFloat4x4(&mWorld);
+	XMMATRIX proj = XMLoadFloat4x4(&mProj);
+	XMMATRIX worldViewProj = world * view * proj;
+
+	// Update the constant buffer with the latest worldViewProj matrix.
+	ObjectConstants objConstants;
+	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
+	shader->GetObjects()->CopyData(0, objConstants);
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -311,7 +342,6 @@ void Renderer::Draw(const Timer& gt)
 	// We can only reset when the associated command lists have finished execution on the GPU.
 	ThrowIfFailed(_DirectCmdListAlloc->Reset());
 
-		SubmeshGeometry cubeMesh = mesh->GetMesh();
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.

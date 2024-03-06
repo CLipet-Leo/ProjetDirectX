@@ -37,6 +37,11 @@ void Shader::BuildDescriptorHeaps()
     ThrowIfFailed(_d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
 }
 
+std::unique_ptr<UploadBuffer<ObjectConstants>>& Shader::GetObjects() {
+    std::cout << _ObjectCB << std::endl;
+    return _ObjectCB;
+}
+
 void Shader::BuildConstantBuffers()
 {
     _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(_d3dDevice.Get(), 1, true);
@@ -78,6 +83,8 @@ void Shader::BuildRootSignature()
         D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
     // create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
+    Microsoft::WRL::ComPtr<ID3DBlob> _serializedRootSig = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> _errorBlob = nullptr;
 
     HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
         _serializedRootSig.GetAddressOf(), _errorBlob.GetAddressOf());
@@ -95,6 +102,10 @@ void Shader::BuildRootSignature()
         IID_PPV_ARGS(&_RootSignature)));
 }
 
+ComPtr<ID3D12RootSignature> Shader::GetRootSignature() {
+    return _RootSignature;
+};
+
 
 void Shader::CompileShaders()
 {
@@ -106,7 +117,13 @@ void Shader::CompileShaders()
 
 void Shader::CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements)
 {
-    _InputLayout = inputElements;
+    //_InputLayout = inputElements;
+    _InputLayout =
+    {
+        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+    };
+
 }
 
 
