@@ -31,7 +31,6 @@ Renderer::~Renderer()
 {
 	if (_d3dDevice != nullptr)
 		FlushCommandQueue();
-	delete mesh;
 }
 
 void Renderer::Set4xMsaaState(bool value)
@@ -51,10 +50,6 @@ int Renderer::Run()
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return 0;
 
 	while (msg.message != WM_QUIT)
 	{
@@ -97,19 +92,7 @@ bool Renderer::Initialize()
 	// Do the initial resize code.
 	OnResize();
 
-	//Shader shaders(_d3dDevice, _CommandList);
-	//if (!shaders.InitShader())
-	//	return false;
-
-	//mesh = new Mesh(_d3dDevice, _CommandList);
-	//mesh->BuildCubeGeometry();
-	MeshRenderer meshRenderer(_d3dDevice, _CommandList, _DirectCmdListAlloc);
-	meshRenderer.Initialize(dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality);
-
-	// Execute the initialization commands.
-	ThrowIfFailed(_CommandList->Close());
-	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
-	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+	meshRenderer->Initialize(dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality);
 
 	// Wait until initialization is complete.
 	FlushCommandQueue();
@@ -333,7 +316,7 @@ void Renderer::Update(const Timer& gt)
 	// Update the constant buffer with the latest worldViewProj matrix.
 	ObjectConstants objConstants;
 	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
-	shader->GetObjects()->CopyData(0, objConstants);
+	_shader->GetObjects()->CopyData(0, objConstants);
 }
 
 void Renderer::Draw(const Timer& gt)

@@ -60,10 +60,10 @@ enum compSubType
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
 #include "Mesh.h"
+#include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
 #include "MeshRenderer.h"
-#include "Shader.h"
 #include "Timer.h"
 #include "Transform.h"
 // TODO move headers in include folder
@@ -74,7 +74,6 @@ enum compSubType
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"
-
 
 // Liens nécessaires de la librairie d3d12
 #pragma comment(lib,"d3dcompiler.lib")

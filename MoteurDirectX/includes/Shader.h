@@ -1,15 +1,11 @@
 #pragma once
-
 using namespace DirectX;
 
 class Shader
 {
 public: // Fonctions
-    Shader(Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice, 
-        Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList);
+    Shader();
     virtual ~Shader();
-  static Shader* GetShader();
-
 
     // Créer les descriptorHeaps, le ConstantBuffers et les RootSignatures
     bool InitShader();
@@ -18,7 +14,6 @@ public: // Fonctions
 public:
 
     void BuildDescriptorHeaps();
-    std::unique_ptr<UploadBuffer<ObjectConstants>>& GetObjects();
     void BuildConstantBuffers();
     void BuildRootSignature();
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
@@ -26,6 +21,7 @@ public:
     void CompileShaders();
     // Créer les Inputs
     void CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements);
+    std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
     void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
 
     /*
@@ -39,13 +35,8 @@ public:
     */
 
 public: // Variables
-  static Shader* oShader;
-  
-    Microsoft::WRL::ComPtr<ID3D12Device> _d3dDevice = nullptr;
-    Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _CommandList = nullptr;
 
     Microsoft::WRL::ComPtr<ID3D12RootSignature> _RootSignature = nullptr;
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
     std::unique_ptr<UploadBuffer<ObjectConstants>> _ObjectCB = nullptr;
 
@@ -71,8 +62,10 @@ public: // Variables
     XMFLOAT4X4 _View = MathHelper::Identity4x4();
     XMFLOAT4X4 _Proj = MathHelper::Identity4x4();
 
-    // Variables mathématique
 
+    // Variables mathématique
     // Position de la souris
     // !!!!
+
+    Renderer* _renderer;
 };

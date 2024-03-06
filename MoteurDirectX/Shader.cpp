@@ -4,17 +4,11 @@
 using Microsoft::WRL::ComPtr;
 
 
-Shader::Shader(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
-    : _d3dDevice(d3dDevice), _CommandList(CommandList)
+Shader::Shader()
  {}
 
 Shader::~Shader() 
 { }
-
-Shader* Shader::oShader = nullptr;
-Shader* Shader::GetShader() {
-    return oShader;
-}
 
 bool Shader::InitShader()
 {
@@ -34,17 +28,12 @@ void Shader::BuildDescriptorHeaps()
     cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     cbvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(_d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
-}
-
-std::unique_ptr<UploadBuffer<ObjectConstants>>& Shader::GetObjects() {
-    std::cout << _ObjectCB << std::endl;
-    return _ObjectCB;
+    ThrowIfFailed(_renderer->CurrentDevice()->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_renderer->GetCbvHeap())));
 }
 
 void Shader::BuildConstantBuffers()
 {
-    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(_d3dDevice.Get(), 1, true);
+    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(_renderer->CurrentDevice(), 1, true);
 
     UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -57,9 +46,9 @@ void Shader::BuildConstantBuffers()
     cbvDesc.BufferLocation = cbAddress;
     cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-    _d3dDevice->CreateConstantBufferView(
+    _renderer->CurrentDevice()->CreateConstantBufferView(
         &cbvDesc,
-        _CbvHeap->GetCPUDescriptorHandleForHeapStart());
+        _renderer->GetCbvHeap()->GetCPUDescriptorHandleForHeapStart());
 }
 
 void Shader::BuildRootSignature()
@@ -95,7 +84,7 @@ void Shader::BuildRootSignature()
     }
     ThrowIfFailed(hr);
 
-    ThrowIfFailed(_d3dDevice->CreateRootSignature(
+    ThrowIfFailed(_renderer->CurrentDevice()->CreateRootSignature(
         0,
         _serializedRootSig->GetBufferPointer(),
         _serializedRootSig->GetBufferSize(),
@@ -124,6 +113,10 @@ void Shader::CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inpu
         { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
     };
 
+}
+
+std::vector<D3D12_INPUT_ELEMENT_DESC> Shader::GetInputLayout()const {
+    return _InputLayout;
 }
 
 
@@ -163,5 +156,5 @@ void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFo
     psoDesc.SampleDesc.Count = b4xMsaaState ? 4 : 1;
     psoDesc.SampleDesc.Quality = b4xMsaaState ? (u4xMsaaQuality - 1) : 0;
     psoDesc.DSVFormat = dDepthStencilFormat;
-    ThrowIfFailed(_d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
+    ThrowIfFailed(_renderer->CurrentDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
 }

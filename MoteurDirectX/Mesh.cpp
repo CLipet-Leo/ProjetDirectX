@@ -1,8 +1,7 @@
 ﻿#include "includes/Pch.h"
 #include "includes/Mesh.h"
 
-Mesh::Mesh(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList)
-    : _d3dDevice(d3dDevice), _CommandList(CommandList) {}
+Mesh::Mesh() {}
 
 Mesh::~Mesh() {}
 
@@ -28,11 +27,11 @@ void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::ve
     ThrowIfFailed(D3DCreateBlob(ibByteSize, &mBoxGeo->IndexBufferCPU));
     CopyMemory(mBoxGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-    mBoxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(_d3dDevice.Get(),
-        _CommandList.Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
+    mBoxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(_renderer->CurrentDevice(),
+        _renderer->CurrentCommandList().Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
 
-    mBoxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(_d3dDevice.Get(),
-        _CommandList.Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
+    mBoxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(_renderer->CurrentDevice(),
+        _renderer->CurrentCommandList().Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
 
     mBoxGeo->VertexByteStride = sizeof(VertexColor);
     mBoxGeo->VertexBufferByteSize = vbByteSize;

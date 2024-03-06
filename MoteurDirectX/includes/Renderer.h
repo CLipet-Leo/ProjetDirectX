@@ -1,6 +1,5 @@
 #pragma once
 #include "Timer.h"
-#include "Shader.h"
 
 using namespace DirectX;
 
@@ -130,6 +129,6 @@ protected:
 	float mPhi = XM_PIDIV4;
 	float mRadius = 5.0f;
 
-	Mesh* mesh;
-	Shader* shader;
+	MeshRenderer* meshRenderer;
+	Shader* _shader;
 };
