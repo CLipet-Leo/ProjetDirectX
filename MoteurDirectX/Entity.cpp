@@ -11,7 +11,7 @@ Entity::Entity()
 	TEntityTransform->Identity();
 	_pTransform = TEntityTransform;
 
-	// Initalize Component List with an empty vecotr. Not doing this make compiler go no no :3
+	// Initalize Component List with an empty vecotr. Not doing this makes compiler go no no :3
 	_LpComponents = std::vector<Component*>();
 
 	_LpEntity.push_back(this);
@@ -76,6 +76,31 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 		}
 		iterator++;
 	}
+}
+
+void Entity::UpdateEntities(const Timer& gt)
+{
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->UpdateComponents(gt);
+	}
+}
+
+void Entity::UpdateComponents(const Timer& gt)
+{
+	for (auto curComponent : _LpComponents)
+	{
+		curComponent->Update(gt);
+	}
+}
+
+void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)
+{
+	_pTransform->qPos.x = f3VectorDirector->x;
+	_pTransform->qPos.y = f3VectorDirector->y;
+	_pTransform->qPos.z = f3VectorDirector->z;
+
+	_pTransform->UpdateMatrix();
 }
 
 std::vector<Component*>* Entity::GetPCompListPtr()

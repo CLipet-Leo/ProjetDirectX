@@ -13,9 +13,14 @@ Move::~Move()
 
 }
 
-void Move::UpdateTransform()
+void Move::Update(const Timer& gt)
 {
 
+}
+
+void Move::UpdateTransform()
+{
+	_pEOwner->UpdateTransform(&_v3VectorDirector);
 }
 
 XMFLOAT3 Move::GetVectorDirector()

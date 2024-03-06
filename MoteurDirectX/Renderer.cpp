@@ -22,6 +22,7 @@ Renderer* Renderer::GetApp()
 Renderer::Renderer(HINSTANCE hInstance)
 	: hAppInst(hInstance)
 {
+	_EntityAccess = new Entity();
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
@@ -294,7 +295,7 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
-
+	_EntityAccess->UpdateEntities(gt);
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -341,6 +342,11 @@ void Renderer::Draw(const Timer& gt)
 	// done for simplicity.  Later we will show how to organize our rendering code
 	// so we do not have to wait per frame.
 	FlushCommandQueue();
+}
+
+void Renderer::InstanciateEntity(int iEntityType)
+{
+
 }
 
 bool Renderer::InitMainWindow()

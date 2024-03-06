@@ -1,6 +1,7 @@
 #pragma once
 #include "Timer.h"
 #include "Shader.h"
+#include "Entity.h"
 
 
 using namespace DirectX;
@@ -23,10 +24,13 @@ public:
 
 protected:
 
+	Entity* _EntityAccess;
+
 	virtual void CreateDescriptorHeaps();
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
+	void InstanciateEntity(int iEntityType);
 
 protected:
 
@@ -41,6 +45,7 @@ protected:
 	void DepthStencilAndBufferView();
 	void CreateViewport();
 	void FlushCommandQueue();
+
 
 	ID3D12Resource* CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
