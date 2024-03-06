@@ -24,6 +24,6 @@ public:
 	virtual XMFLOAT3 Component::GetVectorDirector();
 
 	// Unsure if this is needed, we'll see by implementing actual Components sub-classes
-	// Would be called every frame, and do stuff
+	// Would be called every frame, and do nothing
 	virtual void Component::Update(const Timer& gt);
 };

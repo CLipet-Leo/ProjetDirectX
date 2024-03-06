@@ -12,7 +12,7 @@ private:
 
 public:
 	// Constru & Destru
-	Move(Entity* pEOwner, XMFLOAT3 ARGv3VectorDirector, float ARGfVelocity = 5.f);
+	Move(Entity* pEOwner, MoveParams params);
 	~Move();
 
 	// Methods

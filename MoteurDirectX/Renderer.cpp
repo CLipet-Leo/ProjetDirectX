@@ -344,9 +344,30 @@ void Renderer::Draw(const Timer& gt)
 	FlushCommandQueue();
 }
 
-void Renderer::InstanciateEntity(int iEntityType)
+void Renderer::InstanciateEntity(int iEntityType, Params params)
 {
 
+	Entity* newEntity = new Entity();
+	Component* curNewComp = nullptr;
+
+	switch (iEntityType)
+	{
+	case MOVE:
+		curNewComp = new Move(newEntity, params);
+		break;
+	case COLLIDER:
+		break;
+	case ROTATE:
+		break;
+	case GAME_OBJECT:
+		curNewComp = new GameObject(newEntity);
+		break;
+	}
+	newEntity->AddComponent(curNewComp);
+
+	//delete curNewComp;
+
+	delete curNewComp;
 }
 
 bool Renderer::InitMainWindow()

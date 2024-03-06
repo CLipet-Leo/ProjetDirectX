@@ -3,7 +3,6 @@
 class GameObject : public Component
 {
 public:
-
 	GameObject(Entity* _pEOwner, int iDamage = 0, int iHealth = 1);
 
 	void takeDamage(int iDamage);

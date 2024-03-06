@@ -23,6 +23,7 @@ void Factory::CreateEntity()
 {
 	// TODO
 	// instanciate Entity.
+
 	Entity* newEntity = new Entity();
 	Component* curNewComp = nullptr;
 	for (auto curPComponent : _pCompCopyList)

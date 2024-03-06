@@ -37,3 +37,16 @@ struct IndiceBuffer
 {
     std::vector<int> IndiceList;
 };
+
+struct MoveParams
+{
+    XMFLOAT3 directorVector;
+    float velocity;
+};
+
+//struct
+
+union Params
+{
+    MoveParams moveParams;
+};
