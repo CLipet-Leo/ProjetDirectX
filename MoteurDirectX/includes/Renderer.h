@@ -2,7 +2,6 @@
 #include "Timer.h"
 #include "Shader.h"
 
-
 using namespace DirectX;
 
 class Renderer
@@ -42,9 +41,6 @@ protected:
 	void CreateViewport();
 	void FlushCommandQueue();
 
-	ID3D12Resource* CurrentBackBuffer()const;
-	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
-	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
 
 protected:
 	// Convenience overrides for handling mouse input.
@@ -53,8 +49,27 @@ protected:
 	virtual void OnMouseMove(WPARAM btnState, int x, int y) { }
 
 public:
+	/*----------------------------------------------------------------*/
+	/*---------------------------GETTER-------------------------------*/
+	/*----------------------------------------------------------------*/
+
+	// Return the current back buffer
+	ID3D12Resource* CurrentBackBuffer()const;
+	// Return the CD3DX12_CPU_DESCRIPTOR_HANDLE current back buffer
+	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
+	// Return _DsvHeap from GetCPUDescriptorHandleForHeapStart()
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
+	
+	// Return the _d3dDevice.Get() variable
 	ID3D12Device* CurrentDevice()const;
-	ID3D12GraphicsCommandList* CurrentCommandList()const;
+	// Return the _CommandQueue variable
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetCommandQueue()const;
+	// Return the _CommandList variable
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CurrentCommandList()const;
+	// Return the _DirectCmdListAlloc variable
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAlloc()const;
+	// Return the _CbvHeap variable
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetCbvHeap()const;
 
 protected:
 	Timer _Timer;

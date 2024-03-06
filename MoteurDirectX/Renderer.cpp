@@ -633,6 +633,10 @@ void Renderer::FlushCommandQueue()
 	}
 }
 
+/*----------------------------------------------------------------*/
+/*---------------------------GETTER-------------------------------*/
+/*----------------------------------------------------------------*/
+
 ID3D12Resource* Renderer::CurrentBackBuffer()const
 {
 	return _SwapChainBuffer[iCurrBackBuffer].Get();
@@ -656,7 +660,22 @@ ID3D12Device* Renderer::CurrentDevice()const
 	return _d3dDevice.Get();
 }
 
-ID3D12GraphicsCommandList* Renderer::CurrentCommandList()const
+ComPtr<ID3D12CommandQueue> Renderer::GetCommandQueue()const
 {
-	return _CommandList.Get();
+	return _CommandQueue;
+}
+
+ComPtr<ID3D12GraphicsCommandList> Renderer::CurrentCommandList()const
+{
+	return _CommandList;
+}
+
+ComPtr<ID3D12CommandAllocator> Renderer::GetCommandAlloc()const
+{
+	return _DirectCmdListAlloc;
+}
+
+ComPtr<ID3D12DescriptorHeap> Renderer::GetCbvHeap()const
+{
+	return _CbvHeap;
 }
