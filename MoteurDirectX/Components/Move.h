@@ -16,6 +16,7 @@ public:
 	~Move();
 
 	// Methods
+	void Update(const Timer& gt)override;
 	void UpdateTransform();
 	XMFLOAT3 GetVectorDirector();
 };
