@@ -53,7 +53,5 @@ void MeshRenderer::RenderCube(D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView,
 
     _CommandList->SetGraphicsRootDescriptorTable(0, _CbvHeap->GetGPUDescriptorHandleForHeapStart());
 
-    _CommandList->DrawIndexedInstanced(
-        _mesh->GetMeshGeometry()->DrawArgs["box"].IndexCount,
-        1, 0, 0, 0);
+    _CommandList->DrawIndexedInstanced(_mesh->GetMeshGeometry()->DrawArgs["Default"].IndexCount, 1, 0, 0, 0);
 }
