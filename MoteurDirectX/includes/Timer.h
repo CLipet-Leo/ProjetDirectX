@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GAMETIMER_H
-#define GAMETIMER_H
+#ifndef TIMER_H
+#define TIMER_H
 
 class Timer
 {
@@ -26,4 +26,4 @@ private:
 	bool bStopped;
 };
 
-#endif GAMETIMER_H
+#endif TIMER_H
