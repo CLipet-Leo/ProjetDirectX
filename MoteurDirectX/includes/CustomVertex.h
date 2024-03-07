@@ -44,7 +44,11 @@ struct MoveParams
     float velocity;
 };
 
-//struct
+struct GameObjectParams
+{
+    int iDamage;
+    int iHealth;
+};
 
 union Params
 {

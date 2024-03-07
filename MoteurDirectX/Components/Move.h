@@ -12,7 +12,7 @@ private:
 
 public:
 	// Constru & Destru
-	Move(Entity* pEOwner, MoveParams params);
+	Move(Entity* pEOwner, MoveParams* params);
 	~Move();
 
 	// Methods

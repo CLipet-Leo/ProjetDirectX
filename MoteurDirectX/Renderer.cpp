@@ -374,7 +374,7 @@ void Renderer::Draw(const Timer& gt)
 	FlushCommandQueue();
 }
 
-void Renderer::InstanciateEntity(int iEntityType, Params params)
+void Renderer::InstanciateEntity(int iEntityType, Params* params)
 {
 
 	Entity* newEntity = new Entity();
@@ -390,7 +390,7 @@ void Renderer::InstanciateEntity(int iEntityType, Params params)
 	case ROTATE:
 		break;
 	case GAME_OBJECT:
-		curNewComp = new GameObject(newEntity);
+		curNewComp = new GameObject(newEntity, params);
 		break;
 	}
 	newEntity->AddComponent(curNewComp);
