@@ -52,5 +52,6 @@ struct GameObjectParams
 
 union Params
 {
+    GameObjectParams gameObjectParams;
     MoveParams moveParams;
 };
