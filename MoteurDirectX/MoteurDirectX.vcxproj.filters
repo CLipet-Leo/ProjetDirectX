@@ -48,6 +48,7 @@
     <ClCompile Include="Components\GameObject.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Components\CharacterController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\Pch.h">
@@ -92,5 +93,6 @@
     <ClInclude Include="Components\Move.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="Components\CharacterController.h" />
   </ItemGroup>
 </Project>

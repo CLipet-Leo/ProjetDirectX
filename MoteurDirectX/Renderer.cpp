@@ -1,5 +1,7 @@
 #include "includes/Pch.h"
 #include "includes/Renderer.h"
+#include <Windows.h>
+
 
 using Microsoft::WRL::ComPtr;
 using namespace std;
@@ -227,38 +229,11 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_KEYDOWN:
-		if (wParam == VK_ESCAPE)
+		switch (wParam)
 		{
-			PostQuitMessage(0);
-		}
-		else if ((int)wParam == VK_F2)
-		{
+		case VK_F2:
 			Set4xMsaaState(!b4xMsaaState);
-		}
-		else if ((int)wParam == VKm_Z)
-		{
-			std::cout << "Z key down" << std::endl;
-		}
-		else if ((int)wParam == VKm_Q)
-		{
-			std::cout << "Q key down" << std::endl;
-		}
-		else if ((int)wParam == VKm_S)
-		{
-			std::cout << "S key down" << std::endl;
-		}
-		else if ((int)wParam == VKm_D)
-		{
-			std::cout << "D key down" << std::endl;
-		}
-		else if ((int)wParam == VKm_E)
-		{
-			std::cout << "E key down" << std::endl;
-		}
-		else if ((int)wParam == VK_SPACE)
-		{
-			std::cout << "SPACE key down" << std::endl;
-
+			break;
 		}
 
 		return 0;

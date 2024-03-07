@@ -68,6 +68,7 @@ enum compSubType
 #include "Entity.h"
 #include "../Components/GameObject.h"
 #include "../Components/Move.h"
+#include "../Components/CharacterController.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"
