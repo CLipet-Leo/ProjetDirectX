@@ -41,6 +41,10 @@ protected:
 	void DepthStencilAndBufferView();
 	void CreateViewport();
 	void FlushCommandQueue();
+	void CalculateFrameStats();
+	void LogAdapters();
+	void LogAdapterOutputs(IDXGIAdapter* adapter);
+	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
 	ID3D12Resource* CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;

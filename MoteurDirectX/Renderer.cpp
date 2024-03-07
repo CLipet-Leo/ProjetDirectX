@@ -51,9 +51,9 @@ int Renderer::Run()
 
 	_Timer.Reset();
 
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return 0;
+	//Shader shaders(_d3dDevice, _CommandList);
+	//if (!shaders.InitShader())
+	//	return 0;
 
 	while (msg.message != WM_QUIT)
 	{
@@ -70,7 +70,7 @@ int Renderer::Run()
 
 			if (!bAppPaused)
 			{
-				//CalculateFrameStats();
+				CalculateFrameStats();
 				Update(_Timer);
 				Draw(_Timer);
 			}
@@ -92,9 +92,9 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return false;
+	//Shader shaders(_d3dDevice, _CommandList);
+	//if (!shaders.InitShader())
+	//	return false;
 	// Do the initial resize code.
 	OnResize();
 
@@ -399,7 +399,7 @@ bool Renderer::InitDirect3D()
 	Check4xMsaaQuality();
 
 	#ifdef _DEBUG
-	//LogAdapters();
+	LogAdapters();
 	#endif
 
 	CreateCommandObjects();
@@ -591,6 +591,113 @@ void Renderer::FlushCommandQueue()
 		// Wait until the GPU hits current fence event is fired.
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
+	}
+}
+
+void Renderer::CalculateFrameStats()
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.  These stats 
+	// are appended to the window caption bar.
+
+	static int frameCnt = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCnt++;
+
+	// Compute averages over one second period.
+	if ((_Timer.getTotalTime() - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCnt; // fps = frameCnt / 1
+		float mspf = 1000.0f / fps;
+
+		wstring fpsStr = to_wstring(fps);
+		wstring mspfStr = to_wstring(mspf);
+
+		wstring windowText = sMainWndCaption +
+			L"    fps: " + fpsStr +
+			L"   mspf: " + mspfStr;
+
+		SetWindowText(hMainWnd, windowText.c_str());
+
+		// Reset for next average.
+		frameCnt = 0;
+		timeElapsed += 1.0f;
+	}
+}
+
+void Renderer::LogAdapters()
+{
+	UINT i = 0;
+	IDXGIAdapter* adapter = nullptr;
+	std::vector<IDXGIAdapter*> adapterList;
+	while (_dxgiFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_ADAPTER_DESC desc;
+		adapter->GetDesc(&desc);
+
+		std::wstring text = L"***Adapter: ";
+		text += desc.Description;
+		text += L"\n";
+
+		OutputDebugString(text.c_str());
+
+		adapterList.push_back(adapter);
+
+		++i;
+	}
+
+	for (size_t i = 0; i < adapterList.size(); ++i)
+	{
+		LogAdapterOutputs(adapterList[i]);
+		ReleaseCom(adapterList[i]);
+	}
+}
+
+void Renderer::LogAdapterOutputs(IDXGIAdapter* adapter)
+{
+	UINT i = 0;
+	IDXGIOutput* output = nullptr;
+	while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_OUTPUT_DESC desc;
+		output->GetDesc(&desc);
+
+		std::wstring text = L"***Output: ";
+		text += desc.DeviceName;
+		text += L"\n";
+		OutputDebugString(text.c_str());
+
+		LogOutputDisplayModes(output, dBackBufferFormat);
+
+		ReleaseCom(output);
+
+		++i;
+	}
+}
+
+void Renderer::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
+{
+	UINT count = 0;
+	UINT flags = 0;
+
+	// Call with nullptr to get list count.
+	output->GetDisplayModeList(format, flags, &count, nullptr);
+
+	std::vector<DXGI_MODE_DESC> modeList(count);
+	output->GetDisplayModeList(format, flags, &count, &modeList[0]);
+
+	for (auto& x : modeList)
+	{
+		UINT n = x.RefreshRate.Numerator;
+		UINT d = x.RefreshRate.Denominator;
+		std::wstring text =
+			L"Width = " + std::to_wstring(x.Width) + L" " +
+			L"Height = " + std::to_wstring(x.Height) + L" " +
+			L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
+			L"\n";
+
+		::OutputDebugString(text.c_str());
 	}
 }
 
