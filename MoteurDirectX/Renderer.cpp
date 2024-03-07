@@ -25,12 +25,18 @@ Renderer::Renderer(HINSTANCE hInstance)
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
+	meshRenderer = new MeshRenderer;
 }
 
 Renderer::~Renderer()
 {
 	if (_d3dDevice != nullptr)
 		FlushCommandQueue();
+}
+
+float Renderer::AspectRatio()const
+{
+	return static_cast<float>(iClientWidth) / iClientHeight;
 }
 
 void Renderer::Set4xMsaaState(bool value)
@@ -88,12 +94,11 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-
+	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
+		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
+		return false;
 	// Do the initial resize code.
 	OnResize();
-
-	meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc, _CbvHeap, 
-		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality);
 
 	// Wait until initialization is complete.
 	FlushCommandQueue();
@@ -293,6 +298,8 @@ void Renderer::OnResize()
 	FlushCommandQueue();
 
 	CreateViewport();
+
+	meshRenderer->OnResize(AspectRatio());
 }
 
 void Renderer::Update(const Timer& gt)
@@ -324,7 +331,8 @@ void Renderer::Draw(const Timer& gt)
 	_CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
-	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	//_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -637,9 +645,4 @@ ComPtr<ID3D12GraphicsCommandList> Renderer::CurrentCommandList()const
 ComPtr<ID3D12CommandAllocator> Renderer::GetCommandAlloc()const
 {
 	return _DirectCmdListAlloc;
-}
-
-ComPtr<ID3D12DescriptorHeap> Renderer::GetCbvHeap()const
-{
-	return _CbvHeap;
 }

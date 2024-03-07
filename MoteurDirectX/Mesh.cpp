@@ -16,7 +16,7 @@ std::unique_ptr<MeshGeometry>& Mesh::GetMeshGeometry() {
     return mBoxGeo;
 }
 
-void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices)
+void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, const std::array<VertexColor, 8>& vertices, const std::array<std::uint16_t, 36>& indices)
 {
     const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(VertexColor);
     const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(std::uint16_t);
@@ -50,7 +50,7 @@ void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCo
 
 void Mesh::BuildCubeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
 {
-    std::vector<VertexColor> vertices =
+    std::array<VertexColor, 8> vertices =
     {
         VertexColor({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
         VertexColor({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black) }),
@@ -62,7 +62,7 @@ void Mesh::BuildCubeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graphi
         VertexColor({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) })
     };
 
-    std::vector<std::uint16_t>  indices =
+    std::array<std::uint16_t, 36>  indices =
     {
         // front face
         0, 1, 2,

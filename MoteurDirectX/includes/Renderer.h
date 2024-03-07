@@ -14,6 +14,8 @@ public:
 
 	static Renderer* GetApp();
 
+	float AspectRatio()const;
+
 	void Set4xMsaaState(bool value);
 	int Run();
 
@@ -68,8 +70,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CurrentCommandList()const;
 	// Return the _DirectCmdListAlloc variable
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAlloc()const;
-	// Return the _CbvHeap variable
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetCbvHeap()const;
 
 protected:
 	Timer _Timer;
@@ -102,7 +102,6 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _RtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
 	D3D12_VIEWPORT _ScreenViewport;
 	D3D12_RECT _ScissorRect;

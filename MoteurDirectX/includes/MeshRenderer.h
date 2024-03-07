@@ -12,17 +12,18 @@ public:
     MeshRenderer();
     ~MeshRenderer();
 
-    void Initialize(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, 
+    bool Initialize(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, 
         Microsoft::WRL::ComPtr<ID3D12CommandQueue> CommandQueue, Microsoft::WRL::ComPtr<ID3D12CommandAllocator> DirectCmdListAlloc, 
-        Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap,  DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
+        DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
 
+    virtual void OnResize(float fAspectRatio);
     virtual void Update();
 
     void UpdateCube();
 
-    void RenderCube(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView,
-        Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap);
+    void RenderCube(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView);
 
+public:
 
     XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
     XMFLOAT4X4 mView = MathHelper::Identity4x4();
@@ -32,8 +33,8 @@ public:
     float mRadius = 5.0f;
 
 
-    Mesh* _mesh = nullptr;
-    Shader* _shader = nullptr;
+    Mesh* _mesh;
+    Shader* _shader;
 };
 
 #endif
