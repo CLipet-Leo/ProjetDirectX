@@ -226,7 +226,7 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
-	case WM_KEYUP:
+	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);
@@ -237,27 +237,27 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		else if ((int)wParam == VKm_Z)
 		{
-			
+			std::cout << "Z key down" << std::endl;
 		}
 		else if ((int)wParam == VKm_Q)
 		{
-			
+			std::cout << "Q key down" << std::endl;
 		}
 		else if ((int)wParam == VKm_S)
 		{
-			
+			std::cout << "S key down" << std::endl;
 		}
 		else if ((int)wParam == VKm_D)
 		{
-			
+			std::cout << "D key down" << std::endl;
 		}
 		else if ((int)wParam == VKm_E)
 		{
-			
+			std::cout << "E key down" << std::endl;
 		}
 		else if ((int)wParam == VK_SPACE)
 		{
-			
+			std::cout << "SPACE key down" << std::endl;
 		}
 
 		return 0;

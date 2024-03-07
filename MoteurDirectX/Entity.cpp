@@ -14,7 +14,7 @@ Entity::Entity()
 	// Initalize Component List with an empty vecotr. Not doing this makes compiler go no no :3
 	_LpComponents = std::vector<Component*>();
 
-	_LpEntity.push_back(this);
+	//_LpEntity.push_back(this);
 }
 Entity::~Entity()
 {
@@ -27,18 +27,17 @@ Entity::~Entity()
 		RmvComponent(curPComp->GetCompSubType());
 	}
 
-	for (auto curPEntity : _LpEntity)
-	{
-		int iterator = 0;
-		// If it's found, destroys & removes it
-		if (curPEntity == this)
-		{
-			_LpEntity.erase(_LpEntity.begin() + iterator);
-		}
-		iterator++;
-	}
+	//for (auto curPEntity : _LpEntity)
+	//{
+	//	int iterator = 0;
+	//	// If it's found, destroys & removes it
+	//	if (curPEntity == this)
+	//	{
+	//		_LpEntity.erase(_LpEntity.begin() + iterator);
+	//	}
+	//	iterator++;
+	//}
 
-	delete this;
 	std::cout << "ENTITY : Destructor called !\n";
 }
 
@@ -80,10 +79,10 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 
 void Entity::UpdateEntities(const Timer& gt)
 {
-	for (auto curEntity : _LpEntity)
-	{
-		curEntity->UpdateComponents(gt);
-	}
+	//for (auto curEntity : _LpEntity)
+	//{
+	//	curEntity->UpdateComponents(gt);
+	//}
 }
 
 void Entity::UpdateComponents(const Timer& gt)

@@ -22,7 +22,6 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Components\Factory.cpp" />
     <ClCompile Include="Components\GameObject.cpp" />
-    <ClCompile Include="Components\LookAround.cpp" />
     <ClCompile Include="Components\Move.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -36,7 +35,6 @@
   <ItemGroup>
     <ClInclude Include="Components\Factory.h" />
     <ClInclude Include="Components\GameObject.h" />
-    <ClInclude Include="Components\LookAround.h" />
     <ClInclude Include="Components\Move.h" />
     <ClInclude Include="includes\Component.h" />
     <ClInclude Include="includes\CustomVertex.h" />
