@@ -1,4 +1,10 @@
 #pragma once
+
+#ifndef SHADER_H
+#define SHADER_H
+
+#include <UploadBuffer.h>
+
 using namespace DirectX;
 
 class Shader
@@ -8,22 +14,23 @@ public: // Fonctions
     virtual ~Shader();
 
     // Créer les descriptorHeaps, le ConstantBuffers et les RootSignatures
-    bool InitShader();
+    bool InitShader(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap);
 
 
 public:
 
-    void BuildDescriptorHeaps();
-    void BuildConstantBuffers();
-    void BuildRootSignature();
+    void BuildDescriptorHeaps(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap);
+    void BuildConstantBuffers(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap);
+    void BuildRootSignature(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
 
     void CompileShaders();
     // Créer les Inputs
     void CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements);
     std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
-    void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
+    void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
 
+    std::unique_ptr<UploadBuffer<ObjectConstants>>& GetObjects();
     /*
     Utiliser le struct prédifinis; done
     Créer les Heaps; done 
@@ -66,6 +73,6 @@ public: // Variables
     // Variables mathématique
     // Position de la souris
     // !!!!
-
-    Renderer* _renderer;
 };
+
+#endif

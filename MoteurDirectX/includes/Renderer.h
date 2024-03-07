@@ -1,5 +1,6 @@
 #pragma once
 #include "Timer.h"
+#include "MeshRenderer.h"
 
 using namespace DirectX;
 
@@ -60,7 +61,7 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
 	
 	// Return the _d3dDevice.Get() variable
-	ID3D12Device* CurrentDevice()const;
+	Microsoft::WRL::ComPtr<ID3D12Device> CurrentDevice()const;
 	// Return the _CommandQueue variable
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetCommandQueue()const;
 	// Return the _CommandList variable
@@ -122,13 +123,6 @@ protected:
 	int iClientWidth = 800;
 	int iClientHeight = 600;
 
-	XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
-	XMFLOAT4X4 mView = MathHelper::Identity4x4();
-	XMFLOAT4X4 mProj = MathHelper::Identity4x4();
-	float mTheta = 1.5f * XM_PI;
-	float mPhi = XM_PIDIV4;
-	float mRadius = 5.0f;
 
 	MeshRenderer* meshRenderer;
-	Shader* _shader;
 };

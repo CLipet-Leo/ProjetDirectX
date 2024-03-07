@@ -92,7 +92,8 @@ bool Renderer::Initialize()
 	// Do the initial resize code.
 	OnResize();
 
-	meshRenderer->Initialize(dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality);
+	meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc, _CbvHeap, 
+		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality);
 
 	// Wait until initialization is complete.
 	FlushCommandQueue();
@@ -296,27 +297,7 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
-	// Convert Spherical to Cartesian coordinates.
-	float x = mRadius * sinf(mPhi) * cosf(mTheta);
-	float z = mRadius * sinf(mPhi) * sinf(mTheta);
-	float y = mRadius * cosf(mPhi);
-
-	// Build the view matrix.
-	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
-	XMStoreFloat4x4(&mView, view);
-
-	XMMATRIX world = XMLoadFloat4x4(&mWorld);
-	XMMATRIX proj = XMLoadFloat4x4(&mProj);
-	XMMATRIX worldViewProj = world * view * proj;
-
-	// Update the constant buffer with the latest worldViewProj matrix.
-	ObjectConstants objConstants;
-	XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
-	_shader->GetObjects()->CopyData(0, objConstants);
+	meshRenderer->Update();
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -638,9 +619,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::DepthStencilView()const
 	return _DsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
-ID3D12Device* Renderer::CurrentDevice()const
+ComPtr<ID3D12Device> Renderer::CurrentDevice()const
 {
-	return _d3dDevice.Get();
+	return _d3dDevice;
 }
 
 ComPtr<ID3D12CommandQueue> Renderer::GetCommandQueue()const

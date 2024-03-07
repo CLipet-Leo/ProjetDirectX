@@ -5,35 +5,35 @@ using Microsoft::WRL::ComPtr;
 
 
 Shader::Shader()
- {}
+{ }
 
 Shader::~Shader() 
 { }
 
-bool Shader::InitShader()
+bool Shader::InitShader(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12DescriptorHeap> CbvHeap)
 {
-    BuildDescriptorHeaps();
+    BuildDescriptorHeaps(d3dDevice, CbvHeap);
 
-    BuildConstantBuffers();
+    BuildConstantBuffers(d3dDevice, CbvHeap);
 
-    BuildRootSignature();
+    BuildRootSignature(d3dDevice);
 
     return true;
 }
 
-void Shader::BuildDescriptorHeaps()
+void Shader::BuildDescriptorHeaps(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12DescriptorHeap> CbvHeap)
 {
     D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
     cbvHeapDesc.NumDescriptors = 1;
     cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     cbvHeapDesc.NodeMask = 0;
-    ThrowIfFailed(_renderer->CurrentDevice()->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_renderer->GetCbvHeap())));
+    ThrowIfFailed(d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&CbvHeap)));
 }
 
-void Shader::BuildConstantBuffers()
+void Shader::BuildConstantBuffers(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12DescriptorHeap> CbvHeap)
 {
-    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(_renderer->CurrentDevice(), 1, true);
+    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(d3dDevice, 1, true);
 
     UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -46,12 +46,12 @@ void Shader::BuildConstantBuffers()
     cbvDesc.BufferLocation = cbAddress;
     cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-    _renderer->CurrentDevice()->CreateConstantBufferView(
+    d3dDevice->CreateConstantBufferView(
         &cbvDesc,
-        _renderer->GetCbvHeap()->GetCPUDescriptorHandleForHeapStart());
+        CbvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
-void Shader::BuildRootSignature()
+void Shader::BuildRootSignature(ComPtr<ID3D12Device> d3dDevice)
 {
     // Shader programs typically require resources as input (constant buffers,
     // textures, samplers).  The root signature defines the resources the shader
@@ -84,17 +84,12 @@ void Shader::BuildRootSignature()
     }
     ThrowIfFailed(hr);
 
-    ThrowIfFailed(_renderer->CurrentDevice()->CreateRootSignature(
+    ThrowIfFailed(d3dDevice->CreateRootSignature(
         0,
         _serializedRootSig->GetBufferPointer(),
         _serializedRootSig->GetBufferSize(),
         IID_PPV_ARGS(&_RootSignature)));
 }
-
-ComPtr<ID3D12RootSignature> Shader::GetRootSignature() {
-    return _RootSignature;
-};
-
 
 void Shader::CompileShaders()
 {
@@ -115,22 +110,7 @@ void Shader::CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inpu
 
 }
 
-std::vector<D3D12_INPUT_ELEMENT_DESC> Shader::GetInputLayout()const {
-    return _InputLayout;
-}
-
-
-// Petit exemple d'usage messire : 
-//std::vector<D3D12_INPUT_ELEMENT_DESC> inputElements = {
-//    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-//    { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-//};
-//
-//Shader shaderInstance;
-//shaderInstance.CreateInputLayout(inputElements); 
-
-
-void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality)
+void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, ComPtr<ID3D12Device> d3dDevice)
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
     ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -156,5 +136,29 @@ void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFo
     psoDesc.SampleDesc.Count = b4xMsaaState ? 4 : 1;
     psoDesc.SampleDesc.Quality = b4xMsaaState ? (u4xMsaaQuality - 1) : 0;
     psoDesc.DSVFormat = dDepthStencilFormat;
-    ThrowIfFailed(_renderer->CurrentDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
+    ThrowIfFailed(d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
+}
+
+// Petit exemple d'usage messire : 
+//std::vector<D3D12_INPUT_ELEMENT_DESC> inputElements = {
+//    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+//    { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+//};
+//
+//Shader shaderInstance;
+//shaderInstance.CreateInputLayout(inputElements); 
+
+ComPtr<ID3D12RootSignature> Shader::GetRootSignature() 
+{
+    return _RootSignature;
+}
+
+std::vector<D3D12_INPUT_ELEMENT_DESC> Shader::GetInputLayout()const 
+{
+    return _InputLayout;
+}
+
+std::unique_ptr<UploadBuffer<ObjectConstants>>& Shader::GetObjects() 
+{
+    return _ObjectCB;
 }

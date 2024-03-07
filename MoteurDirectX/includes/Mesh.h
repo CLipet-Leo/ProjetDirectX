@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef MESH_H
+#define MESH_H
+
 using namespace DirectX;
 
 class Mesh
@@ -6,20 +10,18 @@ class Mesh
 public:
 
 	Mesh();
-	Mesh(const Mesh& rhs) = delete;
-	Mesh& operator=(const Mesh& rhs) = delete;
 	virtual ~Mesh();
 
 	SubmeshGeometry GetMesh()const;
 	std::unique_ptr<MeshGeometry>& GetMeshGeometry();
 
-	virtual void BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices);
-	void BuildCubeGeometry();
+	virtual void BuildGeometry(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, 
+		const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices);
+	void BuildCubeGeometry(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList);
 
-	Renderer* _renderer;
-
-private:
 
 	std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
 
 };
+
+#endif

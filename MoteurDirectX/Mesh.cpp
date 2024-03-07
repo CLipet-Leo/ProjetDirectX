@@ -1,6 +1,8 @@
 ﻿#include "includes/Pch.h"
 #include "includes/Mesh.h"
 
+using Microsoft::WRL::ComPtr;
+
 Mesh::Mesh() {}
 
 Mesh::~Mesh() {}
@@ -14,7 +16,7 @@ std::unique_ptr<MeshGeometry>& Mesh::GetMeshGeometry() {
     return mBoxGeo;
 }
 
-void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices)
+void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, const std::vector<VertexColor>& vertices, const std::vector<std::uint16_t>& indices)
 {
     const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(VertexColor);
     const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(std::uint16_t);
@@ -27,11 +29,11 @@ void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::ve
     ThrowIfFailed(D3DCreateBlob(ibByteSize, &mBoxGeo->IndexBufferCPU));
     CopyMemory(mBoxGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-    mBoxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(_renderer->CurrentDevice(),
-        _renderer->CurrentCommandList().Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
+    mBoxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
+        CommandList.Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
 
-    mBoxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(_renderer->CurrentDevice(),
-        _renderer->CurrentCommandList().Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
+    mBoxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
+        CommandList.Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
 
     mBoxGeo->VertexByteStride = sizeof(VertexColor);
     mBoxGeo->VertexBufferByteSize = vbByteSize;
@@ -46,7 +48,7 @@ void Mesh::BuildGeometry(const std::vector<VertexColor>& vertices, const std::ve
     mBoxGeo->DrawArgs["Default"] = submesh;
 }
 
-void Mesh::BuildCubeGeometry()
+void Mesh::BuildCubeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
 {
     std::vector<VertexColor> vertices =
     {
@@ -88,5 +90,5 @@ void Mesh::BuildCubeGeometry()
     };
 
     // Build the cube geometry using the generic BuildGeometry function
-    BuildGeometry(vertices, indices);
+    BuildGeometry(d3dDevice, CommandList, vertices, indices);
 }
