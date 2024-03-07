@@ -14,10 +14,10 @@ public:
 	virtual ~Renderer();
 
 	static Renderer* GetApp();
+	HWND MainWnd()const;
 
 	void Set4xMsaaState(bool value);
 	int Run();
-
 	virtual bool Initialize();
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 

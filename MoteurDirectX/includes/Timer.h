@@ -19,6 +19,7 @@ public:
 private:
 	double iDeltaTime;
 	float fTotalTime;
+	double mSecondsPerCount;
 
 	__int64 iCurTime;
 	__int64 iPrevTime;
