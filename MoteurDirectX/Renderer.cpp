@@ -237,27 +237,27 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		else if ((int)wParam == VKm_Z)
 		{
-			Set4xMsaaState(!b4xMsaaState);
+			
 		}
 		else if ((int)wParam == VKm_Q)
 		{
-			Set4xMsaaState(!b4xMsaaState);
+			
 		}
 		else if ((int)wParam == VKm_S)
 		{
-			Set4xMsaaState(!b4xMsaaState);
+			
 		}
 		else if ((int)wParam == VKm_D)
 		{
-			Set4xMsaaState(!b4xMsaaState);
+			
 		}
 		else if ((int)wParam == VKm_E)
 		{
-			Set4xMsaaState(!b4xMsaaState);
+			
 		}
 		else if ((int)wParam == VK_SPACE)
 		{
-			Set4xMsaaState(!b4xMsaaState);
+			
 		}
 
 		return 0;
