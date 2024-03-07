@@ -30,6 +30,7 @@ public:
 
 protected:
 
+	std::vector<Entity*> _LpEntity;
 	Entity* _EntityAccess;
 
 	virtual void CreateDescriptorHeaps();
