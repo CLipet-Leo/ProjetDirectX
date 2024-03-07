@@ -3,7 +3,7 @@
 class GameObject : public Component
 {
 public:
-	GameObject(Entity* _pEOwner, GameObjectParams* params);
+	GameObject(Entity* _pEOwner, Params* params);
 
 	void takeDamage(int iDamage);
 	int getDamage();

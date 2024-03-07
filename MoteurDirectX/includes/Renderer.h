@@ -36,7 +36,7 @@ protected:
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
-	void InstanciateEntity(int iEntityType, Params params);
+	void InstanciateEntity(std::vector<int> compList, Params* params);
 
 protected:
 

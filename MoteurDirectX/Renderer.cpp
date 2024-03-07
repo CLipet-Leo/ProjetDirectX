@@ -374,30 +374,30 @@ void Renderer::Draw(const Timer& gt)
 	FlushCommandQueue();
 }
 
-void Renderer::InstanciateEntity(int iEntityType, Params* params)
+void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
 
 	Entity* newEntity = new Entity();
-	Component* curNewComp = nullptr;
 
-	switch (iEntityType)
+	for (auto curCompToAdd : compList)
 	{
-	case MOVE:
-		curNewComp = new Move(newEntity, params);
-		break;
-	case COLLIDER:
-		break;
-	case ROTATE:
-		break;
-	case GAME_OBJECT:
-		curNewComp = new GameObject(newEntity, params);
-		break;
+		Component* curNewComp = nullptr;
+
+		switch (curCompToAdd)
+		{
+		case MOVE:
+			curNewComp = new Move(newEntity, params);
+			break;
+		case COLLIDER:
+			break;
+		case ROTATE:
+			break;
+		case GAME_OBJECT:
+			curNewComp = new GameObject(newEntity, params);
+			break;
+		}
+		newEntity->AddComponent(curNewComp);
 	}
-	newEntity->AddComponent(curNewComp);
-
-	//delete curNewComp;
-
-	delete curNewComp;
 }
 
 bool Renderer::InitMainWindow()

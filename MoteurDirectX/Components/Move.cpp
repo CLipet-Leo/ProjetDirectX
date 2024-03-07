@@ -2,8 +2,8 @@
 #include "./Move.h"
 
 // Constru & Destru
-Move::Move(Entity* pEOwner, MoveParams* params)
-	: Component(pEOwner, MOVE), _v3VectorDirector(params->directorVector)
+Move::Move(Entity* pEOwner, Params* params)
+	: Component(pEOwner, MOVE), _v3VectorDirector(params->moveParams.directorVector)
 {
 
 }

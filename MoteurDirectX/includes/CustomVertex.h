@@ -38,6 +38,8 @@ struct IndiceBuffer
     std::vector<int> IndiceList;
 };
 
+// Component's params
+
 struct MoveParams
 {
     XMFLOAT3 directorVector;
