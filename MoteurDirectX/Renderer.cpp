@@ -258,6 +258,7 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		else if ((int)wParam == VK_SPACE)
 		{
 			std::cout << "SPACE key down" << std::endl;
+
 		}
 
 		return 0;
