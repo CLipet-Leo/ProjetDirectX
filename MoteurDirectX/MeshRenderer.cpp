@@ -87,5 +87,10 @@ void MeshRenderer::RenderCube(ComPtr<ID3D12GraphicsCommandList> CommandList, D3D
 
     CommandList->SetGraphicsRootDescriptorTable(0, _shader->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 
-    CommandList->DrawIndexedInstanced(_mesh->GetMeshGeometry()->DrawArgs["Default"].IndexCount, 1, 0, 0, 0);
+    CommandList->DrawIndexedInstanced(_mesh->GetMeshGeometry()->DrawArgs["box"].IndexCount, 1, 0, 0, 0);
+}
+
+Microsoft::WRL::ComPtr<ID3D12PipelineState> MeshRenderer::GetPSO()
+{
+    return _shader->GetPSO();
 }

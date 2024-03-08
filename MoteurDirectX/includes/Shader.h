@@ -34,6 +34,7 @@ public:
     void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
 
     UploadBuffer<ObjectConstants>* GetObjects();
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
 
 public: // Variables
 
