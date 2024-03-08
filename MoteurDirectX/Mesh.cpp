@@ -30,7 +30,7 @@ void Mesh::BuildCubeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graphi
         VertexColor({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) })
     };
 
-    std::array<std::uint16_t, 36>  indices =
+    std::array<std::uint16_t, 36> indices =
     {
         // front face
         0, 1, 2,
@@ -113,6 +113,7 @@ void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCo
     const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(std::uint16_t);
 
     mBoxGeo = new MeshGeometry();
+    mBoxGeo->Name = "boxGeo";
 
     ThrowIfFailed(D3DCreateBlob(vbByteSize, &mBoxGeo->VertexBufferCPU));
     CopyMemory(mBoxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
@@ -132,7 +133,7 @@ void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCo
     mBoxGeo->IndexBufferByteSize = ibByteSize;
 
     SubmeshGeometry submesh;
-    submesh.IndexCount = static_cast<UINT>(indices.size());
+    submesh.IndexCount = (UINT)indices.size();
     submesh.StartIndexLocation = 0;
     submesh.BaseVertexLocation = 0;
 

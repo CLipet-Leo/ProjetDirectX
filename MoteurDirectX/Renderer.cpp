@@ -94,13 +94,21 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
-		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
-		return false;
 	// Do the initial resize code.
 	OnResize();
 
-	// Wait until initialization is complete.
+	// Reset the command list to prep for initialization commands.
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+
+	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
+		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
+		return false;
+
+	// Execute the initialization commands.
+	ThrowIfFailed(_CommandList->Close());
+	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
+	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
 	FlushCommandQueue();
 
 	return true;

@@ -122,6 +122,7 @@ protected:
 	int iClientWidth = 800;
 	int iClientHeight = 600;
 
+	bool bFirstInit = true;
 
 	MeshRenderer* meshRenderer;
 };

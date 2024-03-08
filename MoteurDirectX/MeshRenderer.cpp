@@ -15,8 +15,6 @@ MeshRenderer::~MeshRenderer()
 bool MeshRenderer::Initialize(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, ComPtr<ID3D12CommandQueue> CommandQueue, 
     ComPtr<ID3D12CommandAllocator> DirectCmdListAlloc,  DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality)
 {
-    // Reset the command list to prep for initialization commands.
-    ThrowIfFailed(CommandList->Reset(DirectCmdListAlloc.Get(), nullptr));
     // Initialisation des shaders
     if (!_shader->InitShader(d3dDevice))
         return false;
@@ -25,11 +23,6 @@ bool MeshRenderer::Initialize(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graph
     // Initialisation des meshes
     _mesh->BuildCubeGeometry(d3dDevice, CommandList);
     _shader->BuildPSO(dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality, d3dDevice);
-
-    // Execute the initialization commands.
-    ThrowIfFailed(CommandList->Close());
-    ID3D12CommandList* cmdsLists[] = { CommandList.Get() };
-    CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
     return true;
 }
