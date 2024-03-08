@@ -77,14 +77,6 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 	}
 }
 
-void Entity::UpdateEntities(const Timer& gt)
-{
-	//for (auto curEntity : _LpEntity)
-	//{
-	//	curEntity->UpdateComponents(gt);
-	//}
-}
-
 void Entity::UpdateComponents(const Timer& gt)
 {
 	for (auto curComponent : _LpComponents)

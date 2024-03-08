@@ -300,7 +300,11 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
-	_EntityAccess->UpdateEntities(gt);
+	// update all Entities
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->UpdateComponents(gt);
+	}
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -376,6 +380,8 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 		}
 		newEntity->AddComponent(curNewComp);
 	}
+
+	_LpEntity.push_back(newEntity);
 }
 
 bool Renderer::InitMainWindow()
