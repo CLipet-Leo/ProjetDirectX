@@ -3,7 +3,7 @@
 
 // Constru & Destru
 Move::Move(Entity* pEOwner, Params* params)
-	: Component(pEOwner, MOVE), _v3VectorDirector(params->moveParams.directorVector)
+	: Component(pEOwner, MOVE), _v3VectorDirector(params->moveParams.directorVector), _fVelocity(params->moveParams.velocity)
 {
 
 }

@@ -85,6 +85,15 @@ void Entity::UpdateComponents(const Timer& gt)
 	}
 }
 
+Component* Entity::GetComponentPtr(compSubType ARGCompTypeTarget)
+{
+	for (auto curComponent : _LpComponents)
+	{
+		if (curComponent->GetCompSubType() == ARGCompTypeTarget)
+			return curComponent;
+	}
+}
+
 void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)
 {
 	_pTransform->qPos.x = f3VectorDirector->x;

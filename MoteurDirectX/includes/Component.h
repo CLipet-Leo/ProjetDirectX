@@ -3,6 +3,10 @@
 // Forward declarations
 class Entity;
 
+#ifndef COMPONENT_H
+#define COMPONENT_H
+
+
 // Enum for Component to keep track of its sub-class
 // TODO : Move that in a general purpose header ? Maybe not since Entity, and Component sub-classes import this Component.h
 
@@ -27,3 +31,5 @@ public:
 	// Would be called every frame, and do nothing
 	virtual void Component::Update(const Timer& gt);
 };
+
+#endif

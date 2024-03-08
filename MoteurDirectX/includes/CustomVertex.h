@@ -52,8 +52,16 @@ struct GameObjectParams
     int iHealth;
 };
 
+class Component;
+
+struct CharacterControllerParams
+{
+    Component* moveCompPtr;
+};
+
 union Params
 {
     GameObjectParams gameObjectParams;
     MoveParams moveParams;
+    CharacterControllerParams characterControllerParams;
 };

@@ -49,6 +49,9 @@ void Renderer::Set4xMsaaState(bool value)
 
 int Renderer::Run()
 {
+
+	char buff[200]; // Global within the class (in main.cpp, it's a member to avoid problems)
+
 	MSG msg = { 0 };
 
 	_Timer.Reset();
@@ -356,6 +359,17 @@ void Renderer::Draw(const Timer& gt)
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
 
+	// puts the CharacterController component at the end of the list
+	for (int i=0 ; i < compList.size() ; i++)
+	{
+		if (compList[i] == CHARACTER_CONTROLLER)
+		{
+			compList.erase(compList.begin() + i);
+			compList.push_back(CHARACTER_CONTROLLER);
+			break;
+		}
+	}
+
 	Entity* newEntity = new Entity();
 
 	for (auto curCompToAdd : compList)
@@ -375,7 +389,9 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			curNewComp = new GameObject(newEntity, params);
 			break;
 		case CHARACTER_CONTROLLER:
-			curNewComp = new CharacterController(newEntity, params);
+			Component* moveCompPtr = newEntity->GetComponentPtr(MOVE);
+			//params->characterControllerParams.moveCompPtr = moveCompPtr;
+			curNewComp = new CharacterController(newEntity, params, moveCompPtr);
 			break;
 		}
 		newEntity->AddComponent(curNewComp);

@@ -1,7 +1,7 @@
 #include "../includes/Pch.h"
 
-CharacterController::CharacterController(Entity* _pEOwner, Params* params)
-	: Component(_pEOwner, GAME_OBJECT), _bAbleController(true)
+CharacterController::CharacterController(Entity* _pEOwner, Params* params, Component* pMoveComp)
+	: Component(_pEOwner, GAME_OBJECT), _bAbleController(true), _pMoveComp(pMoveComp)
 {
 
 }
@@ -41,6 +41,10 @@ void CharacterController::GetInput(WPARAM pParam)
 	}
 }
 
+void CharacterController::Update(const Timer& gt)
+{
+
+}
 
 void CharacterController::EnableController()
 {

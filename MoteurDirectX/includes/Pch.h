@@ -1,5 +1,6 @@
 #pragma once
 
+
 // Environnement de débug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
@@ -11,6 +12,14 @@
 #include <WindowsX.h>
 #include <WinBase.h>
 #include <wrl.h>
+
+// Stuff to print in the Visual console
+#include <stdio.h>
+#define VSCPrint(buffer, msg, ...) \
+    do{ \
+        _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, msg, __VA_ARGS__); \
+        OutputDebugStringA(buffer); \
+    } while(0)
 
 // DirectX libs
 #include <dxgi1_4.h>
