@@ -23,7 +23,6 @@ Renderer* Renderer::GetApp()
 Renderer::Renderer(HINSTANCE hInstance)
 	: hAppInst(hInstance)
 {
-	_EntityAccess = new Entity();
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
@@ -231,11 +230,15 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_KEYDOWN:
-		switch (wParam)
+
+		if (wParam == VK_F2)
 		{
-		case VK_F2:
 			Set4xMsaaState(!b4xMsaaState);
-			break;
+		}
+
+		for (auto curCharacterController : _LpCharacterController)
+		{
+			curCharacterController->Update(_Timer, wParam);
 		}
 
 		return 0;
@@ -358,6 +361,7 @@ void Renderer::Draw(const Timer& gt)
 
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
+	char buff[200];
 
 	// puts the CharacterController component at the end of the list
 	for (int i=0 ; i < compList.size() ; i++)
@@ -380,6 +384,7 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 		{
 		case MOVE:
 			curNewComp = new Move(newEntity, params);
+			newEntity->AddComponent(curNewComp);
 			break;
 		case COLLIDER:
 			break;
@@ -387,14 +392,14 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			break;
 		case GAME_OBJECT:
 			curNewComp = new GameObject(newEntity, params);
+			newEntity->AddComponent(curNewComp);
 			break;
 		case CHARACTER_CONTROLLER:
-			Component* moveCompPtr = newEntity->GetComponentPtr(MOVE);
-			//params->characterControllerParams.moveCompPtr = moveCompPtr;
-			curNewComp = new CharacterController(newEntity, params, moveCompPtr);
+			CharacterController* newCC = new CharacterController(newEntity, params);
+			newEntity->AddComponent(newCC);
+			_LpCharacterController.push_back(newCC);
 			break;
 		}
-		newEntity->AddComponent(curNewComp);
 	}
 
 	_LpEntity.push_back(newEntity);

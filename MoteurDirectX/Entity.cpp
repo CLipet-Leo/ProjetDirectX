@@ -89,9 +89,13 @@ Component* Entity::GetComponentPtr(compSubType ARGCompTypeTarget)
 {
 	for (auto curComponent : _LpComponents)
 	{
+		if (curComponent == nullptr)
+			continue;
+
 		if (curComponent->GetCompSubType() == ARGCompTypeTarget)
 			return curComponent;
 	}
+	return nullptr;
 }
 
 void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)

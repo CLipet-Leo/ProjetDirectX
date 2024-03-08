@@ -1,23 +1,26 @@
 #include "../includes/Pch.h"
 
-CharacterController::CharacterController(Entity* _pEOwner, Params* params, Component* pMoveComp)
-	: Component(_pEOwner, GAME_OBJECT), _bAbleController(true), _pMoveComp(pMoveComp)
+CharacterController::CharacterController(Entity* _pEOwner, Params* params)
+	: Component(_pEOwner, CHARACTER_CONTROLLER), _bActiveController(true)//, _pMoveComp(_pEOwner->GetComponentPtr(MOVE)), _pCameraComp(_pEOwner->GetComponentPtr(CAMERA))
 {
 
 }
 
 void CharacterController::GetInput(WPARAM pParam)
 {
-	if (_bAbleController && WM_KEYDOWN)
+	
+}
+
+void CharacterController::Update(const Timer& gt, WPARAM pParam)
+{
+	if (_bActiveController && WM_KEYDOWN)
 	{
 		switch (pParam)
 		{
 		case VK_ESCAPE:
 			PostQuitMessage(0);
 			break;
-		//case VK_F2:
-		//	Set4xMsaaState(!b4xMsaaState);
-		//	break;
+
 		case VKm_Z:
 			OutputDebugStringA("Z KeyDown \n");
 			break;
@@ -36,22 +39,16 @@ void CharacterController::GetInput(WPARAM pParam)
 		case VK_SPACE:
 			OutputDebugStringA("SPACE KeyDown \n");
 			break;
-
 		}
 	}
 }
 
-void CharacterController::Update(const Timer& gt)
-{
-
-}
-
 void CharacterController::EnableController()
 {
-	_bAbleController = true;
+	_bActiveController = true;
 }
 
 void CharacterController::DisableController()
 {
-	_bAbleController = false;
+	_bActiveController = false;
 }

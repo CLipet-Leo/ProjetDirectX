@@ -3,16 +3,17 @@
 class CharacterController : public Component
 {
 public:
-	CharacterController(Entity* _pEOwner, Params* params, Component* pMoveComp);
+	CharacterController(Entity* _pEOwner, Params* params);
 
 	void GetInput(WPARAM pParam);
 	void EnableController();
 	void DisableController();
 
-	void Update(const Timer& gt) override;
+	void Update(const Timer& gt, WPARAM pParam);
 
 private:
-	bool _bAbleController;
+	bool _bActiveController;
 
 	Component* _pMoveComp;
+	Component* _pCameraComp;
 };

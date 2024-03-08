@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "Shader.h"
 #include "Entity.h"
+#include "../Components/CharacterController.h"
 
 // Virtual Key define from Mathieu
 #define VKm_Z		0x5A
@@ -31,7 +32,7 @@ public:
 protected:
 
 	std::vector<Entity*> _LpEntity;
-	Entity* _EntityAccess;
+	std::vector<CharacterController*> _LpCharacterController;
 
 	virtual void CreateDescriptorHeaps();
 	virtual void OnResize();
