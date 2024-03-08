@@ -34,6 +34,9 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
+#include <locale>
+#include <codecvt>
+
 
 // Enum
 enum compSubType
@@ -56,11 +59,11 @@ enum compSubType
 // Custom code libs
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
-#include "MeshRenderer.h"
 #include "Mesh.h"
+#include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
-#include "Shader.h"
+#include "MeshRenderer.h"
 #include "Timer.h"
 #include "Transform.h"
 // TODO move headers in include folder
@@ -71,7 +74,6 @@ enum compSubType
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"
-
 
 // Liens nécessaires de la librairie d3d12
 #pragma comment(lib,"d3dcompiler.lib")

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\DirectX\MathHelper.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Components\Factory.cpp" />
     <ClCompile Include="Components\GameObject.cpp" />
@@ -34,6 +36,8 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\DirectX\MathHelper.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Components\Factory.h" />
     <ClInclude Include="Components\GameObject.h" />
     <ClInclude Include="Components\LookAround.h" />
@@ -49,6 +53,11 @@
     <ClInclude Include="includes\Timer.h" />
     <ClInclude Include="includes\Transform.h" />
     <ClInclude Include="includes\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\color.hlsl">
+      <FileType>Document</FileType>
+    </Text>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

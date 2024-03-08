@@ -30,12 +30,18 @@ Renderer::Renderer(HINSTANCE hInstance)
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
+	meshRenderer = new MeshRenderer;
 }
 
 Renderer::~Renderer()
 {
 	if (_d3dDevice != nullptr)
 		FlushCommandQueue();
+}
+
+float Renderer::AspectRatio()const
+{
+	return static_cast<float>(iClientWidth) / iClientHeight;
 }
 
 void Renderer::Set4xMsaaState(bool value)
@@ -56,10 +62,7 @@ int Renderer::Run()
 
 	_Timer.Reset();
 
-	//Shader shaders(_d3dDevice, _CommandList);
-	//if (!shaders.InitShader())
-	//	return 0;
-
+ 
 	while (msg.message != WM_QUIT)
 	{
 		// If there are Window messages then process them.
@@ -97,11 +100,22 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-	//Shader shaders(_d3dDevice, _CommandList);
-	//if (!shaders.InitShader())
-	//	return false;
 	// Do the initial resize code.
 	OnResize();
+
+	// Reset the command list to prep for initialization commands.
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+
+	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
+		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
+		return false;
+
+	// Execute the initialization commands.
+	ThrowIfFailed(_CommandList->Close());
+	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
+	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	FlushCommandQueue();
 
 	return true;
 }
@@ -298,11 +312,13 @@ void Renderer::OnResize()
 	FlushCommandQueue();
 
 	CreateViewport();
+
+	meshRenderer->OnResize(AspectRatio());
 }
 
 void Renderer::Update(const Timer& gt)
 {
-
+	meshRenderer->Update();
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -311,24 +327,25 @@ void Renderer::Draw(const Timer& gt)
 	// We can only reset when the associated command lists have finished execution on the GPU.
 	ThrowIfFailed(_DirectCmdListAlloc->Reset());
 
+
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), meshRenderer->GetPSO().Get()));
+
+	_CommandList->RSSetViewports(1, &_ScreenViewport);
+	_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
-	// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.
-	_CommandList->RSSetViewports(1, &_ScreenViewport);
-	_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
 	// Clear the back buffer and depth buffer.
 	_CommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
 	_CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
-	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	//_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -693,6 +710,9 @@ void Renderer::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
 		::OutputDebugString(text.c_str());
 	}
 }
+/*----------------------------------------------------------------*/
+/*---------------------------GETTER-------------------------------*/
+/*----------------------------------------------------------------*/
 
 ID3D12Resource* Renderer::CurrentBackBuffer()const
 {
@@ -712,12 +732,22 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::DepthStencilView()const
 	return _DsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
-ID3D12Device* Renderer::CurrentDevice()const
+ComPtr<ID3D12Device> Renderer::CurrentDevice()const
 {
-	return _d3dDevice.Get();
+	return _d3dDevice;
 }
 
-ID3D12GraphicsCommandList* Renderer::CurrentCommandList()const
+ComPtr<ID3D12CommandQueue> Renderer::GetCommandQueue()const
 {
-	return _CommandList.Get();
+	return _CommandQueue;
+}
+
+ComPtr<ID3D12GraphicsCommandList> Renderer::CurrentCommandList()const
+{
+	return _CommandList;
+}
+
+ComPtr<ID3D12CommandAllocator> Renderer::GetCommandAlloc()const
+{
+	return _DirectCmdListAlloc;
 }
