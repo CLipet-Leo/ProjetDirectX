@@ -107,7 +107,7 @@ void Mesh::BuildPyramidGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Gra
     BuildGeometry(d3dDevice, CommandList, vertices, indices);
 }
 
-void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, const std::array<VertexColor, 8>& vertices, const std::array<std::uint16_t, 36>& indices)
+void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, const std::array<VertexColor, 8> vertices, const std::array<std::uint16_t, 36> indices)
 {
     const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(VertexColor);
     const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(std::uint16_t);
@@ -137,5 +137,5 @@ void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCo
     submesh.StartIndexLocation = 0;
     submesh.BaseVertexLocation = 0;
 
-    mBoxGeo->DrawArgs["Default"] = submesh;
+    mBoxGeo->DrawArgs["box"] = submesh;
 }
