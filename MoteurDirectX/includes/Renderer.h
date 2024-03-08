@@ -13,12 +13,12 @@ public:
 	virtual ~Renderer();
 
 	static Renderer* GetApp();
+	HWND MainWnd()const;
 
 	float AspectRatio()const;
 
 	void Set4xMsaaState(bool value);
 	int Run();
-
 	virtual bool Initialize();
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -42,6 +42,10 @@ protected:
 	void DepthStencilAndBufferView();
 	void CreateViewport();
 	void FlushCommandQueue();
+	void CalculateFrameStats();
+	void LogAdapters();
+	void LogAdapterOutputs(IDXGIAdapter* adapter);
+	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
 
 protected:
