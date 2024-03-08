@@ -1,6 +1,5 @@
 #include "includes/Pch.h"
 #include "includes/Renderer.h"
-#include <Windows.h>
 
 
 using Microsoft::WRL::ComPtr;
@@ -370,6 +369,9 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			break;
 		case GAME_OBJECT:
 			curNewComp = new GameObject(newEntity, params);
+			break;
+		case CHARACTER_CONTROLLER:
+			curNewComp = new CharacterController(newEntity, params);
 			break;
 		}
 		newEntity->AddComponent(curNewComp);

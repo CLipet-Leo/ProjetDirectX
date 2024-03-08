@@ -1,16 +1,16 @@
 #include "../includes/Pch.h"
 
 CharacterController::CharacterController(Entity* _pEOwner, Params* params)
-	: Component(_pEOwner, GAME_OBJECT), _bAbleController(false)
+	: Component(_pEOwner, GAME_OBJECT), _bAbleController(true)
 {
 
 }
 
-void CharacterController::GetInput(int *_pParam)
+void CharacterController::GetInput(WPARAM pParam)
 {
 	if (_bAbleController && WM_KEYDOWN)
 	{
-		switch (*_pParam)
+		switch (pParam)
 		{
 		case VK_ESCAPE:
 			PostQuitMessage(0);

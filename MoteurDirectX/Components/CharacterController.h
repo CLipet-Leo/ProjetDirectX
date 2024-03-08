@@ -5,7 +5,7 @@ class CharacterController : public Component
 public:
 	CharacterController(Entity* _pEOwner, Params* params);
 
-	void GetInput(int *_pParam);
+	void GetInput(WPARAM pParam);
 	void EnableController();
 	void DisableController();
 
