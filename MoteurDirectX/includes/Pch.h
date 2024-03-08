@@ -46,6 +46,7 @@ enum compSubType
 	MOVE,
 	PARTICLE_GEN,
 	GAME_OBJECT,
+	CHARACTER_CONTROLLER,
 };
 
 // More DirectX libs
