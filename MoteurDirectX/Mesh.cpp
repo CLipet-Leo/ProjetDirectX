@@ -12,40 +12,8 @@ SubmeshGeometry Mesh::GetMesh() const
     return mBoxGeo->DrawArgs.begin()->second;
 }
 
-std::unique_ptr<MeshGeometry>& Mesh::GetMeshGeometry() {
+MeshGeometry* Mesh::GetMeshGeometry() {
     return mBoxGeo;
-}
-
-void Mesh::BuildGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, const std::array<VertexColor, 8>& vertices, const std::array<std::uint16_t, 36>& indices)
-{
-    const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(VertexColor);
-    const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(std::uint16_t);
-
-    mBoxGeo = std::make_unique<MeshGeometry>();
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &mBoxGeo->VertexBufferCPU));
-    CopyMemory(mBoxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &mBoxGeo->IndexBufferCPU));
-    CopyMemory(mBoxGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    mBoxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
-        CommandList.Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
-
-    mBoxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
-        CommandList.Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
-
-    mBoxGeo->VertexByteStride = sizeof(VertexColor);
-    mBoxGeo->VertexBufferByteSize = vbByteSize;
-    mBoxGeo->IndexFormat = DXGI_FORMAT_R16_UINT;
-    mBoxGeo->IndexBufferByteSize = ibByteSize;
-
-    SubmeshGeometry submesh;
-    submesh.IndexCount = static_cast<UINT>(indices.size());
-    submesh.StartIndexLocation = 0;
-    submesh.BaseVertexLocation = 0;
-
-    mBoxGeo->DrawArgs["Default"] = submesh;
 }
 
 void Mesh::BuildCubeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)

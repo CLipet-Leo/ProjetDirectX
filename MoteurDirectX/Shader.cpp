@@ -169,3 +169,8 @@ UploadBuffer<ObjectConstants>* Shader::GetObjects()
 {
     return _ObjectCB;
 }
+
+ComPtr<ID3D12PipelineState> Shader::GetPSO()
+{
+    return _PSO;
+}

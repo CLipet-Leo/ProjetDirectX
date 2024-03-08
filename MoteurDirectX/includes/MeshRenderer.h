@@ -22,6 +22,8 @@ public:
     void UpdateCube();
 
     void RenderCube(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView);
+    
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
 
 public:
 

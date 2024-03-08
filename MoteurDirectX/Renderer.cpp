@@ -316,15 +316,14 @@ void Renderer::Draw(const Timer& gt)
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), meshRenderer->GetPSO().Get()));
+
+	_CommandList->RSSetViewports(1, &_ScreenViewport);
+	_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
-	// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.
-	_CommandList->RSSetViewports(1, &_ScreenViewport);
-	_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
 	// Clear the back buffer and depth buffer.
 	_CommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
@@ -338,7 +337,6 @@ void Renderer::Draw(const Timer& gt)
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-
 	// Done recording commands.
 	ThrowIfFailed(_CommandList->Close());
 
@@ -349,7 +347,6 @@ void Renderer::Draw(const Timer& gt)
 	// swap the back and front buffers
 	ThrowIfFailed(_SwapChain->Present(0, 0));
 	iCurrBackBuffer = (iCurrBackBuffer + 1) % SwapChainBufferCount;
-
 
 	// Wait until frame commands are complete.  This waiting is inefficient and is
 	// done for simplicity.  Later we will show how to organize our rendering code
