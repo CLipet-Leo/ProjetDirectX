@@ -22,9 +22,9 @@
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Components\CharacterController.cpp" />
     <ClCompile Include="Components\Factory.cpp" />
     <ClCompile Include="Components\GameObject.cpp" />
-    <ClCompile Include="Components\LookAround.cpp" />
     <ClCompile Include="Components\Move.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -38,9 +38,9 @@
   <ItemGroup>
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Components\CharacterController.h" />
     <ClInclude Include="Components\Factory.h" />
     <ClInclude Include="Components\GameObject.h" />
-    <ClInclude Include="Components\LookAround.h" />
     <ClInclude Include="Components\Move.h" />
     <ClInclude Include="includes\Component.h" />
     <ClInclude Include="includes\CustomVertex.h" />

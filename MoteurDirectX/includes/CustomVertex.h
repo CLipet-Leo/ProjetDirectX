@@ -37,3 +37,31 @@ struct IndiceBuffer
 {
     std::vector<int> IndiceList;
 };
+
+// Component's params
+
+struct MoveParams
+{
+    XMFLOAT3 directorVector;
+    float velocity;
+};
+
+struct GameObjectParams
+{
+    int iDamage;
+    int iHealth;
+};
+
+class Component;
+
+struct CharacterControllerParams
+{
+    Component* moveCompPtr;
+};
+
+union Params
+{
+    GameObjectParams gameObjectParams;
+    MoveParams moveParams;
+    CharacterControllerParams characterControllerParams;
+};

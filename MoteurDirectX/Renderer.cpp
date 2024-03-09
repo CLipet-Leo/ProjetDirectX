@@ -1,6 +1,7 @@
 #include "includes/Pch.h"
 #include "includes/Renderer.h"
 
+
 using Microsoft::WRL::ComPtr;
 using namespace std;
 using namespace DirectX;
@@ -58,6 +59,9 @@ void Renderer::Set4xMsaaState(bool value)
 
 int Renderer::Run()
 {
+
+	char buff[200]; // Global within the class (in main.cpp, it's a member to avoid problems)
+
 	MSG msg = { 0 };
 
 	_Timer.Reset();
@@ -231,11 +235,15 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_LBUTTONDOWN:
+		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
+		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
@@ -243,13 +251,17 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
-	case WM_KEYUP:
-		if (wParam == VK_ESCAPE)
+	case WM_KEYDOWN:
+
+		if (wParam == VK_F2)
 		{
-			PostQuitMessage(0);
-		}
-		else if ((int)wParam == VK_F2)
 			Set4xMsaaState(!b4xMsaaState);
+		}
+
+		for (auto curCharacterController : _LpCharacterController)
+		{
+			curCharacterController->Update(_Timer, wParam);
+		}
 
 		return 0;
 	}
@@ -319,6 +331,11 @@ void Renderer::OnResize()
 void Renderer::Update(const Timer& gt)
 {
 	meshRenderer->Update();
+	// update all Entities
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->UpdateComponents(gt);
+	}
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -366,6 +383,52 @@ void Renderer::Draw(const Timer& gt)
 	// done for simplicity.  Later we will show how to organize our rendering code
 	// so we do not have to wait per frame.
 	FlushCommandQueue();
+}
+
+void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
+{
+	char buff[200];
+
+	// puts the CharacterController component at the end of the list
+	for (int i=0 ; i < compList.size() ; i++)
+	{
+		if (compList[i] == CHARACTER_CONTROLLER)
+		{
+			compList.erase(compList.begin() + i);
+			compList.push_back(CHARACTER_CONTROLLER);
+			break;
+		}
+	}
+
+	Entity* newEntity = new Entity();
+
+	for (auto curCompToAdd : compList)
+	{
+		Component* curNewComp = nullptr;
+
+		switch (curCompToAdd)
+		{
+		case MOVE:
+			curNewComp = new Move(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
+		case COLLIDER:
+			break;
+		case ROTATE:
+			break;
+		case GAME_OBJECT:
+			curNewComp = new GameObject(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
+		case CHARACTER_CONTROLLER:
+			CharacterController* newCC = new CharacterController(newEntity, params);
+			newEntity->AddComponent(newCC);
+			_LpCharacterController.push_back(newCC);
+			break;
+		}
+	}
+
+	_LpEntity.push_back(newEntity);
 }
 
 bool Renderer::InitMainWindow()

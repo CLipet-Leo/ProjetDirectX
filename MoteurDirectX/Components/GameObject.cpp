@@ -1,7 +1,7 @@
 #include "../includes/Pch.h"
 
-GameObject::GameObject(Entity* _pEOwner, int iDamage, int iHealth)
-	: Component(_pEOwner, GAME_OBJECT), _iDamage(iDamage), _iHealth(iHealth)
+GameObject::GameObject(Entity* _pEOwner, Params* params)
+	: Component(_pEOwner, GAME_OBJECT), _iDamage(params->gameObjectParams.iDamage), _iHealth(params->gameObjectParams.iHealth)
 {
 
 }

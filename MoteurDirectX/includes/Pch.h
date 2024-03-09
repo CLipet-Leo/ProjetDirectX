@@ -1,5 +1,6 @@
 #pragma once
 
+
 // Environnement de débug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
@@ -11,6 +12,14 @@
 #include <WindowsX.h>
 #include <WinBase.h>
 #include <wrl.h>
+
+// Stuff to print in the Visual console
+#include <stdio.h>
+#define VSCPrint(buffer, msg, ...) \
+    do{ \
+        _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, msg, __VA_ARGS__); \
+        OutputDebugStringA(buffer); \
+    } while(0)
 
 // DirectX libs
 #include <dxgi1_4.h>
@@ -49,6 +58,7 @@ enum compSubType
 	MOVE,
 	PARTICLE_GEN,
 	GAME_OBJECT,
+	CHARACTER_CONTROLLER,
 };
 
 // More DirectX libs
@@ -71,6 +81,7 @@ enum compSubType
 #include "Entity.h"
 #include "../Components/GameObject.h"
 #include "../Components/Move.h"
+#include "../Components/CharacterController.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"

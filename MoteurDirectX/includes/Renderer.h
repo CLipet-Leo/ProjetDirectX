@@ -1,6 +1,16 @@
 #pragma once
 #include "Timer.h"
 #include "MeshRenderer.h"
+#include "Shader.h"
+#include "Entity.h"
+#include "../Components/CharacterController.h"
+
+// Virtual Key define from Mathieu
+#define VKm_Z		0x5A
+#define VKm_Q		0x51
+#define VKm_S		0x53
+#define VKm_D		0x44
+#define VKm_E		0x45
 
 using namespace DirectX;
 
@@ -24,10 +34,14 @@ public:
 
 protected:
 
+	std::vector<Entity*> _LpEntity;
+	std::vector<CharacterController*> _LpCharacterController;
+
 	virtual void CreateDescriptorHeaps();
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
+	void InstanciateEntity(std::vector<int> compList, Params* params);
 
 protected:
 
@@ -47,6 +61,9 @@ protected:
 	void LogAdapterOutputs(IDXGIAdapter* adapter);
 	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
+	ID3D12Resource* CurrentBackBuffer()const;
+	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
 
 protected:
 	// Convenience overrides for handling mouse input.
