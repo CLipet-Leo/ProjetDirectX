@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     _CrtMemCheckpoint(&memStateInit);
 #endif
 
-    char buff[200]; // Global within the class (in main.cpp, it's a member to avoid problems)
+    char buff[200]{}; // Global within the class (in main.cpp, it's a member to avoid problems)
 
     try
     {

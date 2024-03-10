@@ -60,7 +60,7 @@ void Renderer::Set4xMsaaState(bool value)
 int Renderer::Run()
 {
 
-	char buff[200]; // Global within the class (in main.cpp, it's a member to avoid problems)
+	char buff[200]{}; // Global within the class (in main.cpp, it's a member to avoid problems)
 
 	MSG msg = { 0 };
 
@@ -387,7 +387,7 @@ void Renderer::Draw(const Timer& gt)
 
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
-	char buff[200];
+	char buff[200]{};
 
 	// puts the CharacterController component at the end of the list
 	for (int i=0 ; i < compList.size() ; i++)

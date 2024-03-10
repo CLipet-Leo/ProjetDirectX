@@ -41,7 +41,7 @@ void Timer::Update()
 		iDeltaTime = 0.0;
 	}
 
-	fTotalTime += iDeltaTime;
+	fTotalTime += (float)iDeltaTime;
 }
 
 void Timer::Pause()
