@@ -2,6 +2,7 @@
 #include "includes/Mesh.h"
 
 using Microsoft::WRL::ComPtr;
+using namespace DirectX::PackedVector;
 
 Mesh::Mesh() {}
 

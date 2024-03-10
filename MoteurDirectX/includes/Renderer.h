@@ -51,7 +51,7 @@ protected:
 	void CreateSwapChain();
 	void CreateRenderTarget();
 	void DepthStencilAndBufferView();
-	void CreateViewport();
+	void UpdateViewport();
 	void FlushCommandQueue();
 	void CalculateFrameStats();
 	void LogAdapters();
@@ -86,7 +86,6 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAlloc()const;
 
 protected:
-	Timer _Timer;
 
 	static Renderer* _App;
 
@@ -141,5 +140,6 @@ protected:
 
 	bool bFirstInit = true;
 
+	Timer _Timer;
 	MeshRenderer* meshRenderer;
 };

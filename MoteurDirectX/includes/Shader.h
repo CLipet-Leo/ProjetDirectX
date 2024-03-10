@@ -33,7 +33,7 @@ public:
     std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
     void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
 
-    UploadBuffer<ObjectConstants>* GetObjects();
+    UploadBuffer<ObjectConstants>* GetObjects()const;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
 
 public: // Variables

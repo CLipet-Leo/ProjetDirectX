@@ -50,12 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 Game::Game(HINSTANCE hInstance)
     : Renderer(hInstance)
 {
-    /**/ /* <[)  BAPT CODE :3  (]> */ /**/
-    // Yes I know I could've done ": variable(value)", but it UGLEH
-    _pM4World = &(MathHelper::Identity4x4());
-    _pM4View = &(MathHelper::Identity4x4());
-    _pM4Proj = &(MathHelper::Identity4x4());
-    /**/ /* <[)  BAPT CODE :3  (]> */ /**/
+
 }
 
 Game::~Game()
