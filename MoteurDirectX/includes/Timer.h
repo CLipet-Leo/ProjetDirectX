@@ -18,7 +18,7 @@ public:
 
 private:
 	double iDeltaTime;
-	float fTotalTime;
+	double fTotalTime;
 	double mSecondsPerCount;
 
 	__int64 iCurTime;

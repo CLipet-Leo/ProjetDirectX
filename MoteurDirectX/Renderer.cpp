@@ -323,7 +323,7 @@ void Renderer::OnResize()
 	// Wait until resize is complete.
 	FlushCommandQueue();
 
-	CreateViewport();
+	UpdateViewport();
 
 	meshRenderer->OnResize(AspectRatio());
 }
@@ -641,18 +641,17 @@ void Renderer::DepthStencilAndBufferView()
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 }
 
-void Renderer::CreateViewport()
+void Renderer::UpdateViewport()
 {
-	_ScreenViewport.TopLeftX = 0.0f;
-	_ScreenViewport.TopLeftY = 0.0f;
+	// Update the viewport transform to cover the client area.
+	_ScreenViewport.TopLeftX = 0;
+	_ScreenViewport.TopLeftY = 0;
 	_ScreenViewport.Width = static_cast<float>(iClientWidth);
 	_ScreenViewport.Height = static_cast<float>(iClientHeight);
 	_ScreenViewport.MinDepth = 0.0f;
 	_ScreenViewport.MaxDepth = 1.0f;
-	_CommandList->RSSetViewports(1, &_ScreenViewport);
 
-	_ScissorRect = { 0, 0, iClientWidth / 2, iClientHeight / 2 };
-	_CommandList->RSSetScissorRects(1, &_ScissorRect);
+	_ScissorRect = { 0, 0, iClientWidth, iClientHeight };
 }
 
 void Renderer::FlushCommandQueue()

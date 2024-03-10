@@ -166,7 +166,7 @@ std::vector<D3D12_INPUT_ELEMENT_DESC> Shader::GetInputLayout()const
     return _InputLayout;
 }
 
-UploadBuffer<ObjectConstants>* Shader::GetObjects() 
+UploadBuffer<ObjectConstants>* Shader::GetObjects()const
 {
     return _ObjectCB;
 }
