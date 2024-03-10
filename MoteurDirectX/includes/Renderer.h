@@ -1,7 +1,16 @@
 #pragma once
 #include "Timer.h"
+#include "MeshRenderer.h"
 #include "Shader.h"
+#include "Entity.h"
+#include "../Components/CharacterController.h"
 
+// Virtual Key define from Mathieu
+#define VKm_Z		0x5A
+#define VKm_Q		0x51
+#define VKm_S		0x53
+#define VKm_D		0x44
+#define VKm_E		0x45
 
 using namespace DirectX;
 
@@ -14,10 +23,12 @@ public:
 	virtual ~Renderer();
 
 	static Renderer* GetApp();
+	HWND MainWnd()const;
+
+	float AspectRatio()const;
 
 	void Set4xMsaaState(bool value);
 	int Run();
-
 	virtual bool Initialize();
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -27,6 +38,7 @@ protected:
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
+	void InstanciateEntity(std::vector<int> compList, Params* params);
 
 protected:
 
@@ -41,10 +53,10 @@ protected:
 	void DepthStencilAndBufferView();
 	void CreateViewport();
 	void FlushCommandQueue();
-
-	ID3D12Resource* CurrentBackBuffer()const;
-	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
-	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
+	void CalculateFrameStats();
+	void LogAdapters();
+	void LogAdapterOutputs(IDXGIAdapter* adapter);
+	void LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format);
 
 protected:
 	// Convenience overrides for handling mouse input.
@@ -53,13 +65,33 @@ protected:
 	virtual void OnMouseMove(WPARAM btnState, int x, int y) { }
 
 public:
-	ID3D12Device* CurrentDevice()const;
-	ID3D12GraphicsCommandList* CurrentCommandList()const;
+	/*----------------------------------------------------------------*/
+	/*---------------------------GETTER-------------------------------*/
+	/*----------------------------------------------------------------*/
+
+	// Return the current back buffer
+	ID3D12Resource* CurrentBackBuffer()const;
+	// Return the CD3DX12_CPU_DESCRIPTOR_HANDLE current back buffer
+	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
+	// Return _DsvHeap from GetCPUDescriptorHandleForHeapStart()
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
+	
+	// Return the _d3dDevice.Get() variable
+	Microsoft::WRL::ComPtr<ID3D12Device> CurrentDevice()const;
+	// Return the _CommandQueue variable
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetCommandQueue()const;
+	// Return the _CommandList variable
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CurrentCommandList()const;
+	// Return the _DirectCmdListAlloc variable
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAlloc()const;
 
 protected:
 	Timer _Timer;
 
 	static Renderer* _App;
+
+	std::vector<Entity*> _LpEntity;
+	std::vector<CharacterController*> _LpCharacterController;
 
 	HINSTANCE hAppInst = nullptr; // application instance handle
 	HWND hMainWnd = nullptr; // main window handle
@@ -87,7 +119,6 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _RtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
 	D3D12_VIEWPORT _ScreenViewport;
 	D3D12_RECT _ScissorRect;
@@ -104,7 +135,11 @@ protected:
 	DXGI_FORMAT dBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT dDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
+
 	int iClientWidth = 800;
 	int iClientHeight = 600;
 
+	bool bFirstInit = true;
+
+	MeshRenderer* meshRenderer;
 };

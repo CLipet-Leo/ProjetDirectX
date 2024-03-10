@@ -1,6 +1,7 @@
 #include "includes/Pch.h"
 #include "includes/Renderer.h"
 
+
 using Microsoft::WRL::ComPtr;
 using namespace std;
 using namespace DirectX;
@@ -9,7 +10,7 @@ LRESULT CALLBACK
 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// Forward hwnd on because we can get messages (e.g., WM_CREATE)
-	// before CreateWindow returns, and thus before mhMainWnd is valid.
+	// before CreateWindow returns, and thus before hMainWnd is valid.
 	return Renderer::GetApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
@@ -19,18 +20,29 @@ Renderer* Renderer::GetApp()
 	return _App;
 }
 
+HWND Renderer::MainWnd()const
+{
+	return hMainWnd;
+}
+
 Renderer::Renderer(HINSTANCE hInstance)
 	: hAppInst(hInstance)
 {
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
+	meshRenderer = new MeshRenderer;
 }
 
 Renderer::~Renderer()
 {
 	if (_d3dDevice != nullptr)
 		FlushCommandQueue();
+}
+
+float Renderer::AspectRatio()const
+{
+	return static_cast<float>(iClientWidth) / iClientHeight;
 }
 
 void Renderer::Set4xMsaaState(bool value)
@@ -47,14 +59,14 @@ void Renderer::Set4xMsaaState(bool value)
 
 int Renderer::Run()
 {
+
+	char buff[200]{}; // Global within the class (in main.cpp, it's a member to avoid problems)
+
 	MSG msg = { 0 };
 
 	_Timer.Reset();
 
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return 0;
-
+ 
 	while (msg.message != WM_QUIT)
 	{
 		// If there are Window messages then process them.
@@ -70,7 +82,7 @@ int Renderer::Run()
 
 			if (!bAppPaused)
 			{
-				//CalculateFrameStats();
+				CalculateFrameStats();
 				Update(_Timer);
 				Draw(_Timer);
 			}
@@ -92,11 +104,22 @@ bool Renderer::Initialize()
 	if (!InitDirect3D())
 		return false;
 
-	Shader shaders(_d3dDevice, _CommandList);
-	if (!shaders.InitShader())
-		return false;
 	// Do the initial resize code.
 	OnResize();
+
+	// Reset the command list to prep for initialization commands.
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+
+	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
+		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
+		return false;
+
+	// Execute the initialization commands.
+	ThrowIfFailed(_CommandList->Close());
+	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
+	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	FlushCommandQueue();
 
 	return true;
 }
@@ -212,11 +235,15 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_LBUTTONDOWN:
+		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
+		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		return 0;
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
@@ -224,13 +251,17 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
-	case WM_KEYUP:
-		if (wParam == VK_ESCAPE)
+	case WM_KEYDOWN:
+
+		if (wParam == VK_F2)
 		{
-			PostQuitMessage(0);
-		}
-		else if ((int)wParam == VK_F2)
 			Set4xMsaaState(!b4xMsaaState);
+		}
+
+		for (auto curCharacterController : _LpCharacterController)
+		{
+			curCharacterController->Update(_Timer, wParam);
+		}
 
 		return 0;
 	}
@@ -293,11 +324,18 @@ void Renderer::OnResize()
 	FlushCommandQueue();
 
 	CreateViewport();
+
+	meshRenderer->OnResize(AspectRatio());
 }
 
 void Renderer::Update(const Timer& gt)
 {
-
+	meshRenderer->Update();
+	// update all Entities
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->UpdateComponents(gt);
+	}
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -306,24 +344,25 @@ void Renderer::Draw(const Timer& gt)
 	// We can only reset when the associated command lists have finished execution on the GPU.
 	ThrowIfFailed(_DirectCmdListAlloc->Reset());
 
+
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), meshRenderer->GetPSO().Get()));
+
+	_CommandList->RSSetViewports(1, &_ScreenViewport);
+	_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
-	// Set the viewport and scissor rect.  This needs to be reset whenever the command list is reset.
-	_CommandList->RSSetViewports(1, &_ScreenViewport);
-	_CommandList->RSSetScissorRects(1, &_ScissorRect);
 
 	// Clear the back buffer and depth buffer.
 	_CommandList->ClearRenderTargetView(CurrentBackBufferView(), Colors::LightSteelBlue, 0, nullptr);
 	_CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
-	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	//_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -344,6 +383,52 @@ void Renderer::Draw(const Timer& gt)
 	// done for simplicity.  Later we will show how to organize our rendering code
 	// so we do not have to wait per frame.
 	FlushCommandQueue();
+}
+
+void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
+{
+	char buff[200]{};
+
+	// puts the CharacterController component at the end of the list
+	for (int i=0 ; i < compList.size() ; i++)
+	{
+		if (compList[i] == CHARACTER_CONTROLLER)
+		{
+			compList.erase(compList.begin() + i);
+			compList.push_back(CHARACTER_CONTROLLER);
+			break;
+		}
+	}
+
+	Entity* newEntity = new Entity();
+
+	for (auto curCompToAdd : compList)
+	{
+		Component* curNewComp = nullptr;
+
+		switch (curCompToAdd)
+		{
+		case MOVE:
+			curNewComp = new Move(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
+		case COLLIDER:
+			break;
+		case ROTATE:
+			break;
+		case GAME_OBJECT:
+			curNewComp = new GameObject(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
+		case CHARACTER_CONTROLLER:
+			CharacterController* newCC = new CharacterController(newEntity, params);
+			newEntity->AddComponent(newCC);
+			_LpCharacterController.push_back(newCC);
+			break;
+		}
+	}
+
+	_LpEntity.push_back(newEntity);
 }
 
 bool Renderer::InitMainWindow()
@@ -399,7 +484,7 @@ bool Renderer::InitDirect3D()
 	Check4xMsaaQuality();
 
 	#ifdef _DEBUG
-	//LogAdapters();
+	LogAdapters();
 	#endif
 
 	CreateCommandObjects();
@@ -594,6 +679,104 @@ void Renderer::FlushCommandQueue()
 	}
 }
 
+void Renderer::CalculateFrameStats()
+{
+	// Code computes the average frames per second, and also the 
+	// average time it takes to render one frame.  These stats 
+	// are appended to the window caption bar.
+
+	// Compute averages over one second period.
+	float fps = 1 / _Timer.getDeltaTime();
+	float mspf = 1000.0f / fps;
+
+	wstring fpsStr = to_wstring(fps);
+	wstring mspfStr = to_wstring(mspf);
+
+	wstring windowText = sMainWndCaption +
+		L"    fps: " + fpsStr +
+		L"   mspf: " + mspfStr;
+
+	SetWindowText(hMainWnd, windowText.c_str());
+}
+
+void Renderer::LogAdapters()
+{
+	UINT i = 0;
+	IDXGIAdapter* adapter = nullptr;
+	std::vector<IDXGIAdapter*> adapterList;
+	while (_dxgiFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_ADAPTER_DESC desc;
+		adapter->GetDesc(&desc);
+
+		std::wstring text = L"***Adapter: ";
+		text += desc.Description;
+		text += L"\n";
+
+		OutputDebugString(text.c_str());
+
+		adapterList.push_back(adapter);
+
+		++i;
+	}
+
+	for (size_t i = 0; i < adapterList.size(); ++i)
+	{
+		LogAdapterOutputs(adapterList[i]);
+		ReleaseCom(adapterList[i]);
+	}
+}
+
+void Renderer::LogAdapterOutputs(IDXGIAdapter* adapter)
+{
+	UINT i = 0;
+	IDXGIOutput* output = nullptr;
+	while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_OUTPUT_DESC desc;
+		output->GetDesc(&desc);
+
+		std::wstring text = L"***Output: ";
+		text += desc.DeviceName;
+		text += L"\n";
+		OutputDebugString(text.c_str());
+
+		LogOutputDisplayModes(output, dBackBufferFormat);
+
+		ReleaseCom(output);
+
+		++i;
+	}
+}
+
+void Renderer::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
+{
+	UINT count = 0;
+	UINT flags = 0;
+
+	// Call with nullptr to get list count.
+	output->GetDisplayModeList(format, flags, &count, nullptr);
+
+	std::vector<DXGI_MODE_DESC> modeList(count);
+	output->GetDisplayModeList(format, flags, &count, &modeList[0]);
+
+	for (auto& x : modeList)
+	{
+		UINT n = x.RefreshRate.Numerator;
+		UINT d = x.RefreshRate.Denominator;
+		std::wstring text =
+			L"Width = " + std::to_wstring(x.Width) + L" " +
+			L"Height = " + std::to_wstring(x.Height) + L" " +
+			L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
+			L"\n";
+
+		::OutputDebugString(text.c_str());
+	}
+}
+/*----------------------------------------------------------------*/
+/*---------------------------GETTER-------------------------------*/
+/*----------------------------------------------------------------*/
+
 ID3D12Resource* Renderer::CurrentBackBuffer()const
 {
 	return _SwapChainBuffer[iCurrBackBuffer].Get();
@@ -612,12 +795,22 @@ D3D12_CPU_DESCRIPTOR_HANDLE Renderer::DepthStencilView()const
 	return _DsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
-ID3D12Device* Renderer::CurrentDevice()const
+ComPtr<ID3D12Device> Renderer::CurrentDevice()const
 {
-	return _d3dDevice.Get();
+	return _d3dDevice;
 }
 
-ID3D12GraphicsCommandList* Renderer::CurrentCommandList()const
+ComPtr<ID3D12CommandQueue> Renderer::GetCommandQueue()const
 {
-	return _CommandList.Get();
+	return _CommandQueue;
+}
+
+ComPtr<ID3D12GraphicsCommandList> Renderer::CurrentCommandList()const
+{
+	return _CommandList;
+}
+
+ComPtr<ID3D12CommandAllocator> Renderer::GetCommandAlloc()const
+{
+	return _DirectCmdListAlloc;
 }

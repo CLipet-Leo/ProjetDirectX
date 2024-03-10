@@ -21,34 +21,6 @@ Factory::Factory(Entity* pEOwner, int* iCallback=0)
 
 void Factory::CreateEntity()
 {
-	// TODO
-	// instanciate Entity.
-	Entity* newEntity = new Entity();
-	Component* curNewComp = nullptr;
-	for (auto curPComponent : _pCompCopyList)
-	{
-		switch (curPComponent->GetCompSubType())
-		{
-		case MOVE:
-			curNewComp = new Move(_pEOwner, curPComponent->GetVectorDirector(), 5.f);
-			break;
-		case COLLIDER:
-			//curNewComp = new Factory(_pEOwner);
-			break;
-		case ROTATE:
-			//curNewComp = new Factory(_pEOwner);
-			break;
-		case GAME_OBJECT:
-			curNewComp = new GameObject(_pEOwner);
-			break;
-		}
-		newEntity->AddComponent(curNewComp);
 
-		//delete curNewComp;
-	}
 
-	delete newEntity;
-	delete curNewComp;
-
-	// use Entity::AddComponent() to add every copied components.
 }

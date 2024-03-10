@@ -3,10 +3,10 @@
 
 /**/ /* <[)  BAPT CODE :3  (]> */ /**/
 // Forward decalration of namespace and its classes
-namespace DirectX
-{
-	class XMFLOAT4X4;
-}
+//namespace DirectX
+//{
+//	class XMFLOAT4X4;
+//}
 /**/ /* <[)  BAPT CODE :3  (]> */ /**/
 using namespace DirectX;
 
