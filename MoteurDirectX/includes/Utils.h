@@ -94,6 +94,7 @@ struct MeshGeometry
 	}
 };
 
+
 inline std::wstring AnsiToWString(const std::string& str)
 {
     WCHAR buffer[512];
@@ -110,6 +111,7 @@ public:
 	static  Microsoft::WRL::ComPtr<ID3DBlob> CompileShader(const std::wstring& filename, const D3D_SHADER_MACRO* defines, const std::string& entrypoint, const std::string& target);
 	float AspectRatio(int mClientWidth, int mClientHeight)const;
 	static UINT CalcConstantBufferByteSize(UINT byteSize);
+	static std::string WStringToString(const std::wstring& wstr);
 
 
 

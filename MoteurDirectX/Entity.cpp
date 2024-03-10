@@ -11,10 +11,10 @@ Entity::Entity()
 	TEntityTransform->Identity();
 	_pTransform = TEntityTransform;
 
-	// Initalize Component List with an empty vecotr. Not doing this make compiler go no no :3
+	// Initalize Component List with an empty vecotr. Not doing this makes compiler go no no :3
 	_LpComponents = std::vector<Component*>();
 
-	_LpEntity.push_back(this);
+	//_LpEntity.push_back(this);
 }
 Entity::~Entity()
 {
@@ -27,18 +27,17 @@ Entity::~Entity()
 		RmvComponent(curPComp->GetCompSubType());
 	}
 
-	for (auto curPEntity : _LpEntity)
-	{
-		int iterator = 0;
-		// If it's found, destroys & removes it
-		if (curPEntity == this)
-		{
-			_LpEntity.erase(_LpEntity.begin() + iterator);
-		}
-		iterator++;
-	}
+	//for (auto curPEntity : _LpEntity)
+	//{
+	//	int iterator = 0;
+	//	// If it's found, destroys & removes it
+	//	if (curPEntity == this)
+	//	{
+	//		_LpEntity.erase(_LpEntity.begin() + iterator);
+	//	}
+	//	iterator++;
+	//}
 
-	delete this;
 	std::cout << "ENTITY : Destructor called !\n";
 }
 
@@ -76,6 +75,36 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 		}
 		iterator++;
 	}
+}
+
+void Entity::UpdateComponents(const Timer& gt)
+{
+	for (auto curComponent : _LpComponents)
+	{
+		curComponent->Update(gt);
+	}
+}
+
+Component* Entity::GetComponentPtr(compSubType ARGCompTypeTarget)
+{
+	for (auto curComponent : _LpComponents)
+	{
+		if (curComponent == nullptr)
+			continue;
+
+		if (curComponent->GetCompSubType() == ARGCompTypeTarget)
+			return curComponent;
+	}
+	return nullptr;
+}
+
+void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)
+{
+	_pTransform->qPos.x = f3VectorDirector->x;
+	_pTransform->qPos.y = f3VectorDirector->y;
+	_pTransform->qPos.z = f3VectorDirector->z;
+
+	_pTransform->UpdateMatrix();
 }
 
 std::vector<Component*>* Entity::GetPCompListPtr()

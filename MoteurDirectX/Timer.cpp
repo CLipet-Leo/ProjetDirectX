@@ -4,7 +4,9 @@
 Timer::Timer()
 	:bStopped(false), iDeltaTime(0), iCurTime(0), iPrevTime(0), fTotalTime(0.0)
 {
-	
+	__int64 countsPerSec;
+	QueryPerformanceFrequency((LARGE_INTEGER*)&countsPerSec);
+	mSecondsPerCount = 1.0 / (double)countsPerSec;
 }
 
 float Timer::getDeltaTime()const
@@ -27,7 +29,7 @@ void Timer::Update()
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&iCurTime);
 
-	iDeltaTime = (double)(iPrevTime - iCurTime);
+	iDeltaTime = (double)(iCurTime - iPrevTime)* mSecondsPerCount;
 
 	iPrevTime = iCurTime;
 
@@ -38,6 +40,8 @@ void Timer::Update()
 	{
 		iDeltaTime = 0.0;
 	}
+
+	fTotalTime += (float)iDeltaTime;
 }
 
 void Timer::Pause()

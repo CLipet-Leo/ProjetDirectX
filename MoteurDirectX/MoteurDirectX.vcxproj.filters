@@ -48,9 +48,13 @@
     <ClCompile Include="Components\GameObject.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Components\LookAround.cpp">
+    <ClCompile Include="..\DirectX\MathHelper.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\CharacterController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\Pch.h">
@@ -92,11 +96,18 @@
     <ClInclude Include="Components\GameObject.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Components\LookAround.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Components\Move.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="..\DirectX\MathHelper.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\color.hlsl" />
+    <ClInclude Include="Components\CharacterController.h" />
   </ItemGroup>
 </Project>
