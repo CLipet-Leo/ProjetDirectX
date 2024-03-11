@@ -136,9 +136,19 @@ protected:
 	int iClientWidth = 800;
 	int iClientHeight = 600;
 
-	bool bFirstInit = true;
+	bool bIsWireframe = false;
+	UINT uPassCbvOffset = 0;
+
+	std::vector<std::unique_ptr<FrameResource>> _FrameResources;
+	int iCurrFrameResourceIndex = 0;
+
+	// List of all the render items.
+	std::vector<std::unique_ptr<RenderItem>> _AllRitems;
+
+	// Render items divided by PSO.
+	std::vector<RenderItem*> _OpaqueRitems;
 
 	Timer _Timer;
-	FrameRessource frameRess;
-	MeshRenderer* meshRenderer;
+	Shader shaders;
+	FrameResource* _CurrFrameResource = nullptr;
 };

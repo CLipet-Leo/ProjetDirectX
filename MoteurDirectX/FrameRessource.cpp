@@ -3,7 +3,7 @@
 
 using Microsoft::WRL::ComPtr;
 
-FrameRessource::FrameRessource(ComPtr<ID3D12Device> device, UINT passCount, UINT objectCount)
+FrameResource::FrameResource(ComPtr<ID3D12Device> device, UINT passCount, UINT objectCount)
 {
     ThrowIfFailed(device->CreateCommandAllocator(
         D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -13,7 +13,7 @@ FrameRessource::FrameRessource(ComPtr<ID3D12Device> device, UINT passCount, UINT
     _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(device, objectCount, true);
 }
 
-FrameRessource::~FrameRessource()
+FrameResource::~FrameResource()
 {
 
 }

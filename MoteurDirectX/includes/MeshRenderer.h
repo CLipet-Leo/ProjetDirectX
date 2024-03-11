@@ -12,27 +12,20 @@ public:
     MeshRenderer();
     ~MeshRenderer();
 
-    bool Initialize(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, 
-        Microsoft::WRL::ComPtr<ID3D12CommandQueue> CommandQueue, Microsoft::WRL::ComPtr<ID3D12CommandAllocator> DirectCmdListAlloc, 
-        DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
-
-    virtual void OnResize(float fAspectRatio);
-    virtual void Update();
-
-    void UpdateCube();
-
-    void RenderCube(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView);
-    
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
+    virtual void Resize(float fAspectRatio);
+    virtual void Update(FrameResource* _CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems);
+    void MeshRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems, FrameResource* CurrFrameResource, int iCurrFrameResourceIndex, 
+        Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap, UINT uCbvSrvDescriptorSize);
 
 public:
 
-    XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
+    XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
     XMFLOAT4X4 mView = MathHelper::Identity4x4();
     XMFLOAT4X4 mProj = MathHelper::Identity4x4();
+
     float mTheta = 1.5f * XM_PI;
-    float mPhi = XM_PIDIV4;
-    float mRadius = 5.0f;
+    float mPhi = 0.2f * XM_PI;
+    float mRadius = 15.0f;
 
 
     Mesh* _mesh;

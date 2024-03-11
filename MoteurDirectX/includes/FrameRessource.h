@@ -23,16 +23,45 @@ struct PassConstants
     float DeltaTime = 0.0f;
 };
 
+struct RenderItem
+{
+    RenderItem() = default;
+
+    // World matrix of the shape that describes the object's local space
+    // relative to the world space, which defines the position, orientation,
+    // and scale of the object in the world.
+    XMFLOAT4X4 World = MathHelper::Identity4x4();
+
+    // Dirty flag indicating the object data has changed and we need to update the constant buffer.
+    // Because we have an object cbuffer for each FrameResource, we have to apply the
+    // update to each FrameResource.  Thus, when we modify obect data we should set 
+    // NumFramesDirty = gNumFrameResources so that each frame resource gets the update.
+    int NumFramesDirty = gNumFrameResources;
+
+    // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
+    UINT ObjCBIndex = -1;
+
+    MeshGeometry* Geo = nullptr;
+
+    // Primitive topology.
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+    // DrawIndexedInstanced parameters.
+    UINT IndexCount = 0;
+    UINT StartIndexLocation = 0;
+    int BaseVertexLocation = 0;
+};
+
 // Stores the resources needed for the CPU to build the command lists
 // for a frame.  
-struct FrameRessource
+struct FrameResource
 {
 public:
 
-    FrameRessource(Microsoft::WRL::ComPtr<ID3D12Device> device, UINT passCount, UINT objectCount);
-    FrameRessource(const FrameRessource& rhs) = delete;
-    FrameRessource& operator=(const FrameRessource& rhs) = delete;
-    ~FrameRessource();
+    FrameResource(Microsoft::WRL::ComPtr<ID3D12Device> device, UINT passCount, UINT objectCount);
+    FrameResource(const FrameResource& rhs) = delete;
+    FrameResource& operator=(const FrameResource& rhs) = delete;
+    ~FrameResource();
 
     // We cannot reset the allocator until the GPU is done processing the commands.
     // So each frame needs their own allocator.

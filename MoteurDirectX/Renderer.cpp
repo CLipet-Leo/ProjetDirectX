@@ -31,7 +31,6 @@ Renderer::Renderer(HINSTANCE hInstance)
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
-	meshRenderer = new MeshRenderer;
 }
 
 Renderer::~Renderer()
@@ -110,8 +109,7 @@ bool Renderer::Initialize()
 	// Reset the command list to prep for initialization commands.
 	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
 
-	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
-		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
+	if (!shaders.Init(_d3dDevice, uCbvSrvDescriptorSize, 200))
 		return false;
 
 	// Execute the initialization commands.
@@ -325,21 +323,24 @@ void Renderer::OnResize()
 
 	UpdateViewport();
 
-	meshRenderer->OnResize(AspectRatio());
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->Resize(AspectRatio());
+	}
 }
 
 void Renderer::Update(const Timer& gt)
 {
 	// Cycle through the circular frame resource array.
-	_CurrFrameResourceIndex = (_CurrFrameResourceIndex + 1) % gNumFrameResources;
-	_CurrFrameResource = _FrameResources[_CurrFrameResourceIndex].get();
+	iCurrFrameResourceIndex = (iCurrFrameResourceIndex + 1) % gNumFrameResources;
+	_CurrFrameResource = _FrameResources[iCurrFrameResourceIndex].get();
 
 	// Has the GPU finished processing the commands of the current frame resource?
 	// If not, wait until the GPU has completed commands up to this fence point.
-	if (_CurrFrameResource->Fence != 0 && _Fence->GetCompletedValue() < _CurrFrameResource->Fence)
+	if (_CurrFrameResource->_Fence != 0 && _Fence->GetCompletedValue() < _CurrFrameResource->_Fence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		ThrowIfFailed(_Fence->SetEventOnCompletion(_CurrFrameResource->Fence, eventHandle));
+		ThrowIfFailed(_Fence->SetEventOnCompletion(_CurrFrameResource->_Fence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
@@ -357,7 +358,7 @@ void Renderer::Update(const Timer& gt)
 
 void Renderer::Draw(const Timer& gt)
 {
-	auto cmdListAlloc = _CurrFrameResource->CmdListAlloc;
+	auto cmdListAlloc = _CurrFrameResource->_CmdListAlloc;
 
 	// Reuse the memory associated with command recording.
 	// We can only reset when the associated command lists have finished execution on the GPU.
@@ -365,13 +366,13 @@ void Renderer::Draw(const Timer& gt)
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	if (_IsWireframe)
+	if (bIsWireframe)
 	{
-		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), _PSOs["opaque_wireframe"].Get()));
+		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), shaders.GetPSOs()["opaque_wireframe"].Get()));
 	}
 	else
 	{
-		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), _PSOs["opaque"].Get()));
+		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), shaders.GetPSOs()["opaque"].Get()));
 	}
 
 	_CommandList->RSSetViewports(1, &_ScreenViewport);
@@ -386,7 +387,21 @@ void Renderer::Draw(const Timer& gt)
 	_CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
-	meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
+	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+
+	ID3D12DescriptorHeap* descriptorHeaps[] = { shaders.GetCbvHeap().Get()};
+	_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
+	_CommandList->SetGraphicsRootSignature(shaders.GetRootSignature().Get());
+
+	int passCbvIndex = uPassCbvOffset + iCurrFrameResourceIndex;
+	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(shaders.GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	passCbvHandle.Offset(passCbvIndex, uCbvSrvDescriptorSize);
+	_CommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->DrawRenderItems(_CommandList.Get(), _OpaqueRitems, _CurrFrameResource);
+	}
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -404,7 +419,7 @@ void Renderer::Draw(const Timer& gt)
 	iCurrBackBuffer = (iCurrBackBuffer + 1) % SwapChainBufferCount;
 
 	// Advance the fence value to mark commands up to this fence point.
-	_CurrFrameResource->Fence = ++uCurrentFence;
+	_CurrFrameResource->_Fence = ++uCurrentFence;
 
 	// Add an instruction to the command queue to set a new fence point. 
 	// Because we are on the GPU timeline, the new fence point won't be 
