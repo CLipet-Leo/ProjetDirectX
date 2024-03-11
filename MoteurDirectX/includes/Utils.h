@@ -26,10 +26,10 @@ inline void d3dSetDebugName(ID3D12DeviceChild* obj, const char* name)
     }
 }
 
-struct ObjectConstants
-{
-	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
-};
+//struct ObjectConstants
+//{
+//	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
+//};
 
 struct SubmeshGeometry
 {

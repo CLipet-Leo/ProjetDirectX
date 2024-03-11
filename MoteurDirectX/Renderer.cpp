@@ -330,7 +330,24 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
-	meshRenderer->Update();
+	// Cycle through the circular frame resource array.
+	_CurrFrameResourceIndex = (_CurrFrameResourceIndex + 1) % gNumFrameResources;
+	_CurrFrameResource = _FrameResources[_CurrFrameResourceIndex].get();
+
+	// Has the GPU finished processing the commands of the current frame resource?
+	// If not, wait until the GPU has completed commands up to this fence point.
+	if (_CurrFrameResource->Fence != 0 && _Fence->GetCompletedValue() < _CurrFrameResource->Fence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		ThrowIfFailed(_Fence->SetEventOnCompletion(_CurrFrameResource->Fence, eventHandle));
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
+	// Potentiel Update de chaque entities
+	/*UpdateObjectCBs(gt);
+	UpdateMainPassCB(gt);*/
+
 	// update all Entities
 	for (auto curEntity : _LpEntity)
 	{
@@ -340,14 +357,22 @@ void Renderer::Update(const Timer& gt)
 
 void Renderer::Draw(const Timer& gt)
 {
+	auto cmdListAlloc = _CurrFrameResource->CmdListAlloc;
+
 	// Reuse the memory associated with command recording.
 	// We can only reset when the associated command lists have finished execution on the GPU.
-	ThrowIfFailed(_DirectCmdListAlloc->Reset());
-
+	ThrowIfFailed(cmdListAlloc->Reset());
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), meshRenderer->GetPSO().Get()));
+	if (_IsWireframe)
+	{
+		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), _PSOs["opaque_wireframe"].Get()));
+	}
+	else
+	{
+		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), _PSOs["opaque"].Get()));
+	}
 
 	_CommandList->RSSetViewports(1, &_ScreenViewport);
 	_CommandList->RSSetScissorRects(1, &_ScissorRect);
@@ -361,7 +386,6 @@ void Renderer::Draw(const Timer& gt)
 	_CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
-	//_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
 	meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
 
 	// Indicate a state transition on the resource usage.
@@ -375,14 +399,17 @@ void Renderer::Draw(const Timer& gt)
 	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
 	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-	// swap the back and front buffers
+	// Swap the back and front buffers
 	ThrowIfFailed(_SwapChain->Present(0, 0));
 	iCurrBackBuffer = (iCurrBackBuffer + 1) % SwapChainBufferCount;
 
-	// Wait until frame commands are complete.  This waiting is inefficient and is
-	// done for simplicity.  Later we will show how to organize our rendering code
-	// so we do not have to wait per frame.
-	FlushCommandQueue();
+	// Advance the fence value to mark commands up to this fence point.
+	_CurrFrameResource->Fence = ++uCurrentFence;
+
+	// Add an instruction to the command queue to set a new fence point. 
+	// Because we are on the GPU timeline, the new fence point won't be 
+	// set until the GPU finishes processing all the commands prior to this Signal().
+	_CommandQueue->Signal(_Fence.Get(), uCurrentFence);
 }
 
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
@@ -772,9 +799,10 @@ void Renderer::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
 		::OutputDebugString(text.c_str());
 	}
 }
-/*----------------------------------------------------------------*/
-/*---------------------------GETTER-------------------------------*/
-/*----------------------------------------------------------------*/
+
+/*----------------------------------------------------------*/
+/*-------------------------/GETTER\-------------------------*/
+/*----------------------------------------------------------*/
 
 ID3D12Resource* Renderer::CurrentBackBuffer()const
 {

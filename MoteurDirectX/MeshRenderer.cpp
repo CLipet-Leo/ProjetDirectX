@@ -74,13 +74,12 @@ void MeshRenderer::RenderCube(ComPtr<ID3D12GraphicsCommandList> CommandList, D3D
 
     CommandList->SetGraphicsRootSignature(_shader->GetRootSignature().Get());
 
-    CommandList->IASetVertexBuffers(0, 1, &(_mesh->GetMeshGeometry())->VertexBufferView());
-    CommandList->IASetIndexBuffer(&(_mesh->GetMeshGeometry())->IndexBufferView());
-    CommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    int passCbvIndex = PassCbvOffset + CurrFrameResourceIndex;
+    auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_shader->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+    passCbvHandle.Offset(passCbvIndex, mCbvSrvUavDescriptorSize);
+    CommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
 
-    CommandList->SetGraphicsRootDescriptorTable(0, _shader->GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
-
-    CommandList->DrawIndexedInstanced(_mesh->GetMeshGeometry()->DrawArgs["box"].IndexCount, 1, 0, 0, 0);
+    DrawRenderItems(mCommandList.Get(), mOpaqueRitems);
 }
 
 Microsoft::WRL::ComPtr<ID3D12PipelineState> MeshRenderer::GetPSO()

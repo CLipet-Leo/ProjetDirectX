@@ -142,14 +142,9 @@ void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFo
     ThrowIfFailed(d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
 }
 
-// Petit exemple d'usage messire : 
-//std::vector<D3D12_INPUT_ELEMENT_DESC> inputElements = {
-//    { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-//    { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-//};
-//
-//Shader shaderInstance;
-//shaderInstance.CreateInputLayout(inputElements); 
+/*----------------------------------------------------------*/
+/*-------------------------/GETTER\-------------------------*/
+/*----------------------------------------------------------*/
 
 ComPtr<ID3D12RootSignature> Shader::GetRootSignature() 
 {

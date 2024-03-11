@@ -65,9 +65,7 @@ protected:
 	virtual void OnMouseMove(WPARAM btnState, int x, int y) { }
 
 public:
-	/*----------------------------------------------------------------*/
-	/*---------------------------GETTER-------------------------------*/
-	/*----------------------------------------------------------------*/
+	/*-------------------------/GETTER\-------------------------*/
 
 	// Return the current back buffer
 	ID3D12Resource* CurrentBackBuffer()const;
@@ -141,5 +139,6 @@ protected:
 	bool bFirstInit = true;
 
 	Timer _Timer;
+	FrameRessource frameRess;
 	MeshRenderer* meshRenderer;
 };

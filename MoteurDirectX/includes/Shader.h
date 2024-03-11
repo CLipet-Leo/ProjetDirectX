@@ -28,11 +28,12 @@ public:
     // Créer les Inputs
     void CreateInputLayout(const std::vector<D3D12_INPUT_ELEMENT_DESC>& inputElements);
 
+    void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
+
+    /*-------------------------/GETTER\-------------------------*/
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetCbvHeap();
     std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
-    void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
-
     UploadBuffer<ObjectConstants>* GetObjects()const;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
 
