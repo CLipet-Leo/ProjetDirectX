@@ -8,14 +8,15 @@ Transform::Transform() {
 Transform::~Transform() {};
 
 void Transform::Identity() {
+
 	XMStoreFloat4x4(&mScal, XMMatrixIdentity());
-	(qScal.x, qScal.y, qScal.z, qScal.w) = (0.f, 0.f, 0.f, 1.f);
-	(mDir.x, mDir.y, mDir.z) = (1.f, 0.f, 0.f);
-	(mRight.x, mRight.y, mRight.z) = (0.f, 1.f, 0.f);
-	(mUp.x, mUp.y, mUp.z) = (0.f, 0.f, 1.f);
-	(qRot.x, qRot.y, qRot.z, qRot.w) = (0.f, 0.f, 0.f, 1.f);
+	qScal = { 0.f, 0.f, 0.f, 1.f };
+	mDir = { 1.f, 0.f, 0.f };
+	mRight = { 0.f, 1.f, 0.f };
+	mUp = { 0.f, 0.f, 1.f };
+	qRot = { 0.f, 0.f, 0.f, 1.f };
 	XMStoreFloat4x4(&mRot, XMMatrixIdentity());
-	(qPos.x, qPos.y, qPos.z, qPos.w) = (0.f, 0.f, 0.f, 1.f);
+	qPos = { 0.f, 0.f, 0.f, 1.f };
 	XMStoreFloat4x4(&mPos, XMMatrixIdentity());
 	XMStoreFloat4x4(&matrix, XMMatrixIdentity());
 };
