@@ -18,5 +18,6 @@ public:
 	// Methods
 	void Update(const Timer& gt)override;
 	void UpdateTransform();
+	void UpdateDirectorVect(XMFLOAT3 newDirectorVect);
 	XMFLOAT3 GetVectorDirector();
 };

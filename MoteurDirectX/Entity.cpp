@@ -2,6 +2,15 @@
 #include "includes/Pch.h"
 #include "includes/Entity.h"
 
+#include <windows.h>
+#include <stdio.h>
+#define VSCPrint(buffer, msg, ...) \
+    do{ \
+        _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, msg, __VA_ARGS__); \
+        OutputDebugStringA(buffer); \
+    } while(0)
+char buff[200]; // Global within the class (in main.cpp, it's a member to avoid problems)
+
 
 // Constru & Destru
 Entity::Entity()
@@ -109,7 +118,12 @@ void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)
 	_pTransform->qPos.y = f3VectorDirector->y;
 	_pTransform->qPos.z = f3VectorDirector->z;
 
+
+	VSCPrint(buff, "dirVect: x: %f, y: %f, z: %f\n", f3VectorDirector->x, f3VectorDirector->y, f3VectorDirector->z);
+
 	_pTransform->UpdateMatrix();
+
+	VSCPrint(buff, "matrix: x: %f, y: %f, z: %f, q: %f\n", _pTransform->matrix._11, _pTransform->matrix._22, _pTransform->matrix._33, _pTransform->matrix._44);
 }
 
 std::vector<Component*>* Entity::GetPCompListPtr()

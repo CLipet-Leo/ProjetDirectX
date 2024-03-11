@@ -1,4 +1,5 @@
 #pragma once
+#include "Move.h"
 
 class CharacterController : public Component
 {
@@ -14,6 +15,6 @@ public:
 private:
 	bool _bActiveController;
 
-	Component* _pMoveComp;
-	Component* _pCameraComp;
+	Move* _pMoveComp;
+	//Component* _pCameraComp;
 };

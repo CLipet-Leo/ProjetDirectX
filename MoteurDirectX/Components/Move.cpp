@@ -23,6 +23,11 @@ void Move::UpdateTransform()
 	_pEOwner->UpdateTransform(&_v3VectorDirector);
 }
 
+void Move::UpdateDirectorVect(XMFLOAT3 newDirectorVect)
+{
+	_v3VectorDirector = newDirectorVect;
+}
+
 XMFLOAT3 Move::GetVectorDirector()
 {
 	return _v3VectorDirector;

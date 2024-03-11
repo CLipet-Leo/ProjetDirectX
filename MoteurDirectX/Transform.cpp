@@ -34,9 +34,8 @@ void Transform::UpdateMatrix() {
 	transformer = scaleMat; // Donne le scaling de la matrice
 	transformer *= rotationMat; // Multiplie la matrice pour avoir la rotation
 	transformer *= positionMat; // Multiplie la matrice pour avoir la position
-	XMStoreFloat4x4(&matrix, transformer);
-
-
+	XMMATRIX newFinalMatrix = XMLoadFloat4x4(&matrix) + transformer;
+	XMStoreFloat4x4(&matrix, newFinalMatrix);
 
 
 };

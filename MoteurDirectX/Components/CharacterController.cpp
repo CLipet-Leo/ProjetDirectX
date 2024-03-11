@@ -1,7 +1,7 @@
 #include "../includes/Pch.h"
 
 CharacterController::CharacterController(Entity* _pEOwner, Params* params)
-	: Component(_pEOwner, CHARACTER_CONTROLLER), _bActiveController(true)//, _pMoveComp(_pEOwner->GetComponentPtr(MOVE)), _pCameraComp(_pEOwner->GetComponentPtr(CAMERA))
+	: Component(_pEOwner, CHARACTER_CONTROLLER), _bActiveController(true), _pMoveComp((Move*)_pEOwner->GetComponentPtr(MOVE))//, _pCameraComp(_pEOwner->GetComponentPtr(CAMERA))
 {
 
 }
@@ -23,6 +23,8 @@ void CharacterController::Update(const Timer& gt, WPARAM pParam)
 
 		case VKm_Z:
 			OutputDebugStringA("Z KeyDown \n");
+			_pMoveComp->UpdateDirectorVect({1 * gt.getDeltaTime() ,0,0});
+			_pMoveComp->UpdateTransform();
 			break;
 		case VKm_Q:
 			OutputDebugStringA("Q KeyDown \n");
