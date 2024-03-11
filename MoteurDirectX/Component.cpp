@@ -27,6 +27,11 @@ XMFLOAT3 Component::GetVectorDirector()
 	return {};
 }
 
+XMFLOAT3 Component::GetRotation()
+{
+	return {};
+}
+
 void Component::Update(const Timer& gt)
 {
 

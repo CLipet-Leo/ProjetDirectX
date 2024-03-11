@@ -44,35 +44,18 @@ void Transform::Rotate(float yaw, float pitch, float roll) {
 	rotQuat = quat;//donne le quaternion apr�s rotation
 
 
-	// Creation de la matrice de rotation � l'aide des quaternions
-	XMVECTOR qCurrentRot;
-	qCurrentRot = XMLoadFloat4(&qRot);
+	// Creation de la matrice de rotation à l'aide des quaternions
+	XMVECTOR qCurrentRot = XMLoadFloat4(&qRot);
 	rotQuat = XMQuaternionMultiply(rotQuat, qCurrentRot);
 
-	XMMATRIX rotMat;
-	rotMat = XMMatrixRotationQuaternion(rotQuat);
-	// stockage des valeurs 
-	XMVECTOR storage = XMVectorZero(); // vecteur avec des 0 tu connais ;)
+	XMMATRIX rotMat = XMMatrixRotationQuaternion(rotQuat);
 
-	XMVectorSetX(storage, XMVectorGetX(rotMat.r[0]));
-	XMVectorSetY(storage, XMVectorGetY(rotMat.r[0]));
-	XMVectorSetZ(storage, XMVectorGetZ(rotMat.r[0]));
-	XMStoreFloat3(&mRight, storage);
-
-	XMVectorSetX(storage, XMVectorGetX(rotMat.r[1]));
-	XMVectorSetY(storage, XMVectorGetY(rotMat.r[1]));
-	XMVectorSetZ(storage, XMVectorGetZ(rotMat.r[1]));
-	XMStoreFloat3(&mDir, storage);
-
-	XMVectorSetX(storage, XMVectorGetX(rotMat.r[2]));
-	XMVectorSetY(storage, XMVectorGetY(rotMat.r[2]));
-	XMVectorSetZ(storage, XMVectorGetZ(rotMat.r[2]));
-	XMStoreFloat3(&mUp, storage);
+	// No need to normalize the vectors here
+	XMStoreFloat3(&mRight, rotMat.r[0]);
+	XMStoreFloat3(&mDir, rotMat.r[1]);
+	XMStoreFloat3(&mUp, rotMat.r[2]);
 
 	XMStoreFloat4x4(&mRot, rotMat);
-
-
-
 };
 
 void Transform::UpdateMatrix() {

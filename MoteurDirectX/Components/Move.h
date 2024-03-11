@@ -8,6 +8,7 @@ class Move : public Component
 {
 private:
 	XMFLOAT3 _v3VectorDirector;
+	XMFLOAT3 _pTransform;
 	float _fVelocity;
 
 public:
@@ -19,5 +20,7 @@ public:
 	void Update(const Timer& gt)override;
 	void UpdateTransform();
 	void UpdateDirectorVect(XMFLOAT3 newDirectorVect);
+	void UpdateRotation(XMFLOAT3 newRotation);
 	XMFLOAT3 GetVectorDirector();
+	XMFLOAT3 GetRotation();
 };

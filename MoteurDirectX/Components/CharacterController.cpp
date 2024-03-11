@@ -23,7 +23,8 @@ void CharacterController::Update(const Timer& gt, WPARAM pParam)
 
 		case VKm_Z:
 			OutputDebugStringA("Z KeyDown \n");
-			_pMoveComp->UpdateDirectorVect({1.0f  ,1.0f, 1.0f});
+			_pMoveComp->UpdateDirectorVect({1.0f  ,0.0f, 0.0f});
+			_pMoveComp->UpdateRotation({ XMConvertToRadians(45.0f), 0.0f, 0.0f });
 			_pMoveComp->UpdateTransform();
 			break;
 		case VKm_Q:

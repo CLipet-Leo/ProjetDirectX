@@ -10,9 +10,9 @@ class Component;
 class Entity
 {
 private:
-	Transform* _pTransform;
 	std::vector<Component*> _LpComponents;
-	Component* _v3VectorDirector;
+	//Component* _v3VectorDirector;
+	Transform* _pTransform;
 
 public:
 	// Constru & Destru
@@ -24,7 +24,7 @@ public:
 	void RmvComponent(compSubType ARGCompTypeTarget);
 	void UpdateComponents(const Timer& gt);
 	Component* GetComponentPtr(compSubType ARGCompTypeTarget);
-	void UpdateTransform(XMFLOAT3* f3VectorDirector);
+	void UpdateTransform(XMFLOAT3* f3VectorDirector, XMFLOAT3* f3Rotation);
 	Transform* GetTransformPtr();
 
 	std::vector<Component*>* GetPCompListPtr();

@@ -112,23 +112,26 @@ Transform* Entity::GetTransformPtr()
 	return _pTransform;
 }
 
-void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)
+void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector, XMFLOAT3* f3Rotation)
 {
+    // Update position
+    _pTransform->mPos._41 = f3VectorDirector->x;
+    _pTransform->mPos._42 = f3VectorDirector->y;
+    _pTransform->mPos._43 = f3VectorDirector->z;
 
-	_pTransform->mPos._41 = f3VectorDirector->x;
-	_pTransform->mPos._42 = f3VectorDirector->y;
-	_pTransform->mPos._43 = f3VectorDirector->z;
+    VSCPrint(buff, "dirVect: x: %f, y: %f, z: %f\n", f3VectorDirector->x, f3VectorDirector->y, f3VectorDirector->z);
 
-	VSCPrint(buff, "dirVect: x: %f, y: %f, z: %f\n", f3VectorDirector->x, f3VectorDirector->y, f3VectorDirector->z);
+    // Update rotation
+    _pTransform->Rotate(f3Rotation->x, f3Rotation->y, f3Rotation->z);
 
-	_pTransform->UpdateMatrix();
+    // Update matrix
+    _pTransform->UpdateMatrix();
 
-	VSCPrint(buff, "matrix: x: %f, x2: %f, x3: %f, x4: %f\nmatrix: y: %f, y2: %f, y3: %f, y4: %f\nmatrix: z: %f, z2: %f, z3: %f, z4: %f\n",
-		_pTransform->matrix._11, _pTransform->matrix._12, _pTransform->matrix._13,
-		_pTransform->matrix._21, _pTransform->matrix._22, _pTransform->matrix._23,
-		_pTransform->matrix._31, _pTransform->matrix._32, _pTransform->matrix._33,
-		_pTransform->matrix._41, _pTransform->matrix._42, _pTransform->matrix._43);
-
+    VSCPrint(buff, "matrix: x: %f, x2: %f, x3: %f, x4: %f\nmatrix: y: %f, y2: %f, y3: %f, y4: %f\nmatrix: z: %f, z2: %f, z3: %f, z4: %f\n",
+        _pTransform->matrix._11, _pTransform->matrix._12, _pTransform->matrix._13,
+        _pTransform->matrix._21, _pTransform->matrix._22, _pTransform->matrix._23,
+        _pTransform->matrix._31, _pTransform->matrix._32, _pTransform->matrix._33,
+        _pTransform->matrix._41, _pTransform->matrix._42, _pTransform->matrix._43);
 }
 
 std::vector<Component*>* Entity::GetPCompListPtr()

@@ -26,6 +26,7 @@ public:
 	// Getter & Setter
 	compSubType Component::GetCompSubType();
 	virtual XMFLOAT3 Component::GetVectorDirector();
+	virtual XMFLOAT3 Component::GetRotation();
 
 	// Unsure if this is needed, we'll see by implementing actual Components sub-classes
 	// Would be called every frame, and do nothing

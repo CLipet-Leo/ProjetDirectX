@@ -43,6 +43,7 @@ struct IndiceBuffer
 struct MoveParams
 {
     XMFLOAT3 directorVector;
+    XMFLOAT3 rotation;
     float velocity;
 };
 
