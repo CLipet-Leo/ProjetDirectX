@@ -2,7 +2,9 @@
 #include "includes/Transform.h"
 
 
-Transform::Transform() {};
+Transform::Transform() {
+	Identity();
+};
 Transform::~Transform() {};
 
 void Transform::Identity() {
@@ -18,37 +20,16 @@ void Transform::Identity() {
 	XMStoreFloat4x4(&matrix, XMMatrixIdentity());
 };
 
-void Transform::UpdateMatrix() {
-
-
-	// Create scaling matrix
-	XMMATRIX scaleMat = XMMatrixScaling(qScal.x, qScal.y, qScal.z);
-
-	// Create rotation matrix
-	XMMATRIX rotationMat = XMMatrixRotationQuaternion(XMLoadFloat4(&qRot));
-
-	// Create translation matrix
-	XMMATRIX positionMat = XMMatrixTranslation(qPos.x, qPos.y, qPos.z);
-
-	XMMATRIX transformer; // transforme la matrice avec son �chelle et sa position
-	transformer = scaleMat; // Donne le scaling de la matrice
-	transformer *= rotationMat; // Multiplie la matrice pour avoir la rotation
-	transformer *= positionMat; // Multiplie la matrice pour avoir la position
-	XMMATRIX newFinalMatrix = XMLoadFloat4x4(&matrix) + transformer;
-	XMStoreFloat4x4(&matrix, newFinalMatrix);
-
-
-};
 void Transform::Rotate(float yaw, float pitch, float roll) {
+
 	XMVECTOR quat;
-	XMVECTOR rotQuat{};
+	XMVECTOR rotQuat = XMVectorZero();
 
-
-	// Yaw
-	XMVECTOR dir;
-	dir = XMLoadFloat3(&mDir);
-	quat = XMQuaternionRotationAxis(dir, yaw); // Retourne le quaternion selon un axe
-	rotQuat = XMQuaternionMultiply(rotQuat, quat); //donne le quaternion apr�s rotation
+	// Roll
+	XMVECTOR up;
+	up = XMLoadFloat3(&mUp);
+	quat = XMQuaternionRotationAxis(up, roll);
+	rotQuat = XMQuaternionMultiply(rotQuat, quat);
 
 	// Pitch
 	XMVECTOR right;
@@ -56,11 +37,11 @@ void Transform::Rotate(float yaw, float pitch, float roll) {
 	quat = XMQuaternionRotationAxis(right, pitch);
 	rotQuat = XMQuaternionMultiply(rotQuat, quat);
 
-	// Roll
-	XMVECTOR up;
-	up = XMLoadFloat3(&mUp);
-	quat = XMQuaternionRotationAxis(up, roll);
-	rotQuat = XMQuaternionMultiply(rotQuat, quat);
+	// Yaw
+	XMVECTOR dir;
+	dir = XMLoadFloat3(&mDir);
+	quat = XMQuaternionRotationAxis(dir, yaw); // Retourne le quaternion selon un axe
+	rotQuat = quat;//donne le quaternion apr�s rotation
 
 
 	// Creation de la matrice de rotation � l'aide des quaternions
@@ -92,4 +73,29 @@ void Transform::Rotate(float yaw, float pitch, float roll) {
 
 
 
+};
+
+void Transform::UpdateMatrix() {
+
+
+	// Create scaling matrix
+	XMMATRIX scaleMat = XMLoadFloat4x4(&mScal);
+
+	// Create rotation matrix
+	XMMATRIX rotationMat = XMLoadFloat4x4(&mRot);
+
+	// Create translation matrix
+	XMMATRIX positionMat = XMLoadFloat4x4(&mPos);
+
+	XMMATRIX transformer; // transforme la matrice avec son �chelle et sa position
+	transformer = scaleMat; // Donne le scaling de la matrice
+	transformer *= rotationMat; // Multiplie la matrice pour avoir la rotation
+	transformer *= positionMat; // Multiplie la matrice pour avoir la position
+
+	XMMATRIX currentMatrix = XMLoadFloat4x4(&matrix);
+	XMMATRIX newFinalMatrix = currentMatrix * transformer; // Permet de gérer en fonction du temps
+	XMStoreFloat4x4(&matrix, newFinalMatrix);
+
+	//XMMATRIX newFinalMatrix = transformer;
+	//XMStoreFloat4x4(&matrix, newFinalMatrix); méthode instantanée
 };

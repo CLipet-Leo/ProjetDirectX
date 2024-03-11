@@ -12,6 +12,7 @@ class Entity
 private:
 	Transform* _pTransform;
 	std::vector<Component*> _LpComponents;
+	Component* _v3VectorDirector;
 
 public:
 	// Constru & Destru

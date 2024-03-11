@@ -23,7 +23,7 @@ void CharacterController::Update(const Timer& gt, WPARAM pParam)
 
 		case VKm_Z:
 			OutputDebugStringA("Z KeyDown \n");
-			_pMoveComp->UpdateDirectorVect({1 * gt.getDeltaTime() ,0,0});
+			_pMoveComp->UpdateDirectorVect({1.0f  ,1.0f, 1.0f});
 			_pMoveComp->UpdateTransform();
 			break;
 		case VKm_Q:
