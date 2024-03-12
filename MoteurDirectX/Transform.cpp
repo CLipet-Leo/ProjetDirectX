@@ -80,6 +80,4 @@ void Transform::UpdateMatrix() {
 	XMMATRIX newFinalMatrix = currentMatrix * transformer; // Permet de gérer en fonction du temps
 	XMStoreFloat4x4(&matrix, newFinalMatrix);
 
-	//XMMATRIX newFinalMatrix = transformer;
-	//XMStoreFloat4x4(&matrix, newFinalMatrix); méthode instantanée
 };
