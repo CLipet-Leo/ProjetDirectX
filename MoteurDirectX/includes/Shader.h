@@ -3,7 +3,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-//#include <UploadBuffer.h>
+#include "Timer.h"
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
@@ -15,20 +15,22 @@ public: // Fonctions
     virtual ~Shader();
 
     // Créer les descriptorHeaps, le ConstantBuffers et les RootSignatures
-    bool Init(ComPtr<ID3D12Device> d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize);
+    bool Init(ID3D12Device* d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize);
+    void Resize(float fAspectRatio);
+    void UpdateMainPassCB(const Timer& gt, int iClientWidth, int iClientHeight, FrameResource* CurrFrameResource);
 
+protected:
 
-public:
-
-    void BuildDescriptorHeaps(ComPtr<ID3D12Device> d3dDevice, UINT OpaqueRitemsSize);
-    void BuildConstantBuffers(ComPtr<ID3D12Device> d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize);
-    void BuildRootSignature(ComPtr<ID3D12Device> d3dDevice);
+    void BuildDescriptorHeaps(ID3D12Device* d3dDevice, UINT OpaqueRitemsSize);
+    void BuildConstantBuffers(ID3D12Device* d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize);
+    void BuildRootSignature(ID3D12Device* d3dDevice);
 
     // Compile les fichiers hlsl
     void BuildShadersAndInputLayout();
 
-    void BuildPSOs(ComPtr<ID3D12Device> d3dDevice, DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
+    void BuildPSOs(ID3D12Device* d3dDevice, DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality);
 
+public:
     /*-------------------------/GETTER\-------------------------*/
     ComPtr<ID3D12RootSignature> GetRootSignature();
     ComPtr<ID3D12DescriptorHeap> GetCbvHeap();
@@ -36,7 +38,7 @@ public:
     UploadBuffer<ObjectConstants>* GetObjects()const;
     std::unordered_map<std::string, ComPtr<ID3D12PipelineState>> GetPSOs();
 
-public: // Variables
+protected: // Variables
 
     ComPtr<ID3D12RootSignature> _RootSignature = nullptr;
     ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
@@ -51,7 +53,17 @@ public: // Variables
 
     std::vector<std::unique_ptr<FrameResource>> _FrameResources;
 
+    PassConstants _MainPassCB;
+
     UINT uPassCbvOffset = 0;
+
+    XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
+    XMFLOAT4X4 mView = MathHelper::Identity4x4();
+    XMFLOAT4X4 mProj = MathHelper::Identity4x4();
+
+    float mTheta = 1.5f * XM_PI;
+    float mPhi = 0.2f * XM_PI;
+    float mRadius = 15.0f;
 };
 
 #endif

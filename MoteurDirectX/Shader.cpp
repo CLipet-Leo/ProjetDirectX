@@ -10,7 +10,7 @@ Shader::Shader()
 Shader::~Shader() 
 { }
 
-bool Shader::Init(ComPtr<ID3D12Device> d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize)
+bool Shader::Init(ID3D12Device* d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize)
 {
     BuildRootSignature(d3dDevice);
 
@@ -21,7 +21,43 @@ bool Shader::Init(ComPtr<ID3D12Device> d3dDevice, UINT uCbvSrvDescriptorSize, UI
     return true;
 }
 
-void Shader::BuildDescriptorHeaps(ComPtr<ID3D12Device> d3dDevice, UINT OpaqueRitemsSize)
+void Shader::Resize(float fAspectRatio)
+{
+    // The window resized, so update the aspect ratio and recompute the projection matrix.
+    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, fAspectRatio, 1.0f, 1000.0f);
+    XMStoreFloat4x4(&mProj, P);
+}
+
+void Shader::UpdateMainPassCB(const Timer& gt, int iClientWidth, int iClientHeight, FrameResource* CurrFrameResource)
+{
+    XMMATRIX view = XMLoadFloat4x4(&mView);
+    XMMATRIX proj = XMLoadFloat4x4(&mProj);
+
+    XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+    XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+    XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+    XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+    XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
+    XMStoreFloat4x4(&_MainPassCB.InvView, XMMatrixTranspose(invView));
+    XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
+    XMStoreFloat4x4(&_MainPassCB.InvProj, XMMatrixTranspose(invProj));
+    XMStoreFloat4x4(&_MainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+    XMStoreFloat4x4(&_MainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+    _MainPassCB.EyePosW = mEyePos;
+    _MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
+    _MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
+    _MainPassCB.NearZ = 1.0f;
+    _MainPassCB.FarZ = 1000.0f;
+    _MainPassCB.TotalTime = gt.getTotalTime();
+    _MainPassCB.DeltaTime = gt.getDeltaTime();
+
+    auto currPassCB = CurrFrameResource->_PassCB.get();
+    currPassCB->CopyData(0, _MainPassCB);
+}
+
+
+void Shader::BuildDescriptorHeaps(ID3D12Device* d3dDevice, UINT OpaqueRitemsSize)
 {
     UINT objCount = OpaqueRitemsSize;
     // Need a CBV descriptor for each object for each frame resource,
@@ -39,7 +75,7 @@ void Shader::BuildDescriptorHeaps(ComPtr<ID3D12Device> d3dDevice, UINT OpaqueRit
     ThrowIfFailed(d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
 }
 
-void Shader::BuildConstantBuffers(ComPtr<ID3D12Device> d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize)
+void Shader::BuildConstantBuffers(ID3D12Device* d3dDevice, UINT uCbvSrvDescriptorSize, UINT OpaqueRitemsSize)
 {
     UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
@@ -91,7 +127,7 @@ void Shader::BuildConstantBuffers(ComPtr<ID3D12Device> d3dDevice, UINT uCbvSrvDe
     }
 }
 
-void Shader::BuildRootSignature(ComPtr<ID3D12Device> d3dDevice)
+void Shader::BuildRootSignature(ID3D12Device* d3dDevice)
 {
     CD3DX12_DESCRIPTOR_RANGE cbvTable0;
     cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
@@ -138,7 +174,7 @@ void Shader::BuildShadersAndInputLayout()
     };
 }
 
-void Shader::BuildPSOs(ComPtr<ID3D12Device> d3dDevice, DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality)
+void Shader::BuildPSOs(ID3D12Device* d3dDevice, DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality)
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
 

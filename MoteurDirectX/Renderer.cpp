@@ -111,7 +111,7 @@ bool Renderer::Initialize()
 	// Reset the command list to prep for initialization commands.
 	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
 
-	if (!_Shaders.Init(_d3dDevice, uCbvSrvDescriptorSize, 10))
+	if (!_Shaders.Init(_d3dDevice.Get(), uCbvSrvDescriptorSize, 10))
 		return false;
 
 	// Execute the initialization commands.
@@ -325,13 +325,7 @@ void Renderer::OnResize()
 
 	UpdateViewport();
 
-	for (auto curEntity : _LpEntity)
-	{
-		Model* curEntityModel = (Model*)curEntity->GetComponentPtr(MODEL);
-		if (curEntityModel == nullptr)
-			continue;
-		curEntityModel->Resize(AspectRatio());
-	}
+	_Shaders.Resize(AspectRatio());
 }
 
 void Renderer::Update(const Timer& gt)
@@ -350,14 +344,9 @@ void Renderer::Update(const Timer& gt)
 		CloseHandle(eventHandle);
 	}
 
-	// Potentiel Update de chaque entities
-	/*UpdateObjectCBs(gt);
-	UpdateMainPassCB(gt);*/
-
-
+	// Update de chaque entities
 	auto currObjectCB = _CurrFrameResource->_ObjectCB.get();
 
-	// For each render item...
 	for (auto curEntity : _LpEntity)
 	{
 		curEntity->UpdateComponents(gt);
@@ -366,6 +355,8 @@ void Renderer::Update(const Timer& gt)
 			continue;
 		curEntityModel->Update(_Timer, _AllRitems, currObjectCB);
 	}
+
+	_Shaders.UpdateMainPassCB(_Timer, iClientWidth, iClientHeight, _CurrFrameResource);
 }
 
 void Renderer::Draw(const Timer& gt)

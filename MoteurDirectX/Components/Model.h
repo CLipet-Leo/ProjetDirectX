@@ -34,18 +34,10 @@ class Model : public Component
 public:
     Model(Entity* pEOwner, Params* params);
 
-    void Resize(float fAspectRatio);
     void Update(const Timer& gt, std::vector<RenderItem*> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB);
     void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, int iCurrFrameResourceIndex, ID3D12DescriptorHeap* CbvHeap, UINT uCbvSrvDescriptorSize);
 
 protected:
-    XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
-    XMFLOAT4X4 mView = MathHelper::Identity4x4();
-    XMFLOAT4X4 mProj = MathHelper::Identity4x4();
-
-    float mTheta = 1.5f * XM_PI;
-    float mPhi = 0.2f * XM_PI;
-    float mRadius = 15.0f;
 
     RenderItem* ritem;
 };

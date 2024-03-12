@@ -7,13 +7,6 @@ Model::Model(Entity* pEOwner, Params* params)
     this->ritem = new RenderItem;
 }
 
-void Model::Resize(float fAspectRatio)
-{
-    // The window resized, so update the aspect ratio and recompute the projection matrix.
-    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, fAspectRatio, 1.0f, 1000.0f);
-    XMStoreFloat4x4(&mProj, P);
-}
-
 void Model::Update(const Timer& gt, std::vector<RenderItem*> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB)
 {
     for (auto& e : AllRitems)
