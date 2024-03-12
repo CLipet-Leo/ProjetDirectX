@@ -75,7 +75,6 @@ enum compSubType
 #include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
-#include "MeshRenderer.h"
 #include "Timer.h"
 #include "Transform.h"
 // TODO move headers in include folder

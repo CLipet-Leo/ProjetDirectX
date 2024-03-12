@@ -31,7 +31,6 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FrameRessource.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -50,7 +49,6 @@
     <ClInclude Include="includes\Entity.h" />
     <ClInclude Include="includes\FrameRessource.h" />
     <ClInclude Include="includes\Mesh.h" />
-    <ClInclude Include="includes\MeshRenderer.h" />
     <ClInclude Include="includes\Pch.h" />
     <ClInclude Include="includes\Renderer.h" />
     <ClInclude Include="includes\Shader.h" />

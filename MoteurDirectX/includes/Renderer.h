@@ -1,9 +1,9 @@
 #pragma once
 #include "Timer.h"
-#include "MeshRenderer.h"
 #include "Shader.h"
 #include "Entity.h"
 #include "../Components/CharacterController.h"
+#include "../Components/Model.h"
 
 // Virtual Key define from Mathieu
 #define VKm_Z		0x5A
@@ -143,10 +143,7 @@ protected:
 	int iCurrFrameResourceIndex = 0;
 
 	// List of all the render items.
-	std::vector<std::unique_ptr<RenderItem>> _AllRitems;
-
-	// Render items divided by PSO.
-	std::vector<RenderItem*> _OpaqueRitems;
+	std::vector<RenderItem*> _AllRitems;
 
 	Timer _Timer;
 	Shader _Shaders;

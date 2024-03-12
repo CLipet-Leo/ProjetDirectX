@@ -17,7 +17,7 @@ void MeshRenderer::Resize(float fAspectRatio)
     XMStoreFloat4x4(&mProj, P);
 }
 
-void MeshRenderer::Update(FrameResource* CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB)
+void MeshRenderer::Update(FrameResource* CurrFrameResource, std::vector<RenderItem*> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB)
 {
     for (auto& e : AllRitems)
     {
@@ -40,13 +40,7 @@ void MeshRenderer::Update(FrameResource* CurrFrameResource, std::vector<std::uni
 
 void MeshRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems, FrameResource* CurrFrameResource, int iCurrFrameResourceIndex, ComPtr<ID3D12DescriptorHeap> CbvHeap, UINT uCbvSrvDescriptorSize)
 {
-    UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-    auto objectCB = CurrFrameResource->_ObjectCB->Resource();
-
-    // For each render item...
-    for (size_t i = 0; i < ritems.size(); ++i)
-    {
+    
         auto ri = ritems[i];
 
         cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
@@ -61,5 +55,4 @@ void MeshRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std
         cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
         cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
-    }
 }

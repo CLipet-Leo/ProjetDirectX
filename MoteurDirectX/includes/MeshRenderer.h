@@ -13,7 +13,7 @@ public:
     ~MeshRenderer();
 
     virtual void Resize(float fAspectRatio);
-    virtual void Update(FrameResource* _CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB);
+    virtual void Update(FrameResource* _CurrFrameResource, std::vector<RenderItem*> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB);
     void MeshRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems, FrameResource* CurrFrameResource, int iCurrFrameResourceIndex, 
         Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap, UINT uCbvSrvDescriptorSize);
 

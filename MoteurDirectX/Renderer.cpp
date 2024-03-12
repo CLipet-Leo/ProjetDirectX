@@ -6,6 +6,8 @@ using Microsoft::WRL::ComPtr;
 using namespace std;
 using namespace DirectX;
 
+const int gNumFrameResources = 3;
+
 LRESULT CALLBACK
 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -325,7 +327,10 @@ void Renderer::OnResize()
 
 	for (auto curEntity : _LpEntity)
 	{
-		curEntity->Resize(AspectRatio());
+		Model* curEntityModel = (Model*)curEntity->GetComponentPtr(MODEL);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Resize(AspectRatio());
 	}
 }
 
@@ -359,8 +364,7 @@ void Renderer::Update(const Timer& gt)
 		Model* curEntityModel = (Model*)curEntity->GetComponentPtr(MODEL);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Update(_Timer);
-
+		curEntityModel->Update(_Timer, _AllRitems, currObjectCB);
 	}
 }
 
@@ -406,9 +410,18 @@ void Renderer::Draw(const Timer& gt)
 	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_Shaders.GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 	passCbvHandle.Offset(passCbvIndex, uCbvSrvDescriptorSize);
 	_CommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
+
+	UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+	auto objectCB = _CurrFrameResource->_ObjectCB->Resource();
+
+	// For each entity...
 	for (auto curEntity : _LpEntity)
 	{
-		curEntity->DrawRenderItems(_CommandList.Get(), _OpaqueRitems, _CurrFrameResource);
+		Model* curEntityModel = (Model*)curEntity->GetComponentPtr(MODEL);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Draw(_Timer, _CommandList.Get(), iCurrFrameResourceIndex, _Shaders.GetCbvHeap().Get(), uCbvSrvDescriptorSize);
 	}
 
 	// Indicate a state transition on the resource usage.

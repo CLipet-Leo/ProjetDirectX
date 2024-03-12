@@ -4,10 +4,17 @@
 Model::Model(Entity* pEOwner, Params* params)
 	: Component(pEOwner, MODEL)
 {
-
+    this->ritem = new RenderItem;
 }
 
-void Model::Update(FrameResource* CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems, )
+void Model::Resize(float fAspectRatio)
+{
+    // The window resized, so update the aspect ratio and recompute the projection matrix.
+    XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, fAspectRatio, 1.0f, 1000.0f);
+    XMStoreFloat4x4(&mProj, P);
+}
+
+void Model::Update(const Timer& gt, std::vector<RenderItem*> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB)
 {
     for (auto& e : AllRitems)
     {
@@ -26,4 +33,22 @@ void Model::Update(FrameResource* CurrFrameResource, std::vector<std::unique_ptr
             e->NumFramesDirty--;
         }
     }
+}
+
+void Model::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, int iCurrFrameResourceIndex, ID3D12DescriptorHeap* CbvHeap, UINT uCbvSrvDescriptorSize)
+{
+    auto ri = this->ritem;
+
+    cmdList->IASetVertexBuffers(0, 1, &ri->Geo->VertexBufferView());
+    cmdList->IASetIndexBuffer(&ri->Geo->IndexBufferView());
+    cmdList->IASetPrimitiveTopology(ri->PrimitiveType);
+
+    // Offset to the CBV in the descriptor heap for this object and for this frame resource.
+    UINT cbvIndex = iCurrFrameResourceIndex * (UINT)sizeof(this->ritem) + ri->ObjCBIndex;
+    auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(CbvHeap->GetGPUDescriptorHandleForHeapStart());
+    cbvHandle.Offset(cbvIndex, uCbvSrvDescriptorSize);
+
+    cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
+
+    cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);
 }
