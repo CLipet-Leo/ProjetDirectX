@@ -59,6 +59,7 @@ enum compSubType
 	PARTICLE_GEN,
 	GAME_OBJECT,
 	CHARACTER_CONTROLLER,
+	MODEL
 };
 
 // More DirectX libs
@@ -83,6 +84,7 @@ enum compSubType
 #include "../Components/GameObject.h"
 #include "../Components/Move.h"
 #include "../Components/CharacterController.h"
+#include "../Components/Model.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"

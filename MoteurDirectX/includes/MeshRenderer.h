@@ -13,7 +13,7 @@ public:
     ~MeshRenderer();
 
     virtual void Resize(float fAspectRatio);
-    virtual void Update(FrameResource* _CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems);
+    virtual void Update(FrameResource* _CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB);
     void MeshRenderer::DrawRenderItems(ID3D12GraphicsCommandList* cmdList, const std::vector<RenderItem*>& ritems, FrameResource* CurrFrameResource, int iCurrFrameResourceIndex, 
         Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CbvHeap, UINT uCbvSrvDescriptorSize);
 
@@ -26,10 +26,6 @@ public:
     float mTheta = 1.5f * XM_PI;
     float mPhi = 0.2f * XM_PI;
     float mRadius = 15.0f;
-
-
-    Mesh* _mesh;
-    Shader* _shader;
 };
 
 #endif

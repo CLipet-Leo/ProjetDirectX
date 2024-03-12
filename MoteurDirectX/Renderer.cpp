@@ -109,7 +109,7 @@ bool Renderer::Initialize()
 	// Reset the command list to prep for initialization commands.
 	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
 
-	if (!shaders.Init(_d3dDevice, uCbvSrvDescriptorSize, 200))
+	if (!_Shaders.Init(_d3dDevice, uCbvSrvDescriptorSize, 10))
 		return false;
 
 	// Execute the initialization commands.
@@ -349,10 +349,18 @@ void Renderer::Update(const Timer& gt)
 	/*UpdateObjectCBs(gt);
 	UpdateMainPassCB(gt);*/
 
-	// update all Entities
+
+	auto currObjectCB = _CurrFrameResource->_ObjectCB.get();
+
+	// For each render item...
 	for (auto curEntity : _LpEntity)
 	{
 		curEntity->UpdateComponents(gt);
+		Model* curEntityModel = (Model*)curEntity->GetComponentPtr(MODEL);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Update(_Timer);
+
 	}
 }
 
@@ -368,11 +376,11 @@ void Renderer::Draw(const Timer& gt)
 	// Reusing the command list reuses memory.
 	if (bIsWireframe)
 	{
-		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), shaders.GetPSOs()["opaque_wireframe"].Get()));
+		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), _Shaders.GetPSOs()["opaque_wireframe"].Get()));
 	}
 	else
 	{
-		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), shaders.GetPSOs()["opaque"].Get()));
+		ThrowIfFailed(_CommandList->Reset(cmdListAlloc.Get(), _Shaders.GetPSOs()["opaque"].Get()));
 	}
 
 	_CommandList->RSSetViewports(1, &_ScreenViewport);
@@ -389,13 +397,13 @@ void Renderer::Draw(const Timer& gt)
 	// Specify the buffers we are going to render to.
 	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { shaders.GetCbvHeap().Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { _Shaders.GetCbvHeap().Get()};
 	_CommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	_CommandList->SetGraphicsRootSignature(shaders.GetRootSignature().Get());
+	_CommandList->SetGraphicsRootSignature(_Shaders.GetRootSignature().Get());
 
 	int passCbvIndex = uPassCbvOffset + iCurrFrameResourceIndex;
-	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(shaders.GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
+	auto passCbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_Shaders.GetCbvHeap()->GetGPUDescriptorHandleForHeapStart());
 	passCbvHandle.Offset(passCbvIndex, uCbvSrvDescriptorSize);
 	_CommandList->SetGraphicsRootDescriptorTable(1, passCbvHandle);
 	for (auto curEntity : _LpEntity)

@@ -5,8 +5,6 @@ using Microsoft::WRL::ComPtr;
 
 MeshRenderer::MeshRenderer()
 {
-    _mesh = new Mesh;
-    _shader = new Shader;
 }
 
 MeshRenderer::~MeshRenderer()
@@ -19,9 +17,8 @@ void MeshRenderer::Resize(float fAspectRatio)
     XMStoreFloat4x4(&mProj, P);
 }
 
-void MeshRenderer::Update(FrameResource* CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems)
+void MeshRenderer::Update(FrameResource* CurrFrameResource, std::vector<std::unique_ptr<RenderItem>> AllRitems, UploadBuffer<ObjectConstants>* currObjectCB)
 {
-    auto currObjectCB = CurrFrameResource->_ObjectCB.get();
     for (auto& e : AllRitems)
     {
         // Only update the cbuffer data if the constants have changed.  

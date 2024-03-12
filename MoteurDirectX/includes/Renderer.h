@@ -149,6 +149,6 @@ protected:
 	std::vector<RenderItem*> _OpaqueRitems;
 
 	Timer _Timer;
-	Shader shaders;
+	Shader _Shaders;
 	FrameResource* _CurrFrameResource = nullptr;
 };
