@@ -33,7 +33,7 @@ public:
 
 protected:
 
-	virtual void CreateDescriptorHeaps();
+	void CreateRtvAndDsvDescriptorHeaps();
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
@@ -49,8 +49,6 @@ protected:
 	void CreateCommandObjects();
 	void CreateSwapChain();
 	void CreateRenderTarget();
-	void BuildDescriptorHeaps();
-	void BuildConstantBuffers();
 	void DepthStencilAndBufferView();
 	void UpdateViewport();
 	void UpdateMainPassCB(const Timer& gt);
@@ -127,14 +125,12 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _RtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap; 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
 	D3D12_VIEWPORT _ScreenViewport;
 	D3D12_RECT _ScissorRect;
 
 	UINT uRtvDescriptorSize = 0;
 	UINT uDsvDescriptorSize = 0;
-	UINT uCbvSrvDescriptorSize = 0;
 
 	bool b4xMsaaState = false;    // 4X MSAA enabled
 	UINT u4xMsaaQuality = 0;      // quality level of 4X MSAA
@@ -153,7 +149,6 @@ protected:
 	// Other variables
 
 	UploadBuffer<PassConstants>* _PassCB = nullptr;
-	UploadBuffer<ObjectConstants>* _ObjectCB = nullptr;
 
 	PassConstants _MainPassCB;
 

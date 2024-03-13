@@ -17,8 +17,10 @@ public:
     MeshRenderer(Entity* pEOwner);
     ~MeshRenderer();
 
-    virtual void Update(const Timer& gt, UploadBuffer<ObjectConstants>* currObjectCB);
-    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbAddress);
+    virtual void Update(const Timer& gt);
+    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView);
+    
+    void BuildConstantBuffer(ID3D12Device* d3dDevice);
 
     Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
 
@@ -26,7 +28,9 @@ private:
     XMFLOAT4X4 _World = MathHelper::Identity4x4();
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
+    std::unique_ptr<UploadBuffer<ObjectConstants>> _ObjectCB = nullptr;
     UINT _ObjCBIndex = -1;
+    D3D12_GPU_VIRTUAL_ADDRESS cbAddress;
 
     MeshGeometry* _Geo = nullptr;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> _PSO = nullptr;

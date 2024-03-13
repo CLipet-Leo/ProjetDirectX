@@ -106,17 +106,6 @@ bool Renderer::Initialize()
 	// Do the initial resize code.
 	OnResize();
 
-	// Reset the command list to prep for initialization commands.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
-
-	BuildDescriptorHeaps();
-	BuildConstantBuffers();
-
-	// Execute the initialization commands.
-	ThrowIfFailed(_CommandList->Close());
-	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
-	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-
 	FlushCommandQueue();
 
 	_Mesh.BuildShapeGeometry(_d3dDevice, _CommandList);
@@ -269,7 +258,7 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-void Renderer::CreateDescriptorHeaps()
+void Renderer::CreateRtvAndDsvDescriptorHeaps()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
 	rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
@@ -339,8 +328,9 @@ void Renderer::Update(const Timer& gt)
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Update(_Timer, _ObjectCB);
+		curEntityModel->Update(_Timer);
 	}
+	//UpdateMainPassCB(_Timer);
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -388,7 +378,7 @@ void Renderer::Draw(const Timer& gt)
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Draw(_Timer, _CommandList.Get(), _ObjectCB->Resource()->GetGPUVirtualAddress());
+		curEntityModel->Draw(_Timer, _CommandList.Get(), CurrentBackBufferView(), DepthStencilView());
 	}
 
 	// Indicate a state transition on the resource usage.
@@ -447,6 +437,9 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			curNewComp = new GameObject(newEntity, params);
 			newEntity->AddComponent(curNewComp);
 			break;
+		case MESH_RENDERER:
+			curNewComp = new MeshRenderer(newEntity);
+			newEntity->AddComponent(curNewComp);
 		case CHARACTER_CONTROLLER:
 			CharacterController* newCC = new CharacterController(newEntity, params);
 			newEntity->AddComponent(newCC);
@@ -516,7 +509,7 @@ bool Renderer::InitDirect3D()
 
 	CreateCommandObjects();
 	CreateSwapChain();
-	CreateDescriptorHeaps();
+	CreateRtvAndDsvDescriptorHeaps();
 
 	return true;
 }
@@ -549,7 +542,6 @@ void Renderer::CreateFenceAndDescriptorSize()
 	ThrowIfFailed(_d3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_Fence)));
 	uRtvDescriptorSize = _d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	uDsvDescriptorSize = _d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-	uCbvSrvDescriptorSize = _d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
 void Renderer::Check4xMsaaQuality()
@@ -625,36 +617,6 @@ void Renderer::CreateRenderTarget()
 		// Next entry in heap.
 		rtvHeapHandle.Offset(1, uRtvDescriptorSize);
 	}
-}
-
-void Renderer::BuildDescriptorHeaps()
-{
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 1;
-	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDesc.NodeMask = 0;
-	ThrowIfFailed(_d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
-}
-
-void Renderer::BuildConstantBuffers()
-{
-	_ObjectCB = new UploadBuffer<ObjectConstants>(_d3dDevice, 1, true);
-
-	UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-	_d3dDevice->CreateConstantBufferView(
-		&cbvDesc,
-		_CbvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
 void Renderer::DepthStencilAndBufferView()
