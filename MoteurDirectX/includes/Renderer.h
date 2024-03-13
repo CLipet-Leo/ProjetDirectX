@@ -88,6 +88,12 @@ public:
 	// Return the _DirectCmdListAlloc variable
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAlloc()const;
 
+	DXGI_FORMAT GetBackBufferFormat()const;
+	DXGI_FORMAT GetDepthStencilFormat()const;
+
+	bool Get4xMsaaState()const;
+	UINT Get4xMsaaQuality()const;
+
 protected:
 
 	static Renderer* _App;
@@ -142,6 +148,7 @@ protected:
 	int iClientHeight = 600;
 
 	Timer _Timer;
+	Mesh _Mesh;
 
 	// Other variables
 

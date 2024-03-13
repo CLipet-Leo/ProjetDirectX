@@ -8,6 +8,11 @@ MeshRenderer::MeshRenderer(Entity* pEOwner)
 {
     _pMesh = new Mesh();
     _pShader = new Shader();
+
+    _pShader->BuildRootSignature();
+    _pShader->CompileShaders();
+    _pShader->BuildPSO();
+    _Geo = _pMesh->GetGeometry("box");
 }
 
 MeshRenderer::~MeshRenderer()

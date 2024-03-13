@@ -73,7 +73,7 @@ public:
 	Vertex 	MidPoint(const Vertex& v0, const Vertex& v1);
 
 public:
-	void BuildShapeGeometry(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList, std::unordered_map<std::string, MeshGeometry*>& Geometries);
+	void BuildShapeGeometry(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList);
 	/*-------------------------/GETTER\-------------------------*/
 	MeshGeometry* GetGeometry(const std::string& geometryName);
 protected:

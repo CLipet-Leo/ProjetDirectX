@@ -70,6 +70,7 @@ bool Game::Initialize()
 
     iLtypes.push_back(CHARACTER_CONTROLLER);
     iLtypes.push_back(MOVE);
+    iLtypes.push_back(MESH_RENDERER);
 
     InstanciateEntity(iLtypes, &params);
 

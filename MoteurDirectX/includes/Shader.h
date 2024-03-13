@@ -3,7 +3,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-//#include <UploadBuffer.h>
+#include "Renderer.h"
 
 using namespace DirectX;
 
@@ -15,11 +15,11 @@ public: // Fonctions
 
 public:
 
-    void BuildRootSignature(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
+    void BuildRootSignature();
 
     // Compile les fichiers hlsl
     void CompileShaders();
-    void BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice);
+    void BuildPSO();
 
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
     std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
@@ -36,6 +36,7 @@ public: // Variables
 
     Microsoft::WRL::ComPtr<ID3D12PipelineState> _PSO = nullptr;
 
+    Renderer* renderer;
 };
 
 #endif
