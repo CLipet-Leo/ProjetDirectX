@@ -31,6 +31,7 @@ public:
 	int Run();
 	virtual bool Initialize();
 	virtual LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	Entity* InstanciateEntity(std::vector<int> compList, Params* params);
 
 protected:
 
@@ -38,7 +39,6 @@ protected:
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
-	Entity* InstanciateEntity(std::vector<int> compList, Params* params);
 
 protected:
 

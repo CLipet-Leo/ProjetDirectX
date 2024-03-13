@@ -40,13 +40,6 @@ struct IndiceBuffer
 
 // Component's params
 
-struct MoveParams
-{
-    XMFLOAT3 directorVector;
-    XMFLOAT3 rotation;
-    float velocity;
-};
-
 enum GameObjType
 {
     PLAYER = 0,
@@ -54,11 +47,18 @@ enum GameObjType
     OBSTACLE,
 };
 
+struct MoveParams
+{
+    XMFLOAT3 directorVector;
+    XMFLOAT3 rotation;
+    float velocity;
+    GameObjType type;
+};
+
 struct GameObjectParams
 {
     int iDamage;
     int iHealth;
-    GameObjType type;
 };
 
 class Component;

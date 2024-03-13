@@ -7,6 +7,7 @@
 
 #include <Pch.h>
 #include "Game.h"
+#include "Enemy.h"
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -61,19 +62,13 @@ Game::~Game()
 
 void Game::spawnEnemy()
 {
-    Params params;
-    params.moveParams.directorVector = { 1.f, 1.f, 1.f };
-    params.moveParams.velocity = 2.f;
-    params.gameObjectParams.type = ENEMY;
-
-    std::vector<int> iLtypes;
-    iLtypes.push_back(MOVE);
-
-    InstanciateEntity(iLtypes, &params);
+    _LpEntity.push_back(new Enemy(this));
 }
 
 bool Game::Initialize()
 {
+    spawnEnemy();
+
     if (!Renderer::Initialize())
         return false;
 

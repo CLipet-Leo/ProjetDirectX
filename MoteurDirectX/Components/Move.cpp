@@ -3,9 +3,14 @@
 
 // Constru & Destru
 Move::Move(Entity* pEOwner, Params* params)
-	: Component(pEOwner, MOVE), _v3VectorDirector(params->moveParams.directorVector), _fVelocity(params->moveParams.velocity), _pTransform(params->moveParams.rotation)
+	: Component(pEOwner, MOVE),
+	_v3VectorDirector(params->moveParams.directorVector),
+	_fVelocity(params->moveParams.velocity), 
+	_pTransform(params->moveParams.rotation),
+	_myEntityType(params->moveParams.type),
+	_EntityTransformPtr(pEOwner->GetTransformPtr())
 {
-
+	
 }
 
 Move::~Move()
@@ -15,7 +20,14 @@ Move::~Move()
 
 void Move::Update(const Timer& gt)
 {
+	if (_myEntityType == ENEMY)
+	{
+		if (_EntityTransformPtr->qPos.x > 5)
+			_v3VectorDirector.x = -1.f;
 
+		if (_EntityTransformPtr->mPos._11 < -5)
+			_v3VectorDirector.x = 1.f;
+	}
 }
 
 void Move::UpdateTransform()

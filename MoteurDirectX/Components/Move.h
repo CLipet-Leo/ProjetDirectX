@@ -10,11 +10,13 @@ private:
 	XMFLOAT3 _v3VectorDirector;
 	XMFLOAT3 _pTransform;
 	float _fVelocity;
+	Transform* _EntityTransformPtr;
 
 public:
 	// Constru & Destru
 	Move(Entity* pEOwner, Params* params);
 	~Move();
+	int _myEntityType;
 
 	// Methods
 	void Update(const Timer& gt)override;

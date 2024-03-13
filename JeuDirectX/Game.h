@@ -18,6 +18,8 @@ public:
 
 	virtual bool Initialize()override;
 
+	std::vector<Enemy*> _LpEntity;
+
 	void spawnEnemy();
 
 private:
