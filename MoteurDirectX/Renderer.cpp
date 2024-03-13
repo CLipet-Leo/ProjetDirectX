@@ -119,6 +119,8 @@ bool Renderer::Initialize()
 
 	FlushCommandQueue();
 
+	_Mesh.BuildShapeGeometry(_d3dDevice, _CommandList);
+
 	return true;
 }
 
@@ -895,4 +897,24 @@ ComPtr<ID3D12GraphicsCommandList> Renderer::CurrentCommandList()const
 ComPtr<ID3D12CommandAllocator> Renderer::GetCommandAlloc()const
 {
 	return _DirectCmdListAlloc;
+}
+
+DXGI_FORMAT Renderer::GetBackBufferFormat()const
+{
+	return dBackBufferFormat;
+}
+
+DXGI_FORMAT Renderer::GetDepthStencilFormat()const
+{
+	return dDepthStencilFormat;
+}
+
+bool Renderer::Get4xMsaaState()const
+{
+	return b4xMsaaState;
+}
+
+UINT Renderer::Get4xMsaaQuality()const
+{
+	return u4xMsaaQuality;
 }

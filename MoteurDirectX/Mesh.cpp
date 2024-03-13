@@ -302,7 +302,7 @@ Mesh::Vertex Mesh::MidPoint(const Vertex& v0, const Vertex& v1)
     return v;
 }
 
-void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList, std::unordered_map<std::string, MeshGeometry*>& Geometries)
+void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
 {
     // Part box
     MeshData* box = CreateBox(1.5f, 0.5f, 1.5f, 3);
@@ -339,10 +339,7 @@ void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graph
     boxGeo->IndexFormat = DXGI_FORMAT_R16_UINT;
     boxGeo->IndexBufferByteSize = ibByteSize;
     //boxGeo->DisposeUploaders();
-    Geometries["box"] = boxGeo;
-
-
-
+    _Geometries.push_back(boxGeo);
 
     // Part sphere
     MeshData* sphere = CreateSphere(1.0f, 20, 20);
@@ -380,7 +377,7 @@ void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graph
     sphereGeo->IndexBufferByteSize = sphereIbByteSize;
 
     //sphereGeo->DisposeUploaders();
-    Geometries["sphere"] = sphereGeo;
+    _Geometries.push_back(sphereGeo);
 }
 
 

@@ -29,6 +29,7 @@ private:
     UINT _ObjCBIndex = -1;
 
     MeshGeometry* _Geo = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> _PSO = nullptr;
 
     // Primitive topology.
     D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
