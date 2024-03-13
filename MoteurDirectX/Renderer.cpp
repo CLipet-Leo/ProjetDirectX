@@ -1,6 +1,9 @@
 #include "includes/Pch.h"
 #include "includes/Renderer.h"
 
+// Needed to build View matrix
+#include "Components/Camera.h"
+
 
 using Microsoft::WRL::ComPtr;
 using namespace std;
@@ -25,6 +28,7 @@ HWND Renderer::MainWnd()const
 	return hMainWnd;
 }
 
+// Constru & Destru
 Renderer::Renderer(HINSTANCE hInstance)
 	: hAppInst(hInstance)
 {
@@ -33,7 +37,6 @@ Renderer::Renderer(HINSTANCE hInstance)
 	_App = this;
 	meshRenderer = new MeshRenderer;
 }
-
 Renderer::~Renderer()
 {
 	if (_d3dDevice != nullptr)
@@ -59,13 +62,11 @@ void Renderer::Set4xMsaaState(bool value)
 
 int Renderer::Run()
 {
-
 	char buff[200]{}; // Global within the class (in main.cpp, it's a member to avoid problems)
 
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-
  
 	while (msg.message != WM_QUIT)
 	{
@@ -330,6 +331,41 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
+	// Updates the View matrix (and so WorldViewProj) in respect to the Camera.
+	// I think we need to do this every frame, otherwise the screen just won't update
+	// Gets the Camera pointer so we can use its getters 
+	Camera* pCamera = nullptr;
+	for (auto pEntity : _LpEntity)
+	{
+		for (auto pComp : *(pEntity->GetPCompListPtr()))
+		{
+			if (pComp->GetCompSubType() == CAMERA)
+				pCamera = static_cast<Camera*>(pComp);
+			break;
+		}
+		if (pCamera != nullptr)
+			break;
+	}
+
+	// Calculates coordinates for the Camera probably idk
+	float x = pCamera->GetRadius() * sinf(pCamera->GetPhi()) * cosf(pCamera->GetTheta());
+	float y = pCamera->GetRadius() * sinf(pCamera->GetPhi());
+	float z = pCamera->GetRadius() * sinf(pCamera->GetPhi()) * sinf(pCamera->GetTheta());
+
+	// Setups the values to update the View matrix
+	XMVECTOR pos = XMVectorZero();
+	XMVECTOR target = XMVectorSet(x, y, z, 1.0f);
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX world = XMLoadFloat4x4(&_m4World);
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMStoreFloat4x4(&_m4View, view);
+	XMMATRIX proj = XMLoadFloat4x4(&_m4Proj);
+
+	// Updates WorldViewProj
+	XMMATRIX wvp = world * view * proj;
+	XMStoreFloat4x4(&_m4WorldViewProj, wvp);
+
 	meshRenderer->Update();
 	// update all Entities
 	for (auto curEntity : _LpEntity)
@@ -408,6 +444,10 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 
 		switch (curCompToAdd)
 		{
+		case CAMERA:
+			curNewComp = new Camera(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
 		case MOVE:
 			curNewComp = new Move(newEntity, params);
 			newEntity->AddComponent(curNewComp);

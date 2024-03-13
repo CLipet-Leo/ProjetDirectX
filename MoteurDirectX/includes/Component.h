@@ -21,14 +21,13 @@ protected:
 public:
 	// Constru & Destru
 	Component::Component(Entity* pEArgOwner, compSubType subType);
-	virtual Component::~Component();
+	virtual Component::~Component() = 0; // pure virtual function : This class is now abstract
 
 	// Getter & Setter
 	compSubType Component::GetCompSubType();
 	virtual XMFLOAT3 Component::GetVectorDirector();
-
-	// Unsure if this is needed, we'll see by implementing actual Components sub-classes
-	// Would be called every frame, and do nothing
+	
+	// Updates the component
 	virtual void Component::Update(const Timer& gt);
 };
 

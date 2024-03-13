@@ -142,4 +142,10 @@ protected:
 
 	Timer _Timer;
 	MeshRenderer* meshRenderer;
+
+	//XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT4X4 _m4World = MathHelper::Identity4x4();
+	XMFLOAT4X4 _m4View = MathHelper::Identity4x4();
+	XMFLOAT4X4 _m4Proj = MathHelper::Identity4x4();
+	XMFLOAT4X4 _m4WorldViewProj = MathHelper::Identity4x4();
 };

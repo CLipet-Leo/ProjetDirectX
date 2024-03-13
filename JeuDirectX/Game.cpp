@@ -70,6 +70,19 @@ bool Game::Initialize()
 
     iLtypes.push_back(CHARACTER_CONTROLLER);
     iLtypes.push_back(MOVE);
+    iLtypes.push_back(CAMERA);
+
+    // Setups parameters for the Camera
+    params.cameraParams.theta = 1.5f * XM_PI;
+    params.cameraParams.phi = XM_PIDIV4;
+    params.cameraParams.radius = 5.0f;
+    
+    /*
+    // Setups parameters for Move
+    //params.moveParams.velocity = 4.0f;
+    
+    //VSCPrint("%f", params.cameraParams.theta);
+    */
 
     InstanciateEntity(iLtypes, &params);
 

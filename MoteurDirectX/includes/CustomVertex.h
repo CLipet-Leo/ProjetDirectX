@@ -38,7 +38,16 @@ struct IndiceBuffer
     std::vector<int> IndiceList;
 };
 
-// Component's params
+//  / ================ \
+// { Components params  }
+//  \ ================ /
+
+struct CameraParams
+{
+    float radius;
+    float phi;
+    float theta;
+};
 
 struct MoveParams
 {
@@ -64,4 +73,5 @@ union Params
     GameObjectParams gameObjectParams;
     MoveParams moveParams;
     CharacterControllerParams characterControllerParams;
+    CameraParams cameraParams;
 };

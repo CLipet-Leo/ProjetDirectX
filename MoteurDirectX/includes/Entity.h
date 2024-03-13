@@ -21,10 +21,13 @@ public:
 	// Methods to manage components
 	void AddComponent(Component* ARGpComp);
 	void RmvComponent(compSubType ARGCompTypeTarget);
-	void UpdateComponents(const Timer& gt);
-	Component* GetComponentPtr(compSubType ARGCompTypeTarget);
-	void UpdateTransform(XMFLOAT3* f3VectorDirector);
-	Transform* GetTransformPtr();
 
+	// Methods to change the Entity's state and data
+	void UpdateComponents(const Timer& gt);
+	void UpdateTransform(XMFLOAT3* f3VectorDirector);
+
+	// Getter & Setter
+	Transform* GetTransformPtr();
 	std::vector<Component*>* GetPCompListPtr();
+	Component* GetComponentPtr(compSubType ARGCompTypeTarget);
 };

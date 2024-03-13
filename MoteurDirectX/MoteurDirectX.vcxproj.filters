@@ -42,19 +42,17 @@
     <ClCompile Include="Components\Move.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Components\Factory.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Components\GameObject.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="..\DirectX\MathHelper.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Collision.cpp">
+    <ClCompile Include="Components\Collision.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Components\CharacterController.cpp" />
+    <ClCompile Include="Components\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\Pch.h">
@@ -90,9 +88,6 @@
     <ClInclude Include="includes\MeshRenderer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Components\Factory.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Components\GameObject.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -102,9 +97,10 @@
     <ClInclude Include="..\DirectX\MathHelper.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Collision.h">
+    <ClInclude Include="Components\Collision.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\color.hlsl" />
