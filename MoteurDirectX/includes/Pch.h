@@ -60,6 +60,7 @@ enum compSubType
 	PARTICLE_GEN,
 	GAME_OBJECT,
 	CHARACTER_CONTROLLER,
+	MESH_RENDERER
 };
 
 // More DirectX libs
@@ -74,7 +75,6 @@ enum compSubType
 #include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
-#include "MeshRenderer.h"
 #include "Timer.h"
 #include "Transform.h"
 // TODO move headers in include folder
@@ -83,6 +83,7 @@ enum compSubType
 #include "../Components/GameObject.h"
 #include "../Components/Move.h"
 #include "../Components/CharacterController.h"
+#include "../Components/MeshRenderer.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"

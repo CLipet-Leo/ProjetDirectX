@@ -1,6 +1,5 @@
 #pragma once
 #include "Timer.h"
-#include "MeshRenderer.h"
 #include "Shader.h"
 #include "Entity.h"
 #include "../Components/CharacterController.h"
@@ -50,8 +49,12 @@ protected:
 	void CreateCommandObjects();
 	void CreateSwapChain();
 	void CreateRenderTarget();
+	void BuildDescriptorHeaps();
+	void BuildConstantBuffers();
 	void DepthStencilAndBufferView();
 	void UpdateViewport();
+	void UpdateMainPassCB(const Timer& gt);
+	// Other utils functions
 	void FlushCommandQueue();
 	void CalculateFrameStats();
 	void LogAdapters();
@@ -117,7 +120,8 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D12Resource> _DepthStencilBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _RtvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap; 
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
 	D3D12_VIEWPORT _ScreenViewport;
 	D3D12_RECT _ScissorRect;
@@ -134,11 +138,21 @@ protected:
 	DXGI_FORMAT dBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT dDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-
 	int iClientWidth = 800;
 	int iClientHeight = 600;
 
-	bool bFirstInit = true;
+	Timer _Timer;
+
+	// Other variables
+
+	UploadBuffer<PassConstants>* _PassCB = nullptr;
+	UploadBuffer<ObjectConstants>* _ObjectCB = nullptr;
+
+	PassConstants _MainPassCB;
+
+	XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT4X4 mView = MathHelper::Identity4x4();
+	XMFLOAT4X4 mProj = MathHelper::Identity4x4();
 
 	Timer _Timer;
 	MeshRenderer* meshRenderer;
