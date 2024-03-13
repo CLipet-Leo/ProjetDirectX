@@ -94,6 +94,7 @@ struct MeshGeometry
 	}
 };
 
+
 inline std::wstring AnsiToWString(const std::string& str)
 {
     WCHAR buffer[512];
