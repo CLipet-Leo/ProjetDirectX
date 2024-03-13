@@ -19,14 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\DirectX\MathHelper.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Components\CharacterController.cpp" />
     <ClCompile Include="Components\Factory.cpp" />
     <ClCompile Include="Components\GameObject.cpp" />
-    <ClCompile Include="Components\LookAround.cpp" />
+    <ClCompile Include="Components\MeshRenderer.cpp" />
     <ClCompile Include="Components\Move.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -34,21 +36,28 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\DirectX\MathHelper.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Components\CharacterController.h" />
     <ClInclude Include="Components\Factory.h" />
     <ClInclude Include="Components\GameObject.h" />
-    <ClInclude Include="Components\LookAround.h" />
+    <ClInclude Include="Components\MeshRenderer.h" />
     <ClInclude Include="Components\Move.h" />
     <ClInclude Include="includes\Component.h" />
     <ClInclude Include="includes\CustomVertex.h" />
     <ClInclude Include="includes\Entity.h" />
     <ClInclude Include="includes\Mesh.h" />
-    <ClInclude Include="includes\MeshRenderer.h" />
     <ClInclude Include="includes\Pch.h" />
     <ClInclude Include="includes\Renderer.h" />
     <ClInclude Include="includes\Shader.h" />
     <ClInclude Include="includes\Timer.h" />
     <ClInclude Include="includes\Transform.h" />
     <ClInclude Include="includes\Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\color.hlsl">
+      <FileType>Document</FileType>
+    </Text>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -9,7 +9,6 @@ Mesh::Mesh() {}
 
 Mesh::~Mesh() {}
 
-
 Mesh::MeshData* Mesh::CreateBox(float width, float height, float depth, uint32 numSubdivisions)
 {
     MeshData* meshData = new MeshData();
@@ -216,7 +215,6 @@ void Mesh::Subdivide(MeshData& meshData)
     // Save a copy of the input geometry.
     MeshData inputCopy = meshData;
 
-
     meshData.Vertices.resize(0);
     meshData.Indices32.resize(0);
 
@@ -236,7 +234,7 @@ void Mesh::Subdivide(MeshData& meshData)
         Vertex v0 = inputCopy.Vertices[inputCopy.Indices32[i * 3 + 0]];
         Vertex v1 = inputCopy.Vertices[inputCopy.Indices32[i * 3 + 1]];
         Vertex v2 = inputCopy.Vertices[inputCopy.Indices32[i * 3 + 2]];
-
+      
         //
         // Generate the midpoints.
         //

@@ -67,7 +67,7 @@ public:
 	MeshData* CreateBox(float width, float height, float depth, uint32 numSubdivisions);
 	MeshData* CreateSphere(float radius, uint32 sliceCount, uint32 stackCount);
 
-private:
+	MeshGeometry* mBoxGeo = nullptr;
 
 	void Subdivide(MeshData& meshData);
 	Vertex 	MidPoint(const Vertex& v0, const Vertex& v1);

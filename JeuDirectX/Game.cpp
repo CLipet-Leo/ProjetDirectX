@@ -17,12 +17,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     _CrtMemCheckpoint(&memStateInit);
 #endif
 
+    char buff[200]{}; // Global within the class (in main.cpp, it's a member to avoid problems)
+
     try
     {
         Game theApp(hInstance);
         if (!theApp.Initialize())
             return 0;
     
+        printf("hello");
         return theApp.Run();
     }
     catch (DxException& e)
@@ -47,12 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 Game::Game(HINSTANCE hInstance)
     : Renderer(hInstance)
 {
-    /**/ /* <[)  BAPT CODE :3  (]> */ /**/
-    // Yes I know I could've done ": variable(value)", but it UGLEH
-    _pM4World = &(MathHelper::Identity4x4());
-    _pM4View = &(MathHelper::Identity4x4());
-    _pM4Proj = &(MathHelper::Identity4x4());
-    /**/ /* <[)  BAPT CODE :3  (]> */ /**/
+
 }
 
 Game::~Game()
@@ -65,6 +63,15 @@ bool Game::Initialize()
 {
     if (!Renderer::Initialize())
         return false;
+
+    Params params;
+
+    std::vector<int> iLtypes;
+
+    iLtypes.push_back(CHARACTER_CONTROLLER);
+    iLtypes.push_back(MOVE);
+
+    InstanciateEntity(iLtypes, &params);
 
     return true;
 }

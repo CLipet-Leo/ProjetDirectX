@@ -1,7 +1,11 @@
 #pragma once
-#include "Entity.h"
+//#include "Entity.h"
 // Forward declarations
-//class Entity;
+class Entity;
+
+#ifndef COMPONENT_H
+#define COMPONENT_H
+
 
 // Enum for Component to keep track of its sub-class
 // TODO : Move that in a general purpose header ? Maybe not since Entity, and Component sub-classes import this Component.h
@@ -24,6 +28,8 @@ public:
 	virtual XMFLOAT3 Component::GetVectorDirector();
 
 	// Unsure if this is needed, we'll see by implementing actual Components sub-classes
-	// Would be called every frame, and do stuff
-	void Component::Update();
+	// Would be called every frame, and do nothing
+	virtual void Component::Update(const Timer& gt);
 };
+
+#endif

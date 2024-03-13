@@ -11,8 +11,7 @@ class Entity
 {
 private:
 	Transform* _pTransform;
-	static std::vector<Component*> _LpComponents;
-	static std::vector<Entity*> _LpEntity;
+	std::vector<Component*> _LpComponents;
 
 public:
 	// Constru & Destru
@@ -22,6 +21,10 @@ public:
 	// Methods to manage components
 	void AddComponent(Component* ARGpComp);
 	void RmvComponent(compSubType ARGCompTypeTarget);
+	void UpdateComponents(const Timer& gt);
+	Component* GetComponentPtr(compSubType ARGCompTypeTarget);
+	void UpdateTransform(XMFLOAT3* f3VectorDirector);
+	Transform* GetTransformPtr();
 
 	std::vector<Component*>* GetPCompListPtr();
 };

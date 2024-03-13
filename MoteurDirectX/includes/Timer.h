@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GAMETIMER_H
-#define GAMETIMER_H
+#ifndef TIMER_H
+#define TIMER_H
 
 class Timer
 {
@@ -18,7 +18,8 @@ public:
 
 private:
 	double iDeltaTime;
-	float fTotalTime;
+	double fTotalTime;
+	double mSecondsPerCount;
 
 	__int64 iCurTime;
 	__int64 iPrevTime;
@@ -26,4 +27,4 @@ private:
 	bool bStopped;
 };
 
-#endif GAMETIMER_H
+#endif TIMER_H

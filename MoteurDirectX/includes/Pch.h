@@ -1,5 +1,6 @@
 #pragma once
 
+
 // Environnement de débug de la Window
 #if defined(DEBUG) || defined(_DEBUG)
 	#define _CRTDBG_MAP_ALLOC
@@ -11,6 +12,14 @@
 #include <WindowsX.h>
 #include <WinBase.h>
 #include <wrl.h>
+
+// Stuff to print in the Visual console
+#include <stdio.h>
+#define VSCPrint(buffer, msg, ...) \
+    do{ \
+        _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, msg, __VA_ARGS__); \
+        OutputDebugStringA(buffer); \
+    } while(0)
 
 // DirectX libs
 #include <dxgi1_4.h>
@@ -34,6 +43,9 @@
 #include <sstream>
 #include <cassert>
 #include <comdef.h>
+#include <locale>
+#include <codecvt>
+
 
 // Enum
 enum compSubType
@@ -46,6 +58,8 @@ enum compSubType
 	MOVE,
 	PARTICLE_GEN,
 	GAME_OBJECT,
+	CHARACTER_CONTROLLER,
+	MESH_RENDERER
 };
 
 // More DirectX libs
@@ -56,11 +70,10 @@ enum compSubType
 // Custom code libs
 #include "..\..\DirectX\UploadBuffer.h"
 #include "CustomVertex.h"
-#include "MeshRenderer.h"
 #include "Mesh.h"
+#include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
-#include "Shader.h"
 #include "Timer.h"
 #include "Transform.h"
 // TODO move headers in include folder
@@ -68,10 +81,11 @@ enum compSubType
 #include "Entity.h"
 #include "../Components/GameObject.h"
 #include "../Components/Move.h"
+#include "../Components/CharacterController.h"
+#include "../Components/MeshRenderer.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"
-
 
 // Liens nécessaires de la librairie d3d12
 #pragma comment(lib,"d3dcompiler.lib")
