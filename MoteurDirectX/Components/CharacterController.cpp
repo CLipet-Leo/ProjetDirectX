@@ -6,11 +6,6 @@ CharacterController::CharacterController(Entity* _pEOwner, Params* params)
 
 }
 
-void CharacterController::GetInput(WPARAM pParam)
-{
-	
-}
-
 void CharacterController::Update(const Timer& gt, WPARAM pParam)
 {
 	if (_bActiveController)

@@ -15,3 +15,4 @@ int GameObject::getDamage()
 {
 	return _iDamage;
 }
+

@@ -47,10 +47,18 @@ struct MoveParams
     float velocity;
 };
 
+enum GameObjType
+{
+    PLAYER = 0,
+    ENEMY,
+    OBSTACLE,
+};
+
 struct GameObjectParams
 {
     int iDamage;
     int iHealth;
+    GameObjType type;
 };
 
 class Component;

@@ -18,6 +18,8 @@ public:
 
 	virtual bool Initialize()override;
 
+	void spawnEnemy();
+
 private:
 
 

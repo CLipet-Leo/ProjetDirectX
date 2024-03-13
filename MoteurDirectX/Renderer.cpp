@@ -385,7 +385,7 @@ void Renderer::Draw(const Timer& gt)
 	FlushCommandQueue();
 }
 
-void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
+Entity* Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
 	char buff[200]{};
 
@@ -429,6 +429,8 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 	}
 
 	_LpEntity.push_back(newEntity);
+
+	return newEntity;
 }
 
 bool Renderer::InitMainWindow()
