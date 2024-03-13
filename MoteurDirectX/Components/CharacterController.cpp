@@ -13,7 +13,7 @@ void CharacterController::GetInput(WPARAM pParam)
 
 void CharacterController::Update(const Timer& gt, WPARAM pParam)
 {
-	if (_bActiveController && WM_KEYDOWN)
+	if (_bActiveController)
 	{
 		switch (pParam)
 		{
@@ -23,18 +23,21 @@ void CharacterController::Update(const Timer& gt, WPARAM pParam)
 
 		case VKm_Z:
 			OutputDebugStringA("Z KeyDown \n");
-			_pMoveComp->UpdateDirectorVect({10.0f * gt.getDeltaTime() ,0.0f, 0.0f});
+			_pMoveComp->UpdateDirectorVect({ 10.f * gt.getDeltaTime() ,0.f, 0.f });
 			//_pMoveComp->UpdateRotation({ XMConvertToRadians(45.0f), 0.0f, 0.0f });
-			_pMoveComp->UpdateTransform();
+			//_pMoveComp->UpdateTransform();
 			break;
 		case VKm_Q:
 			OutputDebugStringA("Q KeyDown \n");
+			_pMoveComp->UpdateDirectorVect({0.f ,0.f, -10.f * gt.getDeltaTime() });
 			break;
 		case VKm_S:
 			OutputDebugStringA("S KeyDown \n");
+			_pMoveComp->UpdateDirectorVect({ -10.f * gt.getDeltaTime() ,0.f, 0.f });
 			break;
 		case VKm_D:
 			OutputDebugStringA("D KeyDown \n");
+			_pMoveComp->UpdateDirectorVect({ 0.f ,0.f, 10.f * gt.getDeltaTime() });
 			break;
 		case VKm_E:
 			OutputDebugStringA("E KeyDown \n");

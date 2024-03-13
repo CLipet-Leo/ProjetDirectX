@@ -64,12 +64,12 @@ bool Game::Initialize()
     if (!Renderer::Initialize())
         return false;
 
+    // creates the character Entity
     Params params;
-
     std::vector<int> iLtypes;
-
     iLtypes.push_back(CHARACTER_CONTROLLER);
     iLtypes.push_back(MOVE);
+    //iLtypes.push_back(CAMERA);
 
     InstanciateEntity(iLtypes, &params);
 
