@@ -31,7 +31,6 @@ Renderer::Renderer(HINSTANCE hInstance)
 	// Only one Renderer can be constructed.
 	assert(_App == nullptr);
 	_App = this;
-	meshRenderer = new MeshRenderer;
 }
 
 Renderer::~Renderer()
@@ -110,9 +109,8 @@ bool Renderer::Initialize()
 	// Reset the command list to prep for initialization commands.
 	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
 
-	if (!meshRenderer->Initialize(_d3dDevice, _CommandList, _CommandQueue, _DirectCmdListAlloc,
-		dBackBufferFormat, dDepthStencilFormat, b4xMsaaState, u4xMsaaQuality))
-		return false;
+	BuildDescriptorHeaps();
+	BuildConstantBuffers();
 
 	// Execute the initialization commands.
 	ThrowIfFailed(_CommandList->Close());
@@ -325,16 +323,21 @@ void Renderer::OnResize()
 
 	UpdateViewport();
 
-	meshRenderer->OnResize(AspectRatio());
+	// The window resized, so update the aspect ratio and recompute the projection matrix.
+	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+	XMStoreFloat4x4(&mProj, P);
 }
 
 void Renderer::Update(const Timer& gt)
 {
-	meshRenderer->Update();
 	// update all Entities
 	for (auto curEntity : _LpEntity)
 	{
 		curEntity->UpdateComponents(gt);
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Update(_Timer, _ObjectCB);
 	}
 }
 
@@ -344,10 +347,26 @@ void Renderer::Draw(const Timer& gt)
 	// We can only reset when the associated command lists have finished execution on the GPU.
 	ThrowIfFailed(_DirectCmdListAlloc->Reset());
 
-
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), meshRenderer->GetPSO().Get()));
+	if (_LpEntity.size() < 1)
+	{
+		ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+	}
+	else
+	{
+		for (auto curEntity : _LpEntity)
+		{
+			curEntity->UpdateComponents(gt);
+			MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+			if (curEntityModel == nullptr)
+			{
+				ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+				continue;
+			}
+			ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), curEntityModel->GetPSO().Get()));
+		}
+	}
 
 	_CommandList->RSSetViewports(1, &_ScreenViewport);
 	_CommandList->RSSetScissorRects(1, &_ScissorRect);
@@ -361,8 +380,14 @@ void Renderer::Draw(const Timer& gt)
 	_CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.
-	//_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-	meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
+	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
+	for (auto curEntity : _LpEntity)
+	{
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Draw(_Timer, _CommandList.Get(), _ObjectCB->Resource()->GetGPUVirtualAddress());
+	}
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
@@ -600,6 +625,36 @@ void Renderer::CreateRenderTarget()
 	}
 }
 
+void Renderer::BuildDescriptorHeaps()
+{
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+	cbvHeapDesc.NumDescriptors = 1;
+	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(_d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
+}
+
+void Renderer::BuildConstantBuffers()
+{
+	_ObjectCB = new UploadBuffer<ObjectConstants>(_d3dDevice, 1, true);
+
+	UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
+	// Offset to the ith object constant buffer in the buffer.
+	int boxCBufIndex = 0;
+	cbAddress += boxCBufIndex * objCBByteSize;
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
+	cbvDesc.BufferLocation = cbAddress;
+	cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+	_d3dDevice->CreateConstantBufferView(
+		&cbvDesc,
+		_CbvHeap->GetCPUDescriptorHandleForHeapStart());
+}
+
 void Renderer::DepthStencilAndBufferView()
 {
 	// Create the depth/stencil buffer and view.
@@ -653,6 +708,34 @@ void Renderer::UpdateViewport()
 
 	_ScissorRect = { 0, 0, iClientWidth, iClientHeight };
 }
+
+void Renderer::UpdateMainPassCB(const Timer& gt)
+{
+	XMMATRIX view = XMLoadFloat4x4(&mView);
+	XMMATRIX proj = XMLoadFloat4x4(&mProj);
+
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+	XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&_MainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	_MainPassCB.EyePosW = mEyePos;
+	_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
+	_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
+	_MainPassCB.NearZ = 1.0f;
+	_MainPassCB.FarZ = 1000.0f;
+	_MainPassCB.TotalTime = gt.getTotalTime();
+	_MainPassCB.DeltaTime = gt.getDeltaTime();
+
+	auto currPassCB = _PassCB;
+	currPassCB->CopyData(0, _MainPassCB);
+}
+
+
+// Other utils functions
 
 void Renderer::FlushCommandQueue()
 {

@@ -24,6 +24,7 @@ public:
 	void UpdateComponents(const Timer& gt);
 	Component* GetComponentPtr(compSubType ARGCompTypeTarget);
 	void UpdateTransform(XMFLOAT3* f3VectorDirector);
+	Transform* GetTransformPtr();
 
 	std::vector<Component*>* GetPCompListPtr();
 };

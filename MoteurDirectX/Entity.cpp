@@ -98,6 +98,11 @@ Component* Entity::GetComponentPtr(compSubType ARGCompTypeTarget)
 	return nullptr;
 }
 
+Transform* Entity::GetTransformPtr()
+{
+	return _pTransform;
+}
+
 void Entity::UpdateTransform(XMFLOAT3* f3VectorDirector)
 {
 	_pTransform->qPos.x = f3VectorDirector->x;
