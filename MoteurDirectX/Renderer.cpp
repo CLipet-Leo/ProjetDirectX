@@ -686,16 +686,14 @@ void Renderer::CalculateFrameStats()
 
 	// Compute averages over one second period.
 	float fps = 1 / _Timer.getDeltaTime();
-	float mspf = 1000.0f / fps;
 	float score = 000;
 
 	wstring fpsStr = to_wstring(fps);
-	wstring mspfStr = to_wstring(mspf);
 	wstring scoreStr = to_wstring(score);
 
 	wstring windowText = sMainWndCaption +
 		L"    fps: " + fpsStr +
-		L"   mspf: " + mspfStr + L"            " + 
+		L"            " + 
 		L"	score: " + scoreStr;
 
 	SetWindowText(hMainWnd, windowText.c_str());
