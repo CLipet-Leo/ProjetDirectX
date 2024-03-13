@@ -334,6 +334,10 @@ void Renderer::Update(const Timer& gt)
 	for (auto curEntity : _LpEntity)
 	{
 		curEntity->UpdateComponents(gt);
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Update(_Timer, _ObjectCB);
 	}
 }
 
@@ -377,7 +381,13 @@ void Renderer::Draw(const Timer& gt)
 
 	// Specify the buffers we are going to render to.
 	_CommandList->OMSetRenderTargets(1, &CurrentBackBufferView(), true, &DepthStencilView());
-	//meshRenderer->RenderCube(_CommandList, CurrentBackBufferView(), DepthStencilView());
+	for (auto curEntity : _LpEntity)
+	{
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Draw(_Timer, _CommandList.Get(), _ObjectCB->Resource()->GetGPUVirtualAddress());
+	}
 
 	// Indicate a state transition on the resource usage.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),

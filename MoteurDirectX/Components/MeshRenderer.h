@@ -11,6 +11,17 @@ struct RenderItem
 
 class MeshRenderer : public Component
 {
+
+
+public:
+    MeshRenderer(Entity* pEOwner);
+    ~MeshRenderer();
+
+    virtual void Update(const Timer& gt, UploadBuffer<ObjectConstants>* currObjectCB);
+    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbAddress);
+
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
+
 private:
     XMFLOAT4X4 _World = MathHelper::Identity4x4();
 
@@ -26,18 +37,6 @@ private:
     UINT _IndexCount = 0;
     UINT _StartIndexLocation = 0;
     int _BaseVertexLocation = 0;
-
-
-public:
-    MeshRenderer(Entity* pEOwner);
-    ~MeshRenderer();
-
-    virtual void Update(const Timer& gt, UploadBuffer<ObjectConstants>* currObjectCB);
-    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbAddress);
-
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
-
-public:
 
     Mesh* _pMesh;
     Shader* _pShader;
