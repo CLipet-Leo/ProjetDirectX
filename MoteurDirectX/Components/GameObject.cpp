@@ -6,7 +6,7 @@ GameObject::GameObject(Entity* _pEOwner, Params* params)
 
 }
 
-void GameObject::InitComponent()
+void GameObject::InitComponent(ID3D12Device* d3dDevice)
 {
 	_iDamage = _Params->gameObjectParams.iDamage;
 	_iHealth = _Params->gameObjectParams.iHealth;

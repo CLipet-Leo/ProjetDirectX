@@ -32,7 +32,7 @@ void Component::Update(const Timer& gt)
 
 }
 
-void Component::InitComponent()
+void Component::InitComponent(ID3D12Device* d3dDevice)
 {
 	
 }

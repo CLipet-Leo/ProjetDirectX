@@ -14,11 +14,11 @@ class MeshRenderer : public Component
 
 public:
     MeshRenderer(Entity* pEOwner);
-    void InitComponent() override;
+    void InitComponent(ID3D12Device* d3dDevice)override;
     ~MeshRenderer();
 
     virtual void Update(const Timer& gt);
-    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView);
+    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass);
     
     void BuildConstantBuffer(ID3D12Device* d3dDevice);
 

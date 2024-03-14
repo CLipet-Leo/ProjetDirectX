@@ -21,7 +21,7 @@ public:
 	// Methods to manage components
 	void AddComponent(Component* ARGpComp);
 	void RmvComponent(compSubType ARGCompTypeTarget);
-	void InitComponents();
+	void InitComponents(ID3D12Device* d3dDevice);
 	void UpdateComponents(const Timer& gt);
 	Component* GetComponentPtr(compSubType ARGCompTypeTarget);
 	void UpdateTransform(XMFLOAT3* f3VectorDirector);

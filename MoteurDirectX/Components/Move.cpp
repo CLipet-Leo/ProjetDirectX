@@ -8,7 +8,7 @@ Move::Move(Entity* pEOwner, Params* params)
 
 }
 
-void Move::InitComponent()
+void Move::InitComponent(ID3D12Device* d3dDevice)
 {
 	_v3VectorDirector = _Params->moveParams.directorVector;
 	_fVelocity = _Params->moveParams.velocity;

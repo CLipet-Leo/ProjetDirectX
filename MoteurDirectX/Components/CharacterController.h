@@ -4,7 +4,7 @@ class CharacterController : public Component
 {
 public:
 	CharacterController(Entity* _pEOwner, Params* params);
-	void InitComponent() override;
+	void InitComponent(ID3D12Device* d3dDevice) override;
 
 	void GetInput(WPARAM pParam);
 	void EnableController();

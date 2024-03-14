@@ -77,11 +77,11 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 	}
 }
 
-void Entity::InitComponents()
+void Entity::InitComponents(ID3D12Device* d3dDevice)
 {
 	for (auto curComponent : _LpComponents)
 	{
-		curComponent->InitComponent();
+		curComponent->InitComponent(d3dDevice);
 	}
 }
 

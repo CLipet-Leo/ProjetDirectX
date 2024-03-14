@@ -4,7 +4,7 @@ class GameObject : public Component
 {
 public:
 	GameObject(Entity* _pEOwner, Params* params);
-	void InitComponent() override;
+	void InitComponent(ID3D12Device* d3dDevice) override;
 
 	void takeDamage(int iDamage);
 	int getDamage();

@@ -9,11 +9,12 @@ MeshRenderer::MeshRenderer(Entity* pEOwner)
 
 }
 
-void MeshRenderer::InitComponent()
+void MeshRenderer::InitComponent(ID3D12Device* d3dDevice)
 {
     _pMesh = new Mesh();
     _pShader = new Shader();
 
+    BuildConstantBuffer(d3dDevice);
     _pShader->BuildRootSignature();
     _pShader->CompileShaders();
     _pShader->BuildPSO();
@@ -32,10 +33,8 @@ void MeshRenderer::Update(const Timer& gt)
     _ObjectCB->CopyData(_ObjCBIndex, objConstants);
 }
 
-void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView)
+void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass)
 {
-    cmdList->OMSetRenderTargets(1, &CurrentBackBufferView, true, &DepthStencilView);
-
     cmdList->SetGraphicsRootSignature(_pShader->GetRootSignature().Get());
 
     cmdList->IASetVertexBuffers(0, 1, &_Geo->VertexBufferView());
@@ -43,7 +42,8 @@ void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D
     cmdList->IASetPrimitiveTopology(PrimitiveType);
 
     cmdList->SetGraphicsRootConstantBufferView(0, cbAddress);
-    //cmdList->SetGraphicsRootConstantBufferView(1, cbAddress);
+
+    cmdList->SetGraphicsRootConstantBufferView(1, cbPass);
 
     cmdList->DrawIndexedInstanced(_IndexCount, 1, _StartIndexLocation, _BaseVertexLocation, 0);
 }

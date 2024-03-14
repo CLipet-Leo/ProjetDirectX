@@ -14,7 +14,7 @@ private:
 public:
 	// Constru & Destru
 	Move(Entity* pEOwner, Params* params);
-	void InitComponent() override;
+	void InitComponent(ID3D12Device* d3dDevice) override;
 	~Move();
 
 	// Methods
