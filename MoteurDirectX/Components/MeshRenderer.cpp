@@ -20,6 +20,8 @@ void MeshRenderer::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandL
     _pMesh->BuildShapeGeometry(d3dDevice, CommandList);
     _pShader->BuildPSO(d3dDevice, b4xMsaaState, u4xMsaaQuality);
     _Geo = _pMesh->GetGeometry("box");
+
+    bIsInit = true;
 }
 
 MeshRenderer::~MeshRenderer()
@@ -47,7 +49,8 @@ void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D
 
     cmdList->SetGraphicsRootConstantBufferView(1, cbPass);
 
-    cmdList->DrawIndexedInstanced(_IndexCount, 1, _StartIndexLocation, _BaseVertexLocation, 0);
+    _IndexCount = _Geo->IndexBufferByteSize / sizeof(std::uint16_t);
+    cmdList->DrawIndexedInstanced(_IndexCount, 1, 0, 0, 0);
 }
 
 void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
@@ -55,4 +58,9 @@ void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
     _ObjectCB = new UploadBuffer<ObjectConstants>(d3dDevice, 1, true);
 
     cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
+}
+
+bool MeshRenderer::GetIsInit()
+{
+    return bIsInit;
 }

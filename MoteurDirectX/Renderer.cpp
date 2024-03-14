@@ -65,7 +65,6 @@ int Renderer::Run()
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-	InitEntityComps();
  
 	while (msg.message != WM_QUIT)
 	{
@@ -106,8 +105,6 @@ bool Renderer::Initialize()
 
 	// Do the initial resize code.
 	OnResize();
-
-	FlushCommandQueue();
 
 	return true;
 }
@@ -320,6 +317,16 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+
+	for (auto curEntity: _LpEntity)
+	{
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		if (curEntityModel->GetIsInit() == false)
+			curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
+	}
 	// Update all Entities, and keep the Camera pointer to update its own View Matrix
 	for (auto curEntity : _LpEntity)
 	{
@@ -340,6 +347,14 @@ void Renderer::Update(const Timer& gt)
 		}
 	}
 	UpdateMainPassCB(_Timer);
+
+	ThrowIfFailed(_CommandList->Close());
+	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
+	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	// Wait until initialization is complete.
+	FlushCommandQueue();
+
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -439,13 +454,13 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 	_LpEntity.push_back(newEntity);
 }
 
-void Renderer::InitEntityComps()
-{
-	for (auto curEntity : _LpEntity)
-	{
-		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
-	}
-}
+//void Renderer::InitEntityComps()
+//{
+//	for (auto curEntity : _LpEntity)
+//	{
+//		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
+//	}
+//}
 
 bool Renderer::InitMainWindow()
 {
@@ -601,19 +616,14 @@ void Renderer::CreateSwapChain()
 
 void Renderer::CreateRenderTarget()
 {
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(
-		_RtvHeap->GetCPUDescriptorHandleForHeapStart());
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(_RtvHeap->GetCPUDescriptorHandleForHeapStart());
 	for (UINT i = 0; i < SwapChainBufferCount; i++)
 	{
-		// Get the ith buffer in the swap chain.
-		ThrowIfFailed(_SwapChain->GetBuffer(
-			i, IID_PPV_ARGS(&_SwapChainBuffer[i])));
-		// Create an RTV to it.
-		_d3dDevice->CreateRenderTargetView(
-			_SwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
-		// Next entry in heap.
+		ThrowIfFailed(_SwapChain->GetBuffer(i, IID_PPV_ARGS(&_SwapChainBuffer[i])));
+		_d3dDevice->CreateRenderTargetView(_SwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
 		rtvHeapHandle.Offset(1, uRtvDescriptorSize);
 	}
+
 }
 
 void Renderer::DepthStencilAndBufferView()

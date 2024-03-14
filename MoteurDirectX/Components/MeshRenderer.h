@@ -21,8 +21,11 @@ public:
     void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass);
     
     void BuildConstantBuffer(ID3D12Device* d3dDevice);
+    bool GetIsInit();
 
 private:
+    bool bIsInit = false;
+
     XMFLOAT4X4 _World = MathHelper::Identity4x4();
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.

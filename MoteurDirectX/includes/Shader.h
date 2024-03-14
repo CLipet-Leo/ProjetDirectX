@@ -24,6 +24,8 @@ public:
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
     std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
+    Microsoft::WRL::ComPtr<ID3DBlob> GetvsByteCode();
+    Microsoft::WRL::ComPtr<ID3DBlob> GetpsByteCode();
 
 public: // Variables
 

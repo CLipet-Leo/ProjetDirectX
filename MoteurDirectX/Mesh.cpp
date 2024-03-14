@@ -328,6 +328,13 @@ void Mesh::BuildShapeGeometry(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList
 
     auto boxGeo = new MeshGeometry;
     boxGeo->Name = "box";
+
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &boxGeo->VertexBufferCPU));
+    CopyMemory(boxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &boxGeo->IndexBufferCPU));
+    CopyMemory(boxGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+
     boxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice,
         CommandList, vertices.data(), vbByteSize, boxGeo->VertexBufferUploader);
 
@@ -365,6 +372,13 @@ void Mesh::BuildShapeGeometry(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList
 
     auto sphereGeo = new MeshGeometry;
     sphereGeo->Name = "sphere";
+
+    ThrowIfFailed(D3DCreateBlob(sphereVbByteSize, &sphereGeo->VertexBufferCPU));
+    CopyMemory(sphereGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), sphereVbByteSize);
+
+    ThrowIfFailed(D3DCreateBlob(sphereIbByteSize, &sphereGeo->IndexBufferCPU));
+    CopyMemory(sphereGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), sphereIbByteSize);
+
     sphereGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice,
         CommandList, sphereVertices.data(), sphereVbByteSize, sphereGeo->VertexBufferUploader);
 

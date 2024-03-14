@@ -46,14 +46,6 @@ struct PassConstants
 	float DeltaTime = 0.0f;
 };
 
-struct SubmeshGeometry
-{
-	UINT IndexCount = 0;
-	UINT StartIndexLocation = 0;
-	INT BaseVertexLocation = 0;
-	DirectX::BoundingBox Bounds;
-};
-
 struct MeshGeometry
 {
 	// Give it a name so we can look it up by name.
@@ -75,11 +67,6 @@ struct MeshGeometry
 	UINT VertexBufferByteSize = 0;
 	DXGI_FORMAT IndexFormat = DXGI_FORMAT_R16_UINT;
 	UINT IndexBufferByteSize = 0;
-
-	// A MeshGeometry may store multiple geometries in one vertex/index buffer.
-	// Use this container to define the Submesh geometries so we can draw
-	// the Submeshes individually.
-	std::unordered_map<std::string, SubmeshGeometry> DrawArgs;
 
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView()const
 	{
