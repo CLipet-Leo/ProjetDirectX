@@ -65,14 +65,19 @@ bool Game::Initialize()
         return false;
 
     Params params;
-
     std::vector<int> iLtypes;
-
     iLtypes.push_back(CHARACTER_CONTROLLER);
     iLtypes.push_back(MOVE);
+    InstanciateEntity(iLtypes, &params);
+
+    iLtypes.clear();
     iLtypes.push_back(MESH_RENDERER);
 
     InstanciateEntity(iLtypes, &params);
+
+    //ScriptComponent* newScript;
+    //params.LpScripts.push_back(newScript);
+
 
     return true;
 }

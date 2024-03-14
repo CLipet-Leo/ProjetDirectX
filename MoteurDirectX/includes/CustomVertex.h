@@ -53,15 +53,17 @@ struct GameObjectParams
 };
 
 class Component;
+class ScriptComponent;
 
 struct CharacterControllerParams
 {
     Component* moveCompPtr;
 };
 
-union Params
+struct Params
 {
     GameObjectParams gameObjectParams;
     MoveParams moveParams;
     CharacterControllerParams characterControllerParams;
+    std::vector<ScriptComponent*> LpScripts;
 };

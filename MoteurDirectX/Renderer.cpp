@@ -429,8 +429,6 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			break;
 		case COLLIDER:
 			break;
-		case ROTATE:
-			break;
 		case GAME_OBJECT:
 			curNewComp = new GameObject(newEntity, params);
 			newEntity->AddComponent(curNewComp);
@@ -438,12 +436,19 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 		case MESH_RENDERER:
 			curNewComp = new MeshRenderer(newEntity);
 			newEntity->AddComponent(curNewComp);
+			break;
 		case CHARACTER_CONTROLLER:
 			CharacterController* newCC = new CharacterController(newEntity, params);
 			newEntity->AddComponent(newCC);
 			_LpCharacterController.push_back(newCC);
 			break;
 		}
+	}
+
+	// Adds all custom Scripts to component
+	for (auto curScript : params->LpScripts)
+	{
+		newEntity->AddComponent(curScript);
 	}
 
 	_LpEntity.push_back(newEntity);
