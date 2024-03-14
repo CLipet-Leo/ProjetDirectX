@@ -18,30 +18,38 @@ MeshRenderer::MeshRenderer(Entity* pEOwner)
 MeshRenderer::~MeshRenderer()
 { }
 
-void MeshRenderer::Update(const Timer& gt, UploadBuffer<ObjectConstants>* currObjectCB)
+void MeshRenderer::Update(const Timer& gt)
 {
     XMMATRIX world = XMLoadFloat4x4(&_World);
 
     ObjectConstants objConstants;
     XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
-
-    currObjectCB->CopyData(_ObjCBIndex, objConstants);
+    _ObjectCB->CopyData(_ObjCBIndex, objConstants);
 }
 
-void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbAddress)
+void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView)
 {
+    cmdList->OMSetRenderTargets(1, &CurrentBackBufferView, true, &DepthStencilView);
+
+    cmdList->SetGraphicsRootSignature(_pShader->GetRootSignature().Get());
+
     cmdList->IASetVertexBuffers(0, 1, &_Geo->VertexBufferView());
     cmdList->IASetIndexBuffer(&_Geo->IndexBufferView());
     cmdList->IASetPrimitiveTopology(PrimitiveType);
 
-    //auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(CbvHeap->GetGPUDescriptorHandleForHeapStart());
-    //cbvHandle.Offset(cbvIndex, uCbvSrvDescriptorSize);
-    //cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
-
     cmdList->SetGraphicsRootConstantBufferView(0, cbAddress);
-    cmdList->SetGraphicsRootConstantBufferView(1, cbAddress);
+    //cmdList->SetGraphicsRootConstantBufferView(1, cbAddress);
 
     cmdList->DrawIndexedInstanced(_IndexCount, 1, _StartIndexLocation, _BaseVertexLocation, 0);
+}
+
+void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
+{
+    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(d3dDevice, 1, true);
+
+    UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+    cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
 }
 
 Microsoft::WRL::ComPtr<ID3D12PipelineState> MeshRenderer::GetPSO()

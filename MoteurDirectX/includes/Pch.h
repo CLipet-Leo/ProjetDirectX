@@ -53,7 +53,6 @@ enum compSubType
 	UNKNOWN = 0,
 	CAMERA,
 	COLLIDER,
-	FACTORY,
 	ROTATE,
 	MOVE,
 	PARTICLE_GEN,
