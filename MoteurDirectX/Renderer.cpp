@@ -65,7 +65,7 @@ int Renderer::Run()
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-
+	InitEntityComps();
  
 	while (msg.message != WM_QUIT)
 	{
@@ -108,8 +108,6 @@ bool Renderer::Initialize()
 	OnResize();
 
 	FlushCommandQueue();
-
-	_Mesh.BuildShapeGeometry(_d3dDevice, _CommandList);
 
 	return true;
 }
@@ -389,7 +387,7 @@ void Renderer::Draw(const Timer& gt)
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Draw(_Timer, _CommandList.Get(), CurrentBackBufferView(), DepthStencilView());
+		curEntityModel->Draw(_Timer, _CommandList.Get(), _PassCB->Resource()->GetGPUVirtualAddress());
 	}
 
 	// Indicate a state transition on the resource usage.
@@ -416,15 +414,15 @@ void Renderer::Draw(const Timer& gt)
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
 	// puts the CharacterController component at the end of the list
-	for (int i=0 ; i < compList.size() ; i++)
-	{
-		if (compList[i] == CHARACTER_CONTROLLER)
-		{
-			compList.erase(compList.begin() + i);
-			compList.push_back(CHARACTER_CONTROLLER);
-			break;
-		}
-	}
+	//for (int i=0 ; i < compList.size() ; i++)
+	//{
+	//	if (compList[i] == CHARACTER_CONTROLLER)
+	//	{
+	//		compList.erase(compList.begin() + i);
+	//		compList.push_back(CHARACTER_CONTROLLER);
+	//		break;
+	//	}
+	//}
 
 	Entity* newEntity = new Entity();
 
@@ -434,6 +432,10 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 
 		switch (curCompToAdd)
 		{
+		case CAMERA:
+			curNewComp = new Camera(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
 		case MOVE:
 			curNewComp = new Move(newEntity, params);
 			newEntity->AddComponent(curNewComp);
@@ -449,6 +451,7 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 		case MESH_RENDERER:
 			curNewComp = new MeshRenderer(newEntity);
 			newEntity->AddComponent(curNewComp);
+			break;
 		case CHARACTER_CONTROLLER:
 			CharacterController* newCC = new CharacterController(newEntity, params);
 			newEntity->AddComponent(newCC);
@@ -458,6 +461,14 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 	}
 
 	_LpEntity.push_back(newEntity);
+}
+
+void Renderer::InitEntityComps()
+{
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
+	}
 }
 
 bool Renderer::InitMainWindow()
@@ -519,6 +530,7 @@ bool Renderer::InitDirect3D()
 	CreateCommandObjects();
 	CreateSwapChain();
 	CreateRtvAndDsvDescriptorHeaps();
+	BuildPassCB();
 
 	return true;
 }
@@ -667,6 +679,11 @@ void Renderer::DepthStencilAndBufferView()
 	// Transition the resource from its initial state to be used as a depth buffer.
 	_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_DepthStencilBuffer.Get(),
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+}
+
+void Renderer::BuildPassCB()
+{
+	_PassCB = new UploadBuffer<PassConstants>(_d3dDevice, 1, true);
 }
 
 void Renderer::UpdateViewport()

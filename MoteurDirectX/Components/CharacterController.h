@@ -1,9 +1,14 @@
 #pragma once
 
+// Forward include
+class Move;
+class Camera;
+
 class CharacterController : public Component
 {
 public:
 	CharacterController(Entity* _pEOwner, Params* params);
+	void InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality) override;
 
 	void GetInput(WPARAM pParam);
 	void EnableController();
@@ -15,5 +20,5 @@ private:
 	bool _bActiveController;
 
 	Component* _pMoveComp;
-	Component* _pCameraComp;
+	Camera* _pCameraComp;
 };

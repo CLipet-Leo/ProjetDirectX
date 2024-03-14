@@ -48,11 +48,19 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Components\CharacterController.cpp" />
     <ClCompile Include="Components\MeshRenderer.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Components\Camera.cpp" />
+=======
+    <ClCompile Include="Components\CharacterController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ScriptComponent.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+>>>>>>> b4797c98ecbd3aa196105ab885d8f264c31409d0
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\Pch.h">
@@ -100,10 +108,18 @@
     <ClInclude Include="Components\MeshRenderer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Components\Camera.h" />
+=======
+    <ClInclude Include="Components\CharacterController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ScriptComponent.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+>>>>>>> b4797c98ecbd3aa196105ab885d8f264c31409d0
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\color.hlsl" />
-    <ClInclude Include="Components\CharacterController.h" />
   </ItemGroup>
 </Project>

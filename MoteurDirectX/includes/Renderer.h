@@ -38,6 +38,7 @@ protected:
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
 	void InstanciateEntity(std::vector<int> compList, Params* params);
+	void InitEntityComps();
 
 protected:
 
@@ -50,6 +51,7 @@ protected:
 	void CreateSwapChain();
 	void CreateRenderTarget();
 	void DepthStencilAndBufferView();
+	void BuildPassCB();
 	void UpdateViewport();
 	void UpdateMainPassCB(const Timer& gt);
 	// Other utils functions
@@ -144,7 +146,6 @@ protected:
 	int iClientHeight = 600;
 
 	Timer _Timer;
-	Mesh _Mesh;
 
 	// Other variables
 

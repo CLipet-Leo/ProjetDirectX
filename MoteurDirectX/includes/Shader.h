@@ -15,11 +15,11 @@ public: // Fonctions
 
 public:
 
-    void BuildRootSignature();
+    void BuildRootSignature(ID3D12Device* d3dDevice);
 
     // Compile les fichiers hlsl
     void CompileShaders();
-    void BuildPSO();
+    void BuildPSO(ID3D12Device* d3dDevice, bool b4xMsaaState, UINT u4xMsaaQuality);
 
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature();
     std::vector<D3D12_INPUT_ELEMENT_DESC> GetInputLayout()const;
@@ -36,7 +36,6 @@ public: // Variables
 
     Microsoft::WRL::ComPtr<ID3D12PipelineState> _PSO = nullptr;
 
-    Renderer* renderer;
 };
 
 #endif

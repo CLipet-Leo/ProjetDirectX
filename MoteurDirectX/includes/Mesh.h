@@ -71,7 +71,7 @@ public:
 	Vertex 	MidPoint(const Vertex& v0, const Vertex& v1);
 
 public:
-	void BuildShapeGeometry(Microsoft::WRL::ComPtr<ID3D12Device> d3dDevice, Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList);
+	void BuildShapeGeometry(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList);
 	/*-------------------------/GETTER\-------------------------*/
 	MeshGeometry* GetGeometry(const std::string& geometryName);
 protected:

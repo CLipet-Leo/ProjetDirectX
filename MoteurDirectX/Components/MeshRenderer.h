@@ -12,13 +12,13 @@ struct RenderItem
 class MeshRenderer : public Component
 {
 
-
 public:
     MeshRenderer(Entity* pEOwner);
+    void InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)override;
     ~MeshRenderer();
 
     virtual void Update(const Timer& gt);
-    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView);
+    void Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass);
     
     void BuildConstantBuffer(ID3D12Device* d3dDevice);
 
@@ -28,8 +28,8 @@ private:
     XMFLOAT4X4 _World = MathHelper::Identity4x4();
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
-    std::unique_ptr<UploadBuffer<ObjectConstants>> _ObjectCB = nullptr;
-    UINT _ObjCBIndex = -1;
+    UploadBuffer<ObjectConstants>* _ObjectCB = nullptr;
+    UINT _ObjCBIndex = 0;
     D3D12_GPU_VIRTUAL_ADDRESS cbAddress;
 
     MeshGeometry* _Geo = nullptr;
@@ -42,6 +42,7 @@ private:
     UINT _IndexCount = 0;
     UINT _StartIndexLocation = 0;
     int _BaseVertexLocation = 0;
+    Params* _Params;
 
     Mesh* _pMesh;
     Shader* _pShader;

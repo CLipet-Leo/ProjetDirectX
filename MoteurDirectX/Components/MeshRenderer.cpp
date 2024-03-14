@@ -6,12 +6,19 @@ using Microsoft::WRL::ComPtr;
 MeshRenderer::MeshRenderer(Entity* pEOwner)
     : Component(pEOwner, MESH_RENDERER)
 {
+
+}
+
+void MeshRenderer::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)
+{
     _pMesh = new Mesh();
     _pShader = new Shader();
 
-    _pShader->BuildRootSignature();
+    BuildConstantBuffer(d3dDevice);
+    _pShader->BuildRootSignature(d3dDevice);
     _pShader->CompileShaders();
-    _pShader->BuildPSO();
+    _pMesh->BuildShapeGeometry(d3dDevice, CommandList);
+    _pShader->BuildPSO(d3dDevice, b4xMsaaState, u4xMsaaQuality);
     _Geo = _pMesh->GetGeometry("box");
 }
 
@@ -27,10 +34,8 @@ void MeshRenderer::Update(const Timer& gt)
     _ObjectCB->CopyData(_ObjCBIndex, objConstants);
 }
 
-void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView, D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView)
+void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass)
 {
-    cmdList->OMSetRenderTargets(1, &CurrentBackBufferView, true, &DepthStencilView);
-
     cmdList->SetGraphicsRootSignature(_pShader->GetRootSignature().Get());
 
     cmdList->IASetVertexBuffers(0, 1, &_Geo->VertexBufferView());
@@ -38,16 +43,15 @@ void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D
     cmdList->IASetPrimitiveTopology(PrimitiveType);
 
     cmdList->SetGraphicsRootConstantBufferView(0, cbAddress);
-    //cmdList->SetGraphicsRootConstantBufferView(1, cbAddress);
+
+    cmdList->SetGraphicsRootConstantBufferView(1, cbPass);
 
     cmdList->DrawIndexedInstanced(_IndexCount, 1, _StartIndexLocation, _BaseVertexLocation, 0);
 }
 
 void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
 {
-    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(d3dDevice, 1, true);
-
-    UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+    _ObjectCB = new UploadBuffer<ObjectConstants>(d3dDevice, 1, true);
 
     cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
 }
