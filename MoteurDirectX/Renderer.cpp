@@ -330,7 +330,7 @@ void Renderer::Update(const Timer& gt)
 			continue;
 		curEntityModel->Update(_Timer);
 	}
-	//UpdateMainPassCB(_Timer);
+	UpdateMainPassCB(_Timer);
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -378,7 +378,7 @@ void Renderer::Draw(const Timer& gt)
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Draw(_Timer, _CommandList.Get(), CurrentBackBufferView(), DepthStencilView());
+		curEntityModel->Draw(_Timer, _CommandList.Get(), _PassCB->Resource()->GetGPUVirtualAddress());
 	}
 
 	// Indicate a state transition on the resource usage.
