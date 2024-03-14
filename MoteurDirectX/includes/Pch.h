@@ -84,6 +84,7 @@ enum compSubType
 #include "../Components/Move.h"
 #include "../Components/CharacterController.h"
 #include "../Components/MeshRenderer.h"
+#include "../Components/ScriptComponent.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"

@@ -22,8 +22,6 @@ public:
     
     void BuildConstantBuffer(ID3D12Device* d3dDevice);
 
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPSO();
-
 private:
     XMFLOAT4X4 _World = MathHelper::Identity4x4();
 

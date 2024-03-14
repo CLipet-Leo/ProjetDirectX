@@ -37,6 +37,7 @@ void MeshRenderer::Update(const Timer& gt)
 void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass)
 {
     cmdList->SetGraphicsRootSignature(_pShader->GetRootSignature().Get());
+    cmdList->SetPipelineState(_pShader->GetPSO().Get());
 
     cmdList->IASetVertexBuffers(0, 1, &_Geo->VertexBufferView());
     cmdList->IASetIndexBuffer(&_Geo->IndexBufferView());
@@ -54,9 +55,4 @@ void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
     _ObjectCB = new UploadBuffer<ObjectConstants>(d3dDevice, 1, true);
 
     cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
-}
-
-Microsoft::WRL::ComPtr<ID3D12PipelineState> MeshRenderer::GetPSO()
-{
-    return _pShader->GetPSO();
 }

@@ -60,6 +60,7 @@ struct GameObjectParams
 };
 
 class Component;
+class ScriptComponent;
 
 struct CharacterControllerParams
 {
@@ -71,5 +72,6 @@ struct Params
     GameObjectParams gameObjectParams;
     MoveParams moveParams;
     CharacterControllerParams characterControllerParams;
+    std::vector<ScriptComponent*> LpScripts;
     CameraParams cameraParams;
 };

@@ -350,24 +350,7 @@ void Renderer::Draw(const Timer& gt)
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	if (_LpEntity.size() < 1)
-	{
-		ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
-	}
-	else
-	{
-		for (auto curEntity : _LpEntity)
-		{
-			curEntity->UpdateComponents(gt);
-			MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
-			if (curEntityModel == nullptr)
-			{
-				ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
-				continue;
-			}
-			ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), curEntityModel->GetPSO().Get()));
-		}
-	}
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
 
 	_CommandList->RSSetViewports(1, &_ScreenViewport);
 	_CommandList->RSSetScissorRects(1, &_ScissorRect);
@@ -442,8 +425,6 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			break;
 		case COLLIDER:
 			break;
-		case ROTATE:
-			break;
 		case GAME_OBJECT:
 			curNewComp = new GameObject(newEntity, params);
 			newEntity->AddComponent(curNewComp);
@@ -458,6 +439,12 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			_LpCharacterController.push_back(newCC);
 			break;
 		}
+	}
+
+	// Adds all custom Scripts to component
+	for (auto curScript : params->LpScripts)
+	{
+		newEntity->AddComponent(curScript);
 	}
 
 	_LpEntity.push_back(newEntity);

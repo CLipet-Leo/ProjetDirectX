@@ -64,6 +64,7 @@ bool Game::Initialize()
     if (!Renderer::Initialize())
         return false;
 
+<<<<<<< HEAD
     // Camera creation (hard-coded)
     Params CamParams;
     std::vector<int> iLCamComp;
@@ -79,6 +80,22 @@ bool Game::Initialize()
     std::vector<int> iLCubeComp;
     iLCubeComp.push_back(MESH_RENDERER);
     InstanciateEntity(iLCubeComp, &CubeParams);
+
+=======
+    Params params;
+    std::vector<int> iLtypes;
+    iLtypes.push_back(CHARACTER_CONTROLLER);
+    iLtypes.push_back(MOVE);
+    InstanciateEntity(iLtypes, &params);
+
+    iLtypes.clear();
+    iLtypes.push_back(MESH_RENDERER);
+
+    InstanciateEntity(iLtypes, &params);
+>>>>>>> 6728ab23a785fec586e8fc1729944db1885ca159
+
+    //ScriptComponent* newScript;
+    //params.LpScripts.push_back(newScript);
 
 
     return true;
