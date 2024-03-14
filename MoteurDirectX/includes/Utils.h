@@ -33,25 +33,17 @@ struct ObjectConstants
 
 struct PassConstants
 {
-//	DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
-//	float cbPerObjectPad1 = 0.0f;
-//	DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
-//	DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
-//	float NearZ = 0.0f;
-//	float FarZ = 0.0f;
-//	float TotalTime = 0.0f;
-//	float DeltaTime = 0.0f;
-};
-
-struct SubmeshGeometry
-{
-	UINT IndexCount = 0;
-	UINT StartIndexLocation = 0;
-	INT BaseVertexLocation = 0;
-	DirectX::BoundingBox Bounds;
+	DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
+	float cbPerObjectPad1 = 0.0f;
+	DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
+	DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
+	float NearZ = 0.0f;
+	float FarZ = 0.0f;
+	float TotalTime = 0.0f;
+	float DeltaTime = 0.0f;
 };
 
 struct MeshGeometry
@@ -75,11 +67,6 @@ struct MeshGeometry
 	UINT VertexBufferByteSize = 0;
 	DXGI_FORMAT IndexFormat = DXGI_FORMAT_R16_UINT;
 	UINT IndexBufferByteSize = 0;
-
-	// A MeshGeometry may store multiple geometries in one vertex/index buffer.
-	// Use this container to define the Submesh geometries so we can draw
-	// the Submeshes individually.
-	std::unordered_map<std::string, SubmeshGeometry> DrawArgs;
 
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView()const
 	{

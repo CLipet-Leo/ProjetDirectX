@@ -1,21 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Fichiers de ressources">
-      <UniqueIdentifier>{14406016-213f-4536-bd63-4014f7128547}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête">
-      <UniqueIdentifier>{10b99fab-afb8-4fbd-afb6-6ebdbd8f19af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers sources">
-      <UniqueIdentifier>{343acbce-0399-430b-a1db-78d59f7468ef}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="Components\Camera.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\CharacterController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\GameObject.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DirectX\MathHelper.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MeshRenderer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Move.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="Renderer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ScriptComponent.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
@@ -30,88 +49,72 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\Move.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\GameObject.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\DirectX\MathHelper.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MeshRenderer.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\CharacterController.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\ScriptComponent.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="includes\Pch.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Renderer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Shader.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Timer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Transform.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Utils.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Component.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\CustomVertex.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Entity.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\Mesh.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\GameObject.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\Move.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DirectX\MathHelper.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MeshRenderer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="Components\Camera.h">
+      <Filter>Fichiers d%27en tête</Filter>
     </ClInclude>
     <ClInclude Include="Components\CharacterController.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Component.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\CustomVertex.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Entity.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\GameObject.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DirectX\MathHelper.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Mesh.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MeshRenderer.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Move.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Pch.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Renderer.h">
+      <Filter>Fichiers d%27en tête</Filter>
     </ClInclude>
     <ClInclude Include="Components\ScriptComponent.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Shader.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Timer.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Transform.h">
+      <Filter>Fichiers d%27en tête</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\Utils.h">
+      <Filter>Fichiers d%27en tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\color.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Fichiers d%27en tête">
+      <UniqueIdentifier>{3b4a047e-65c6-4441-a515-b56ad4206bbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{a6959fd5-bfa6-491e-9c13-52ae644559b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

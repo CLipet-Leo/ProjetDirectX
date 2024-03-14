@@ -1,5 +1,9 @@
 #pragma once
 
+// Forward include
+class Move;
+class Camera;
+
 class CharacterController : public Component
 {
 public:
@@ -16,5 +20,5 @@ private:
 	bool _bActiveController;
 
 	Component* _pMoveComp;
-	Component* _pCameraComp;
+	Camera* _pCameraComp;
 };

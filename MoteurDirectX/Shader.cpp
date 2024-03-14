@@ -99,3 +99,13 @@ ComPtr<ID3D12PipelineState> Shader::GetPSO()
 {
     return _PSO;
 }
+
+ComPtr<ID3DBlob> Shader::GetvsByteCode()
+{
+    return _vsByteCode;
+}
+
+ComPtr<ID3DBlob> Shader::GetpsByteCode()
+{
+    return _psByteCode;
+}

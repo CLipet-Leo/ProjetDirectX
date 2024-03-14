@@ -1,6 +1,9 @@
 #include "includes/Pch.h"
 #include "includes/Renderer.h"
 
+// Includes Camera, used in the update loop
+#include "Components/Camera.h"
+
 
 using Microsoft::WRL::ComPtr;
 using namespace std;
@@ -59,12 +62,9 @@ void Renderer::Set4xMsaaState(bool value)
 int Renderer::Run()
 {
 
-	char buff[200]{}; // Global within the class (in main.cpp, it's a member to avoid problems)
-
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-	InitEntityComps();
  
 	while (msg.message != WM_QUIT)
 	{
@@ -105,8 +105,6 @@ bool Renderer::Initialize()
 
 	// Do the initial resize code.
 	OnResize();
-
-	FlushCommandQueue();
 
 	return true;
 }
@@ -314,21 +312,49 @@ void Renderer::OnResize()
 
 	// The window resized, so update the aspect ratio and recompute the projection matrix.
 	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
-	XMStoreFloat4x4(&mProj, P);
+	XMStoreFloat4x4(&_m4Proj, P);
 }
 
 void Renderer::Update(const Timer& gt)
 {
-	// update all Entities
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
+
+	for (auto curEntity: _LpEntity)
+	{
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		if (curEntityModel->GetIsInit() == false)
+			curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
+	}
+	// Update all Entities, and keep the Camera pointer to update its own View Matrix
 	for (auto curEntity : _LpEntity)
 	{
 		curEntity->UpdateComponents(gt);
+
+		// Camera update
+		if (curEntity->GetComponentPtr(CAMERA) != nullptr)
+		{
+			// Since we found the camera, we'll update the View matrix with its data !
+			Camera* pCam = (Camera*)curEntity->GetComponentPtr(CAMERA);
+			XMStoreFloat4x4(&_m4View, pCam->CalculateView());
+		}
+
+		// MeshRend update
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
 		curEntityModel->Update(_Timer);
 	}
 	UpdateMainPassCB(_Timer);
+
+	ThrowIfFailed(_CommandList->Close());
+	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
+	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+	// Wait until initialization is complete.
+	FlushCommandQueue();
+
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -339,24 +365,7 @@ void Renderer::Draw(const Timer& gt)
 
 	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
 	// Reusing the command list reuses memory.
-	if (_LpEntity.size() < 1)
-	{
-		ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
-	}
-	else
-	{
-		for (auto curEntity : _LpEntity)
-		{
-			curEntity->UpdateComponents(gt);
-			MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
-			if (curEntityModel == nullptr)
-			{
-				ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
-				continue;
-			}
-			ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), curEntityModel->GetPSO().Get()));
-		}
-	}
+	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
 
 	_CommandList->RSSetViewports(1, &_ScreenViewport);
 	_CommandList->RSSetScissorRects(1, &_ScissorRect);
@@ -402,19 +411,6 @@ void Renderer::Draw(const Timer& gt)
 
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
-	char buff[200]{};
-
-	// puts the CharacterController component at the end of the list
-	for (int i=0 ; i < compList.size() ; i++)
-	{
-		if (compList[i] == CHARACTER_CONTROLLER)
-		{
-			compList.erase(compList.begin() + i);
-			compList.push_back(CHARACTER_CONTROLLER);
-			break;
-		}
-	}
-
 	Entity* newEntity = new Entity();
 
 	for (auto curCompToAdd : compList)
@@ -423,13 +419,15 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 
 		switch (curCompToAdd)
 		{
+		case CAMERA:
+			curNewComp = new Camera(newEntity, params);
+			newEntity->AddComponent(curNewComp);
+			break;
 		case MOVE:
 			curNewComp = new Move(newEntity, params);
 			newEntity->AddComponent(curNewComp);
 			break;
 		case COLLIDER:
-			break;
-		case ROTATE:
 			break;
 		case GAME_OBJECT:
 			curNewComp = new GameObject(newEntity, params);
@@ -438,6 +436,7 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 		case MESH_RENDERER:
 			curNewComp = new MeshRenderer(newEntity);
 			newEntity->AddComponent(curNewComp);
+			break;
 		case CHARACTER_CONTROLLER:
 			CharacterController* newCC = new CharacterController(newEntity, params);
 			newEntity->AddComponent(newCC);
@@ -446,16 +445,22 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 		}
 	}
 
+	// Adds all custom Scripts to component
+	for (auto curScript : params->LpScripts)
+	{
+		newEntity->AddComponent(curScript);
+	}
+
 	_LpEntity.push_back(newEntity);
 }
 
-void Renderer::InitEntityComps()
-{
-	for (auto curEntity : _LpEntity)
-	{
-		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
-	}
-}
+//void Renderer::InitEntityComps()
+//{
+//	for (auto curEntity : _LpEntity)
+//	{
+//		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
+//	}
+//}
 
 bool Renderer::InitMainWindow()
 {
@@ -611,19 +616,14 @@ void Renderer::CreateSwapChain()
 
 void Renderer::CreateRenderTarget()
 {
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(
-		_RtvHeap->GetCPUDescriptorHandleForHeapStart());
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(_RtvHeap->GetCPUDescriptorHandleForHeapStart());
 	for (UINT i = 0; i < SwapChainBufferCount; i++)
 	{
-		// Get the ith buffer in the swap chain.
-		ThrowIfFailed(_SwapChain->GetBuffer(
-			i, IID_PPV_ARGS(&_SwapChainBuffer[i])));
-		// Create an RTV to it.
-		_d3dDevice->CreateRenderTargetView(
-			_SwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
-		// Next entry in heap.
+		ThrowIfFailed(_SwapChain->GetBuffer(i, IID_PPV_ARGS(&_SwapChainBuffer[i])));
+		_d3dDevice->CreateRenderTargetView(_SwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
 		rtvHeapHandle.Offset(1, uRtvDescriptorSize);
 	}
+
 }
 
 void Renderer::DepthStencilAndBufferView()
@@ -687,24 +687,27 @@ void Renderer::UpdateViewport()
 
 void Renderer::UpdateMainPassCB(const Timer& gt)
 {
-	XMMATRIX view = XMLoadFloat4x4(&mView);
-	XMMATRIX proj = XMLoadFloat4x4(&mProj);
+	using namespace DirectX;
 
-	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-	//XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-	//XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-	//XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	XMMATRIX m4View = XMLoadFloat4x4(&_m4View);
+	XMMATRIX m4Proj = XMLoadFloat4x4(&_m4Proj);
 
-	//XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
-	//XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
-	XMStoreFloat4x4(&_MainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	//_MainPassCB.EyePosW = mEyePos;
-	//_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
-	//_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
-	//_MainPassCB.NearZ = 1.0f;
-	//_MainPassCB.FarZ = 1000.0f;
-	//_MainPassCB.TotalTime = gt.getTotalTime();
-	//_MainPassCB.DeltaTime = gt.getDeltaTime();
+	XMMATRIX m4InvView = XMMatrixInverse(&XMMatrixDeterminant(m4View), m4View);
+	XMMATRIX m4InvProj = XMMatrixInverse(&XMMatrixDeterminant(m4Proj), m4Proj);
+	
+	XMMATRIX m4ViewProj = XMMatrixMultiply(m4View, m4Proj);
+	XMMATRIX m4InvViewProj = XMMatrixInverse(&XMMatrixDeterminant(m4ViewProj), m4ViewProj);
+
+	XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(m4View));
+	XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(m4Proj));
+	XMStoreFloat4x4(&_MainPassCB.ViewProj, XMMatrixTranspose(m4ViewProj));
+	_MainPassCB.EyePosW = _v3EyePos;
+	_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
+	_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
+	_MainPassCB.NearZ = 1.0f;
+	_MainPassCB.FarZ = 1000.0f;
+	_MainPassCB.TotalTime = gt.getTotalTime();
+	_MainPassCB.DeltaTime = gt.getDeltaTime();
 
 	auto currPassCB = _PassCB;
 	currPassCB->CopyData(0, _MainPassCB);

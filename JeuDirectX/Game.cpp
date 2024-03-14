@@ -64,15 +64,25 @@ bool Game::Initialize()
     if (!Renderer::Initialize())
         return false;
 
-    Params params;
+    // Camera creation (hard-coded)
+    Params CamParams;
+    std::vector<int> iLCamComp;
+    iLCamComp.push_back(CAMERA);
+    iLCamComp.push_back(CHARACTER_CONTROLLER);
+    CamParams.cameraParams.theta = 1.5f * XM_PI;
+    CamParams.cameraParams.phi = 0.2f * XM_PI;
+    CamParams.cameraParams.radius = 15.0f;
+    InstanciateEntity(iLCamComp, &CamParams);
 
-    std::vector<int> iLtypes;
+    // Cube creation (hard-coded)
+    Params CubeParams;
+    std::vector<int> iLCubeComp;
+    iLCubeComp.push_back(MESH_RENDERER);
+    InstanciateEntity(iLCubeComp, &CubeParams);
 
-    iLtypes.push_back(CHARACTER_CONTROLLER);
-    iLtypes.push_back(MOVE);
-    iLtypes.push_back(MESH_RENDERER);
+    //ScriptComponent* newScript;
+    //params.LpScripts.push_back(newScript);
 
-    InstanciateEntity(iLtypes, &params);
 
     return true;
 }

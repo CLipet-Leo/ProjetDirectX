@@ -40,6 +40,13 @@ struct IndiceBuffer
 
 // Component's params
 
+struct CameraParams
+{
+    float theta;
+    float phi;
+    float radius;
+};
+
 struct MoveParams
 {
     XMFLOAT3 directorVector;
@@ -53,15 +60,18 @@ struct GameObjectParams
 };
 
 class Component;
+class ScriptComponent;
 
 struct CharacterControllerParams
 {
     Component* moveCompPtr;
 };
 
-union Params
+struct Params
 {
     GameObjectParams gameObjectParams;
     MoveParams moveParams;
     CharacterControllerParams characterControllerParams;
+    std::vector<ScriptComponent*> LpScripts;
+    CameraParams cameraParams;
 };

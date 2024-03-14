@@ -20,6 +20,8 @@ void MeshRenderer::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandL
     _pMesh->BuildShapeGeometry(d3dDevice, CommandList);
     _pShader->BuildPSO(d3dDevice, b4xMsaaState, u4xMsaaQuality);
     _Geo = _pMesh->GetGeometry("box");
+
+    bIsInit = true;
 }
 
 MeshRenderer::~MeshRenderer()
@@ -37,6 +39,7 @@ void MeshRenderer::Update(const Timer& gt)
 void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS cbPass)
 {
     cmdList->SetGraphicsRootSignature(_pShader->GetRootSignature().Get());
+    cmdList->SetPipelineState(_pShader->GetPSO().Get());
 
     cmdList->IASetVertexBuffers(0, 1, &_Geo->VertexBufferView());
     cmdList->IASetIndexBuffer(&_Geo->IndexBufferView());
@@ -46,7 +49,8 @@ void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D
 
     cmdList->SetGraphicsRootConstantBufferView(1, cbPass);
 
-    cmdList->DrawIndexedInstanced(_IndexCount, 1, _StartIndexLocation, _BaseVertexLocation, 0);
+    _IndexCount = _Geo->IndexBufferByteSize / sizeof(std::uint16_t);
+    cmdList->DrawIndexedInstanced(_IndexCount, 1, 0, 0, 0);
 }
 
 void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
@@ -56,7 +60,7 @@ void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
     cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
 }
 
-Microsoft::WRL::ComPtr<ID3D12PipelineState> MeshRenderer::GetPSO()
+bool MeshRenderer::GetIsInit()
 {
-    return _pShader->GetPSO();
+    return bIsInit;
 }

@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\DirectX\MathHelper.cpp" />
+    <ClCompile Include="Components\Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Components\CharacterController.cpp" />
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DirectX\MathHelper.h" />
+    <ClInclude Include="Components\Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Components\CharacterController.h" />
     <ClInclude Include="Components\GameObject.h" />

@@ -15,10 +15,11 @@
 
 // Stuff to print in the Visual console
 #include <stdio.h>
-#define VSCPrint(buffer, msg, ...) \
+static char buff[200];
+#define VSCPrint(msg, ...) \
     do{ \
-        _snprintf_s(buffer, sizeof(buffer), _TRUNCATE, msg, __VA_ARGS__); \
-        OutputDebugStringA(buffer); \
+        _snprintf_s(buff, sizeof(buff), _TRUNCATE, msg, __VA_ARGS__); \
+        OutputDebugStringA(buff); \
     } while(0)
 
 // DirectX libs
@@ -83,6 +84,7 @@ enum compSubType
 #include "../Components/Move.h"
 #include "../Components/CharacterController.h"
 #include "../Components/MeshRenderer.h"
+#include "../Components/ScriptComponent.h"
 // TODO
 //#include "Collider.h"
 //#include "Rotate.h"
