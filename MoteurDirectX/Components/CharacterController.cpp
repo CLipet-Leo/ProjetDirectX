@@ -1,9 +1,16 @@
 #include "../includes/Pch.h"
 
 CharacterController::CharacterController(Entity* _pEOwner, Params* params)
-	: Component(_pEOwner, CHARACTER_CONTROLLER), _bActiveController(true)//, _pMoveComp(_pEOwner->GetComponentPtr(MOVE)), _pCameraComp(_pEOwner->GetComponentPtr(CAMERA))
+	: Component(_pEOwner, CHARACTER_CONTROLLER)
 {
 
+}
+
+void CharacterController::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)
+{
+	_bActiveController = true;
+	_pMoveComp = _pEOwner->GetComponentPtr(MOVE);
+	_pCameraComp = _pEOwner->GetComponentPtr(CAMERA);
 }
 
 void CharacterController::GetInput(WPARAM pParam)

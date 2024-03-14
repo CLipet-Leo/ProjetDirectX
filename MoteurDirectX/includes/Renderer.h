@@ -33,11 +33,12 @@ public:
 
 protected:
 
-	virtual void CreateDescriptorHeaps();
+	void CreateRtvAndDsvDescriptorHeaps();
 	virtual void OnResize();
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
 	void InstanciateEntity(std::vector<int> compList, Params* params);
+	void InitEntityComps();
 
 protected:
 
@@ -49,9 +50,8 @@ protected:
 	void CreateCommandObjects();
 	void CreateSwapChain();
 	void CreateRenderTarget();
-	void BuildDescriptorHeaps();
-	void BuildConstantBuffers();
 	void DepthStencilAndBufferView();
+	void BuildPassCB();
 	void UpdateViewport();
 	void UpdateMainPassCB(const Timer& gt);
 	// Other utils functions
@@ -88,6 +88,12 @@ public:
 	// Return the _DirectCmdListAlloc variable
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> GetCommandAlloc()const;
 
+	DXGI_FORMAT GetBackBufferFormat()const;
+	DXGI_FORMAT GetDepthStencilFormat()const;
+
+	bool Get4xMsaaState()const;
+	UINT Get4xMsaaQuality()const;
+
 protected:
 
 	static Renderer* _App;
@@ -121,14 +127,12 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _RtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _DsvHeap; 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _CbvHeap = nullptr;
 
 	D3D12_VIEWPORT _ScreenViewport;
 	D3D12_RECT _ScissorRect;
 
 	UINT uRtvDescriptorSize = 0;
 	UINT uDsvDescriptorSize = 0;
-	UINT uCbvSrvDescriptorSize = 0;
 
 	bool b4xMsaaState = false;    // 4X MSAA enabled
 	UINT u4xMsaaQuality = 0;      // quality level of 4X MSAA
@@ -146,7 +150,6 @@ protected:
 	// Other variables
 
 	UploadBuffer<PassConstants>* _PassCB = nullptr;
-	UploadBuffer<ObjectConstants>* _ObjectCB = nullptr;
 
 	PassConstants _MainPassCB;
 

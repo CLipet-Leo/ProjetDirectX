@@ -10,14 +10,8 @@ Shader::Shader()
 Shader::~Shader() 
 { }
 
-void Shader::BuildRootSignature(ComPtr<ID3D12Device> d3dDevice)
+void Shader::BuildRootSignature(ID3D12Device* d3dDevice)
 {
-    //CD3DX12_DESCRIPTOR_RANGE cbvTable0;
-    //cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-    //
-    //CD3DX12_DESCRIPTOR_RANGE cbvTable1;
-    //cbvTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
-
     // Root parameter can be a table, root descriptor or root constants.
     CD3DX12_ROOT_PARAMETER slotRootParameter[2];
 
@@ -59,7 +53,7 @@ void Shader::CompileShaders()
     };
 }
 
-void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFormat, bool b4xMsaaState, UINT u4xMsaaQuality, ComPtr<ID3D12Device> d3dDevice)
+void Shader::BuildPSO(ID3D12Device* d3dDevice, bool b4xMsaaState, UINT u4xMsaaQuality)
 {
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
     ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -82,10 +76,10 @@ void Shader::BuildPSO(DXGI_FORMAT dBackBufferFormat, DXGI_FORMAT dDepthStencilFo
     psoDesc.SampleMask = UINT_MAX;
     psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
     psoDesc.NumRenderTargets = 1;
-    psoDesc.RTVFormats[0] = dBackBufferFormat;
+    psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     psoDesc.SampleDesc.Count = b4xMsaaState ? 4 : 1;
     psoDesc.SampleDesc.Quality = b4xMsaaState ? (u4xMsaaQuality - 1) : 0;
-    psoDesc.DSVFormat = dDepthStencilFormat;
+    psoDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     ThrowIfFailed(d3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_PSO)));
 }
 

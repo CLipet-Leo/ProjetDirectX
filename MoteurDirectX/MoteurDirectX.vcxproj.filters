@@ -39,9 +39,6 @@
     <ClCompile Include="Components\Move.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Components\Factory.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Components\GameObject.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -51,8 +48,13 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Components\CharacterController.cpp" />
     <ClCompile Include="Components\MeshRenderer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\CharacterController.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ScriptComponent.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,9 +89,6 @@
     <ClInclude Include="includes\Mesh.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Components\Factory.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Components\GameObject.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -105,9 +104,14 @@
     <ClInclude Include="Components\MeshRenderer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="Components\CharacterController.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ScriptComponent.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\color.hlsl" />
-    <ClInclude Include="Components\CharacterController.h" />
   </ItemGroup>
 </Project>

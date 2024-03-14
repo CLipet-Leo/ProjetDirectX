@@ -64,7 +64,7 @@ int Renderer::Run()
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-
+	InitEntityComps();
  
 	while (msg.message != WM_QUIT)
 	{
@@ -105,17 +105,6 @@ bool Renderer::Initialize()
 
 	// Do the initial resize code.
 	OnResize();
-
-	// Reset the command list to prep for initialization commands.
-	ThrowIfFailed(_CommandList->Reset(_DirectCmdListAlloc.Get(), nullptr));
-
-	BuildDescriptorHeaps();
-	BuildConstantBuffers();
-
-	// Execute the initialization commands.
-	ThrowIfFailed(_CommandList->Close());
-	ID3D12CommandList* cmdsLists[] = { _CommandList.Get() };
-	_CommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
 	FlushCommandQueue();
 
@@ -267,7 +256,7 @@ LRESULT Renderer::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-void Renderer::CreateDescriptorHeaps()
+void Renderer::CreateRtvAndDsvDescriptorHeaps()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
 	rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
@@ -337,8 +326,9 @@ void Renderer::Update(const Timer& gt)
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Update(_Timer, _ObjectCB);
+		curEntityModel->Update(_Timer);
 	}
+	UpdateMainPassCB(_Timer);
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -386,7 +376,7 @@ void Renderer::Draw(const Timer& gt)
 		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
 		if (curEntityModel == nullptr)
 			continue;
-		curEntityModel->Draw(_Timer, _CommandList.Get(), _ObjectCB->Resource()->GetGPUVirtualAddress());
+		curEntityModel->Draw(_Timer, _CommandList.Get(), _PassCB->Resource()->GetGPUVirtualAddress());
 	}
 
 	// Indicate a state transition on the resource usage.
@@ -445,6 +435,9 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 			curNewComp = new GameObject(newEntity, params);
 			newEntity->AddComponent(curNewComp);
 			break;
+		case MESH_RENDERER:
+			curNewComp = new MeshRenderer(newEntity);
+			newEntity->AddComponent(curNewComp);
 		case CHARACTER_CONTROLLER:
 			CharacterController* newCC = new CharacterController(newEntity, params);
 			newEntity->AddComponent(newCC);
@@ -454,6 +447,14 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 	}
 
 	_LpEntity.push_back(newEntity);
+}
+
+void Renderer::InitEntityComps()
+{
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
+	}
 }
 
 bool Renderer::InitMainWindow()
@@ -514,7 +515,8 @@ bool Renderer::InitDirect3D()
 
 	CreateCommandObjects();
 	CreateSwapChain();
-	CreateDescriptorHeaps();
+	CreateRtvAndDsvDescriptorHeaps();
+	BuildPassCB();
 
 	return true;
 }
@@ -547,7 +549,6 @@ void Renderer::CreateFenceAndDescriptorSize()
 	ThrowIfFailed(_d3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_Fence)));
 	uRtvDescriptorSize = _d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	uDsvDescriptorSize = _d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-	uCbvSrvDescriptorSize = _d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
 void Renderer::Check4xMsaaQuality()
@@ -625,36 +626,6 @@ void Renderer::CreateRenderTarget()
 	}
 }
 
-void Renderer::BuildDescriptorHeaps()
-{
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 1;
-	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDesc.NodeMask = 0;
-	ThrowIfFailed(_d3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&_CbvHeap)));
-}
-
-void Renderer::BuildConstantBuffers()
-{
-	_ObjectCB = new UploadBuffer<ObjectConstants>(_d3dDevice, 1, true);
-
-	UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-	D3D12_GPU_VIRTUAL_ADDRESS cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
-	// Offset to the ith object constant buffer in the buffer.
-	int boxCBufIndex = 0;
-	cbAddress += boxCBufIndex * objCBByteSize;
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = cbAddress;
-	cbvDesc.SizeInBytes = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-	_d3dDevice->CreateConstantBufferView(
-		&cbvDesc,
-		_CbvHeap->GetCPUDescriptorHandleForHeapStart());
-}
-
 void Renderer::DepthStencilAndBufferView()
 {
 	// Create the depth/stencil buffer and view.
@@ -696,6 +667,11 @@ void Renderer::DepthStencilAndBufferView()
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 }
 
+void Renderer::BuildPassCB()
+{
+	_PassCB = new UploadBuffer<PassConstants>(_d3dDevice, 1, true);
+}
+
 void Renderer::UpdateViewport()
 {
 	// Update the viewport transform to cover the client area.
@@ -715,20 +691,20 @@ void Renderer::UpdateMainPassCB(const Timer& gt)
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	//XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	//XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	//XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
-	XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
+	//XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
+	//XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
 	XMStoreFloat4x4(&_MainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	_MainPassCB.EyePosW = mEyePos;
-	_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
-	_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
-	_MainPassCB.NearZ = 1.0f;
-	_MainPassCB.FarZ = 1000.0f;
-	_MainPassCB.TotalTime = gt.getTotalTime();
-	_MainPassCB.DeltaTime = gt.getDeltaTime();
+	//_MainPassCB.EyePosW = mEyePos;
+	//_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
+	//_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
+	//_MainPassCB.NearZ = 1.0f;
+	//_MainPassCB.FarZ = 1000.0f;
+	//_MainPassCB.TotalTime = gt.getTotalTime();
+	//_MainPassCB.DeltaTime = gt.getDeltaTime();
 
 	auto currPassCB = _PassCB;
 	currPassCB->CopyData(0, _MainPassCB);
@@ -895,4 +871,24 @@ ComPtr<ID3D12GraphicsCommandList> Renderer::CurrentCommandList()const
 ComPtr<ID3D12CommandAllocator> Renderer::GetCommandAlloc()const
 {
 	return _DirectCmdListAlloc;
+}
+
+DXGI_FORMAT Renderer::GetBackBufferFormat()const
+{
+	return dBackBufferFormat;
+}
+
+DXGI_FORMAT Renderer::GetDepthStencilFormat()const
+{
+	return dDepthStencilFormat;
+}
+
+bool Renderer::Get4xMsaaState()const
+{
+	return b4xMsaaState;
+}
+
+UINT Renderer::Get4xMsaaQuality()const
+{
+	return u4xMsaaQuality;
 }

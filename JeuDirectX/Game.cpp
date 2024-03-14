@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
         Game theApp(hInstance);
         if (!theApp.Initialize())
             return 0;
-    
+        
         printf("hello");
         return theApp.Run();
     }
@@ -70,6 +70,7 @@ bool Game::Initialize()
 
     iLtypes.push_back(CHARACTER_CONTROLLER);
     iLtypes.push_back(MOVE);
+    iLtypes.push_back(MESH_RENDERER);
 
     InstanciateEntity(iLtypes, &params);
 

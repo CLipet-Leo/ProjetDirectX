@@ -31,3 +31,8 @@ void Component::Update(const Timer& gt)
 {
 
 }
+
+void Component::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)
+{
+	
+}
