@@ -380,8 +380,6 @@ void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graph
     _Geometries.push_back(sphereGeo);
 }
 
-
-
 MeshGeometry* Mesh::GetGeometry(const std::string& geometryName)
 {
     for (MeshGeometry* geometry : _Geometries)
@@ -391,4 +389,6 @@ MeshGeometry* Mesh::GetGeometry(const std::string& geometryName)
             return geometry;
         }
     }
+
+    return nullptr;
 }
