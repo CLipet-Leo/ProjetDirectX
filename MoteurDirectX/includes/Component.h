@@ -31,7 +31,7 @@ public:
 	// Would be called every frame, and do nothing
 	virtual void Component::Update(const Timer& gt);
 
-	virtual void InitComponent(ID3D12Device* d3dDevice);
+	virtual void InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality);
 
 };
 

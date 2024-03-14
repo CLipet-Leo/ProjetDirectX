@@ -302,7 +302,7 @@ Mesh::Vertex Mesh::MidPoint(const Vertex& v0, const Vertex& v1)
     return v;
 }
 
-void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12GraphicsCommandList> CommandList)
+void Mesh::BuildShapeGeometry(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList)
 {
     // Part box
     MeshData* box = CreateBox(1.5f, 0.5f, 1.5f, 3);
@@ -328,11 +328,11 @@ void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graph
 
     auto boxGeo = new MeshGeometry;
     boxGeo->Name = "box";
-    boxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
-        CommandList.Get(), vertices.data(), vbByteSize, boxGeo->VertexBufferUploader);
+    boxGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice,
+        CommandList, vertices.data(), vbByteSize, boxGeo->VertexBufferUploader);
 
-    boxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
-        CommandList.Get(), indices.data(), ibByteSize, boxGeo->IndexBufferUploader);
+    boxGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice,
+        CommandList, indices.data(), ibByteSize, boxGeo->IndexBufferUploader);
 
     boxGeo->VertexByteStride = sizeof(VertexColor);
     boxGeo->VertexBufferByteSize = vbByteSize;
@@ -365,11 +365,11 @@ void Mesh::BuildShapeGeometry(ComPtr<ID3D12Device> d3dDevice, ComPtr<ID3D12Graph
 
     auto sphereGeo = new MeshGeometry;
     sphereGeo->Name = "sphere";
-    sphereGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
-        CommandList.Get(), sphereVertices.data(), sphereVbByteSize, sphereGeo->VertexBufferUploader);
+    sphereGeo->VertexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice,
+        CommandList, sphereVertices.data(), sphereVbByteSize, sphereGeo->VertexBufferUploader);
 
-    sphereGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice.Get(),
-        CommandList.Get(), sphereIndices.data(), sphereIbByteSize, sphereGeo->IndexBufferUploader);
+    sphereGeo->IndexBufferGPU = Utils::CreateDefaultBuffer(d3dDevice,
+        CommandList, sphereIndices.data(), sphereIbByteSize, sphereGeo->IndexBufferUploader);
 
     sphereGeo->VertexByteStride = sizeof(VertexColor);
     sphereGeo->VertexBufferByteSize = sphereVbByteSize;

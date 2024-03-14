@@ -9,15 +9,16 @@ MeshRenderer::MeshRenderer(Entity* pEOwner)
 
 }
 
-void MeshRenderer::InitComponent(ID3D12Device* d3dDevice)
+void MeshRenderer::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)
 {
     _pMesh = new Mesh();
     _pShader = new Shader();
 
     BuildConstantBuffer(d3dDevice);
-    _pShader->BuildRootSignature();
+    _pShader->BuildRootSignature(d3dDevice);
     _pShader->CompileShaders();
-    _pShader->BuildPSO();
+    _pMesh->BuildShapeGeometry(d3dDevice, CommandList);
+    _pShader->BuildPSO(d3dDevice, b4xMsaaState, u4xMsaaQuality);
     _Geo = _pMesh->GetGeometry("box");
 }
 
@@ -50,9 +51,7 @@ void MeshRenderer::Draw(const Timer& gt, ID3D12GraphicsCommandList* cmdList, D3D
 
 void MeshRenderer::BuildConstantBuffer(ID3D12Device* d3dDevice)
 {
-    _ObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(d3dDevice, 1, true);
-
-    UINT objCBByteSize = Utils::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+    _ObjectCB = new UploadBuffer<ObjectConstants>(d3dDevice, 1, true);
 
     cbAddress = _ObjectCB->Resource()->GetGPUVirtualAddress();
 }

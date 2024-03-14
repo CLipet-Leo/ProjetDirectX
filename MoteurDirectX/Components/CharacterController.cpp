@@ -6,7 +6,7 @@ CharacterController::CharacterController(Entity* _pEOwner, Params* params)
 
 }
 
-void CharacterController::InitComponent(ID3D12Device* d3dDevice)
+void CharacterController::InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)
 {
 	_bActiveController = true;
 	_pMoveComp = _pEOwner->GetComponentPtr(MOVE);

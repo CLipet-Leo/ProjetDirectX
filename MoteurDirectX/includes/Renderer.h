@@ -51,6 +51,7 @@ protected:
 	void CreateSwapChain();
 	void CreateRenderTarget();
 	void DepthStencilAndBufferView();
+	void BuildPassCB();
 	void UpdateViewport();
 	void UpdateMainPassCB(const Timer& gt);
 	// Other utils functions
@@ -145,7 +146,6 @@ protected:
 	int iClientHeight = 600;
 
 	Timer _Timer;
-	Mesh _Mesh;
 
 	// Other variables
 

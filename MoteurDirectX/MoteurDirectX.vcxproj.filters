@@ -54,7 +54,9 @@
     <ClCompile Include="Components\CharacterController.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Components\ScriptComponent.cpp" />
+    <ClCompile Include="Components\ScriptComponent.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\Pch.h">
@@ -105,7 +107,9 @@
     <ClInclude Include="Components\CharacterController.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Components\ScriptComponent.h" />
+    <ClInclude Include="Components\ScriptComponent.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\color.hlsl" />

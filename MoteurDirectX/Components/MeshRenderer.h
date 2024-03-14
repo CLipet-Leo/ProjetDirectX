@@ -14,7 +14,7 @@ class MeshRenderer : public Component
 
 public:
     MeshRenderer(Entity* pEOwner);
-    void InitComponent(ID3D12Device* d3dDevice)override;
+    void InitComponent(ID3D12Device* d3dDevice, ID3D12GraphicsCommandList* CommandList, bool b4xMsaaState, UINT u4xMsaaQuality)override;
     ~MeshRenderer();
 
     virtual void Update(const Timer& gt);
@@ -28,8 +28,8 @@ private:
     XMFLOAT4X4 _World = MathHelper::Identity4x4();
 
     // Index into GPU constant buffer corresponding to the ObjectCB for this render item.
-    std::unique_ptr<UploadBuffer<ObjectConstants>> _ObjectCB = nullptr;
-    UINT _ObjCBIndex = -1;
+    UploadBuffer<ObjectConstants>* _ObjectCB = nullptr;
+    UINT _ObjCBIndex = 0;
     D3D12_GPU_VIRTUAL_ADDRESS cbAddress;
 
     MeshGeometry* _Geo = nullptr;

@@ -64,7 +64,7 @@ int Renderer::Run()
 	MSG msg = { 0 };
 
 	_Timer.Reset();
-
+	InitEntityComps();
  
 	while (msg.message != WM_QUIT)
 	{
@@ -107,8 +107,6 @@ bool Renderer::Initialize()
 	OnResize();
 
 	FlushCommandQueue();
-
-	_Mesh.BuildShapeGeometry(_d3dDevice, _CommandList);
 
 	return true;
 }
@@ -455,7 +453,7 @@ void Renderer::InitEntityComps()
 {
 	for (auto curEntity : _LpEntity)
 	{
-		curEntity->InitComponents(_d3dDevice.Get());
+		curEntity->InitComponents(_d3dDevice.Get(), _CommandList.Get(), b4xMsaaState, u4xMsaaQuality);
 	}
 }
 
@@ -518,6 +516,7 @@ bool Renderer::InitDirect3D()
 	CreateCommandObjects();
 	CreateSwapChain();
 	CreateRtvAndDsvDescriptorHeaps();
+	BuildPassCB();
 
 	return true;
 }
@@ -668,6 +667,11 @@ void Renderer::DepthStencilAndBufferView()
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 }
 
+void Renderer::BuildPassCB()
+{
+	_PassCB = new UploadBuffer<PassConstants>(_d3dDevice, 1, true);
+}
+
 void Renderer::UpdateViewport()
 {
 	// Update the viewport transform to cover the client area.
@@ -687,20 +691,20 @@ void Renderer::UpdateMainPassCB(const Timer& gt)
 	XMMATRIX proj = XMLoadFloat4x4(&mProj);
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+	//XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	//XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	//XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
-	XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
+	//XMStoreFloat4x4(&_MainPassCB.View, XMMatrixTranspose(view));
+	//XMStoreFloat4x4(&_MainPassCB.Proj, XMMatrixTranspose(proj));
 	XMStoreFloat4x4(&_MainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	_MainPassCB.EyePosW = mEyePos;
-	_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
-	_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
-	_MainPassCB.NearZ = 1.0f;
-	_MainPassCB.FarZ = 1000.0f;
-	_MainPassCB.TotalTime = gt.getTotalTime();
-	_MainPassCB.DeltaTime = gt.getDeltaTime();
+	//_MainPassCB.EyePosW = mEyePos;
+	//_MainPassCB.RenderTargetSize = XMFLOAT2((float)iClientWidth, (float)iClientHeight);
+	//_MainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / iClientWidth, 1.0f / iClientHeight);
+	//_MainPassCB.NearZ = 1.0f;
+	//_MainPassCB.FarZ = 1000.0f;
+	//_MainPassCB.TotalTime = gt.getTotalTime();
+	//_MainPassCB.DeltaTime = gt.getDeltaTime();
 
 	auto currPassCB = _PassCB;
 	currPassCB->CopyData(0, _MainPassCB);
