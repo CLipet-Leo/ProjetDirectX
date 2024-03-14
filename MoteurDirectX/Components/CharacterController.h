@@ -4,6 +4,7 @@ class CharacterController : public Component
 {
 public:
 	CharacterController(Entity* _pEOwner, Params* params);
+	void InitComponent() override;
 
 	void GetInput(WPARAM pParam);
 	void EnableController();

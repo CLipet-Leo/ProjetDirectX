@@ -6,6 +6,11 @@ using Microsoft::WRL::ComPtr;
 MeshRenderer::MeshRenderer(Entity* pEOwner)
     : Component(pEOwner, MESH_RENDERER)
 {
+
+}
+
+void MeshRenderer::InitComponent()
+{
     _pMesh = new Mesh();
     _pShader = new Shader();
 

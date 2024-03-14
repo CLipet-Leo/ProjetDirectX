@@ -9,10 +9,12 @@ class Move : public Component
 private:
 	XMFLOAT3 _v3VectorDirector;
 	float _fVelocity;
+	Params* _Params;
 
 public:
 	// Constru & Destru
 	Move(Entity* pEOwner, Params* params);
+	void InitComponent() override;
 	~Move();
 
 	// Methods

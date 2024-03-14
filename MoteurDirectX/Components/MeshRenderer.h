@@ -12,9 +12,9 @@ struct RenderItem
 class MeshRenderer : public Component
 {
 
-
 public:
     MeshRenderer(Entity* pEOwner);
+    void InitComponent() override;
     ~MeshRenderer();
 
     virtual void Update(const Timer& gt);
@@ -42,6 +42,7 @@ private:
     UINT _IndexCount = 0;
     UINT _StartIndexLocation = 0;
     int _BaseVertexLocation = 0;
+    Params* _Params;
 
     Mesh* _pMesh;
     Shader* _pShader;
