@@ -320,16 +320,11 @@ void Renderer::OnResize()
 
 void Renderer::Update(const Timer& gt)
 {
+	Sleep(3000);
 	// Update all Entities, and keep the Camera pointer to update its own View Matrix
 	for (auto curEntity : _LpEntity)
 	{
 		curEntity->UpdateComponents(gt);
-
-		// MeshRend update
-		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
-		if (curEntityModel == nullptr)
-			continue;
-		curEntityModel->Update(_Timer);
 
 		// Camera update
 		if (curEntity->GetComponentPtr(CAMERA) != nullptr)
@@ -337,7 +332,16 @@ void Renderer::Update(const Timer& gt)
 			// Since we found the camera, we'll update the View matrix with its data !
 			Camera* pCam = (Camera*)curEntity->GetComponentPtr(CAMERA);
 			XMStoreFloat4x4(&_m4View, pCam->CalculateView());
+			VSCPrint("_m4View : %f, %f, %f\n", _m4View._11, _m4View._12, _m4View._13);
+			VSCPrint("        : %f, %f, %f\n", _m4View._21, _m4View._22, _m4View._23);
+			VSCPrint("        : %f, %f, %f\n", _m4View._31, _m4View._32, _m4View._33);
 		}
+
+		// MeshRend update
+		MeshRenderer* curEntityModel = (MeshRenderer*)curEntity->GetComponentPtr(MESH_RENDERER);
+		if (curEntityModel == nullptr)
+			continue;
+		curEntityModel->Update(_Timer);
 	}
 	UpdateMainPassCB(_Timer);
 }
