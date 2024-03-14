@@ -23,7 +23,6 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Components\CharacterController.cpp" />
-    <ClCompile Include="Components\Factory.cpp" />
     <ClCompile Include="Components\GameObject.cpp" />
     <ClCompile Include="Components\MeshRenderer.cpp" />
     <ClCompile Include="Components\Move.cpp" />
@@ -39,7 +38,6 @@
     <ClInclude Include="..\DirectX\MathHelper.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Components\CharacterController.h" />
-    <ClInclude Include="Components\Factory.h" />
     <ClInclude Include="Components\GameObject.h" />
     <ClInclude Include="Components\MeshRenderer.h" />
     <ClInclude Include="Components\Move.h" />
