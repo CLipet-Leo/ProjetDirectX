@@ -339,7 +339,7 @@ void Renderer::Update(const Timer& gt)
 			XMStoreFloat4x4(&_m4View, pCam->CalculateView());
 		}
 	}
-	//UpdateMainPassCB(_Timer);
+	UpdateMainPassCB(_Timer);
 }
 
 void Renderer::Draw(const Timer& gt)
@@ -396,17 +396,6 @@ void Renderer::Draw(const Timer& gt)
 
 void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 {
-	// puts the CharacterController component at the end of the list
-	//for (int i=0 ; i < compList.size() ; i++)
-	//{
-	//	if (compList[i] == CHARACTER_CONTROLLER)
-	//	{
-	//		compList.erase(compList.begin() + i);
-	//		compList.push_back(CHARACTER_CONTROLLER);
-	//		break;
-	//	}
-	//}
-
 	Entity* newEntity = new Entity();
 
 	for (auto curCompToAdd : compList)

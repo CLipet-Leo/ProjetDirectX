@@ -75,6 +75,7 @@ void Shader::BuildPSO(ID3D12Device* d3dDevice, bool b4xMsaaState, UINT u4xMsaaQu
     psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
     psoDesc.SampleMask = UINT_MAX;
     psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    //psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
     psoDesc.NumRenderTargets = 1;
     psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
     psoDesc.SampleDesc.Count = b4xMsaaState ? 4 : 1;
