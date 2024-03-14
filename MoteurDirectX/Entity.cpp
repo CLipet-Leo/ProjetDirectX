@@ -77,6 +77,14 @@ void Entity::RmvComponent(compSubType ARGCompTypeTarget)
 	}
 }
 
+void Entity::InitComponents()
+{
+	for (auto curComponent : _LpComponents)
+	{
+		curComponent->InitComponent();
+	}
+}
+
 void Entity::UpdateComponents(const Timer& gt)
 {
 	for (auto curComponent : _LpComponents)

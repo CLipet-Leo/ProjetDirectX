@@ -38,6 +38,7 @@ protected:
 	virtual void Update(const Timer& gt);
 	virtual void Draw(const Timer& gt);
 	void InstanciateEntity(std::vector<int> compList, Params* params);
+	void InitEntityComps();
 
 protected:
 

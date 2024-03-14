@@ -31,3 +31,8 @@ void Component::Update(const Timer& gt)
 {
 
 }
+
+void Component::InitComponent()
+{
+	
+}

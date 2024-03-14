@@ -451,6 +451,14 @@ void Renderer::InstanciateEntity(std::vector<int> compList, Params* params)
 	_LpEntity.push_back(newEntity);
 }
 
+void Renderer::InitEntityComps()
+{
+	for (auto curEntity : _LpEntity)
+	{
+		curEntity->InitComponents();
+	}
+}
+
 bool Renderer::InitMainWindow()
 {
 	WNDCLASS wc;
