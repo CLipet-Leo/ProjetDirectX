@@ -24,8 +24,8 @@ void Camera::UpdateCam(int ARGiNewPosX, int ARGiNewPosY)
 	VSCPrint("=>UpdateCam(int ARGiNewPosX = %d, int ARGiNewPosY = %d)\n", ARGiNewPosX, ARGiNewPosY);
 
 	// Calculates the difference in movement of the mouse
-	int iDx = ARGiNewPosX - _PrevMousePos.x;
-	int iDy = ARGiNewPosY - _PrevMousePos.y;
+	int iDx = ARGiNewPosX;
+	int iDy = ARGiNewPosY;
 	VSCPrint("\tiDx = %d ||| iDy = %d\n", iDx, iDy);
 
 	// Applies a factor on the movement of the mouse. You can think of it as the sensibility of the mouse movements.
@@ -45,12 +45,13 @@ void Camera::UpdateCam(int ARGiNewPosX, int ARGiNewPosY)
 	// Finally, restrict angles to limit where the player can see
 	_fPhi = _fPhi < _fLIMPhiMin ? _fLIMPhiMin : (_fPhi > _fLIMPhiMax ? _fLIMPhiMax : _fPhi);
 	/*_fTheta = _fTheta < _fLIMThetaMin ? _fLIMThetaMin : (_fTheta > _fLIMThetaMax ? _fLIMThetaMax : _fTheta);*/
+	VSCPrint("\tValue post-clamp : _fTheta = %.5f   _fPhi = %.5f\n", _fTheta, _fPhi);
 
 	// Updates the mouse position
-	_PrevMousePos.x = ARGiNewPosX;
-	_PrevMousePos.y = ARGiNewPosY;
+	_PrevMousePos.x += ARGiNewPosX;
+	_PrevMousePos.y += ARGiNewPosY;
 
-	VSCPrint("\tValue post-clamp : _fTheta = %.5f   _fPhi = %.5f", _fTheta, _fPhi);
+	VSCPrint("\tPrev Mouse Pos (%d, %d)", _PrevMousePos.x, _PrevMousePos.y);
 	VSCPrint("\n<> EXITING...\n");
 }
 
